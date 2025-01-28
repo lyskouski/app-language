@@ -1,6 +1,6 @@
 {
     "files.eol": "\r\n",
-    "editor.tabSize": 2,
+    "editor.tabSize": 4,
     "editor.insertSpaces": true,
     "editor.detectIndentation": false,
     "dart.lineLength": 120,

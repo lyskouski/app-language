@@ -1,2 +1,19 @@
-Label:
-  text: 'Hello world!'
+RootWidget:
+    container: container
+    id: container
+    StackLayout:
+        orientation: 'tb-lr'
+        padding: 10
+        spacing: 5
+        Button:
+            text: "Phonetics"
+            size_hint: .2, .4
+            on_release: app.next_screen('phonetics')
+        Button:
+            text: "Parrot"
+            size_hint: .2, .4
+            on_release: app.next_screen('parrot')
+        Button:
+            text: "Harmonica"
+            size_hint: .2, .4
+            on_release: app.next_screen('harmonica')
