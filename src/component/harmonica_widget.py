@@ -1,22 +1,24 @@
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.scrollview import ScrollView
+from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
 from kivy.properties import BooleanProperty, StringProperty
 
-class HarmonicaWidget(BoxLayout):
+class HarmonicaWidget(ScrollView):
     origin = BooleanProperty(False)
     secondary = BooleanProperty(False)
     data_file = StringProperty("assets/data/harmonica.txt")
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.orientation = 'vertical'
 
     def on_kv_post(self, base_widget):
         self.load_data()
 
     def load_data(self):
         self.clear_widgets()
+
+        layout = GridLayout(cols=1, size_hint_y='2dp', spacing=5)
+        layout.bind(minimum_height=layout.setter("height"))
+
         try:
             with open(self.data_file, "r", encoding="utf-8") as f:
                 lines = f.readlines()
@@ -26,11 +28,13 @@ class HarmonicaWidget(BoxLayout):
                     origin, trans = line.strip().split(":", 1)
                     origin, trans = origin.strip(), trans.strip()
 
-                    self.add_row(origin, trans)
+                    self.add_row(layout, origin, trans)
         except FileNotFoundError:
-            self.add_widget(Label(text="Error: File not found!"))
+            layout.add_widget(Label(text="Error: File not found!"))
 
-    def add_row(self, origin, trans):
+        self.add_widget(layout)
+
+    def add_row(self, layout, origin, trans):
         row = BoxLayout(orientation='horizontal')
 
         if self.origin and self.secondary:
@@ -45,4 +49,4 @@ class HarmonicaWidget(BoxLayout):
             row.add_widget(Label(text=trans))
             row.add_widget(TextInput(text=origin))
 
-        self.add_widget(row)
+        layout.add_widget(row)
