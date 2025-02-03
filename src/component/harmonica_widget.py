@@ -10,7 +10,9 @@ class HarmonicaWidget(BoxLayout):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.orientation = 'vertical'  # Ensure it's a vertical layout
+        self.orientation = 'vertical'
+
+    def on_kv_post(self, base_widget):
         self.load_data()
 
     def load_data(self):

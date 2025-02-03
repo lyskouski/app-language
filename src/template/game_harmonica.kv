@@ -19,21 +19,24 @@ BoxLayout:
         AccordionItem:
             title: 'PL & RU'
             collapse: False
-            HarmonicaWidget:
-                origin: True
-                secondary: True
+            BoxLayout:
+                HarmonicaWidget:
+                    origin: True
+                    secondary: True
         AccordionItem:
             title: 'PL -> RU'
             collapse: True
-            HarmonicaWidget:
-                origin: True
-                secondary: False
+            BoxLayout:
+                HarmonicaWidget:
+                    origin: True
+                    secondary: False
         AccordionItem:
             title: 'RU -> PL'
             collapse: True
-            HarmonicaWidget:
-                origin: False
-                secondary: True
+            BoxLayout:
+                HarmonicaWidget:
+                    origin: False
+                    secondary: True
     ActionBar:
         hidden: False if app.is_mobile else True
         # size_hint_y: None if app.is_mobile else 0
