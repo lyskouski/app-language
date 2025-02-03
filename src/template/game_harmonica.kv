@@ -14,6 +14,9 @@ BoxLayout:
                 on_release: app.next_screen('main')
                 title: 'Harmonica'
             ActionButton:
+                text: 'Clear'
+                on_release: app.next_screen('game_harmonica')
+            ActionButton:
                 text: 'Shuffle'
                 on_release: app.load_and_shuffle_data()
     Accordion:
@@ -49,6 +52,9 @@ BoxLayout:
                 with_previous: True
                 on_release: app.next_screen('main')
                 title: 'Harmonica'
+            ActionButton:
+                text: 'Clear'
+                on_release: app.next_screen('game_harmonica')
             ActionButton:
                 text: 'Shuffle'
                 on_release: app.load_and_shuffle_data()
