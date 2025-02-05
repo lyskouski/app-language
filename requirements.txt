@@ -1,2 +1,4 @@
+kivy[base]
 kivy[full]
 kivy_examples
+pyinstaller

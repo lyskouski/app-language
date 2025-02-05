@@ -13,6 +13,9 @@ from kivy.properties import ObjectProperty, BooleanProperty, StringProperty, Lis
 from kivy.uix.boxlayout import BoxLayout
 from kivy.utils import platform
 
+from kivy.base import EventLoop
+EventLoop.ensure_window()
+
 class RootWidget(BoxLayout):
     container = ObjectProperty(None)
 
@@ -55,6 +58,9 @@ class MainApp(App):
         Clock.schedule_once(lambda dt: self.refresh_widgets())
 
     def refresh_widgets(self):
+        if not self.root:
+            return
+
         for widget in self.root.walk():
             if hasattr(widget, 'load_data'):
                 widget.load_data()
