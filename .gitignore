@@ -1,2 +1,4 @@
 /kivy_venv/
 __pycache__
+/windows/build
+/windows/dist

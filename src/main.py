@@ -2,6 +2,7 @@
 # > python -m venv kivy_venv
 # > source kivy_venv/Scripts/activate
 # > pip install -r requirements.txt
+# > python ./src/main.py
 
 import kivy
 import random
@@ -28,6 +29,7 @@ class MainApp(App):
         if platform in ['android', 'ios']:
             self.is_mobile = True
         self.load_and_shuffle_data()
+        return Builder.load_file(self.kv_directory + '/main.kv')
 
     def next_screen(self, screen):
         filepath = self.kv_directory + '/' + screen + '.kv'
