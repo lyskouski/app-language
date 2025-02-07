@@ -8,9 +8,6 @@ a = Analysis(
     pathex=[],
     binaries=[],
     datas=[
-        ("..\\assets\\data\\dictionary.txt","assets\\data"),
-        ("..\\assets\\images\\error.png","assets\\images"),
-        ("..\\assets\\images\\success.png","assets\\images"),
         ("..\\src\\component\\harmonica_widget.py","component"),
         ("..\\src\\template\\game_harmonica.kv","template"),
         ("..\\src\\template\\game_parrot.kv","template"),

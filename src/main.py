@@ -6,6 +6,8 @@
 
 import kivy
 import random
+import sys
+import kivy.resources
 
 from kivy.app import App
 from kivy.clock import Clock
@@ -16,6 +18,9 @@ from kivy.utils import platform
 
 from kivy.base import EventLoop
 EventLoop.ensure_window()
+
+if getattr(sys, 'frozen', False):
+    kivy.resources.resource_add_path(sys._MEIPASS)
 
 class RootWidget(BoxLayout):
     container = ObjectProperty(None)
@@ -29,13 +34,14 @@ class MainApp(App):
         if platform in ['android', 'ios']:
             self.is_mobile = True
         self.load_and_shuffle_data()
-        return Builder.load_file(self.kv_directory + '/main.kv')
+        kvPath = kivy.resources.resource_find(self.kv_directory + '/main.kv')
+        return Builder.load_file(kvPath)
 
     def next_screen(self, screen):
-        filepath = self.kv_directory + '/' + screen + '.kv'
-        Builder.unload_file(filepath)
+        kvPath = kivy.resources.resource_find(self.kv_directory + '/' + screen + '.kv')
+        Builder.unload_file(kvPath)
         self.root.container.clear_widgets()
-        screen = Builder.load_file(filepath)
+        screen = Builder.load_file(kvPath)
         self.root.container.add_widget(screen)
 
     def load_and_shuffle_data(self):
