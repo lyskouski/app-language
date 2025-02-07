@@ -9,6 +9,10 @@ import random
 import sys
 import kivy.resources
 
+# hack to avoid "not found"-exception after tlum.spec usage
+import component.harmonica_widget
+import component.recorder_widget
+
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.lang import Builder

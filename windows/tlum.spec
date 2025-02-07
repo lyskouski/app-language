@@ -2,19 +2,21 @@
 
 # -*- mode: python ; coding: utf-8 -*-
 from kivy_deps import sdl2, glew, angle, gstreamer
+from PyInstaller.utils.hooks import collect_dynamic_libs
 
 a = Analysis(
     ['..\\src\\main.py'],
-    pathex=[],
-    binaries=[],
+    pathex=['.'],
+    binaries=collect_dynamic_libs('kivy'),
     datas=[
         ("..\\src\\component\\harmonica_widget.py","component"),
+        ("..\\src\\component\\recorder_widget.py","component"),
         ("..\\src\\template\\game_harmonica.kv","template"),
         ("..\\src\\template\\game_parrot.kv","template"),
         ("..\\src\\template\\game_phonetics.kv","template"),
         ("..\\src\\template\\main.kv","template"),
     ],
-    hiddenimports=[],
+    hiddenimports=['kivy.core.audio.audio_gstplayer'],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
@@ -29,6 +31,7 @@ exe = EXE(
     a.scripts,
     a.binaries,
     a.datas,
+    *[Tree(p) for p in (sdl2.dep_bins + glew.dep_bins + gstreamer.dep_bins)],
     [],
     name='tlum',
     debug=False,
