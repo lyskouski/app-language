@@ -1,4 +1,4 @@
-# ![Tlum Logo](./docs/design-flow/logo/tlum.svg) Language Learning Application
+# <img src="./docs/design-flow/logo/tlum.svg" alt="Tlum Logo" width="75"/> Language Learning Application
 
 **Tlum** - open-source cross-platform language learning application leverages the power of natural language processing to 
 pinpoint pronunciation gaps, computer vision to enhance articulation, and machine learning to boost vocabulary proficiency.
