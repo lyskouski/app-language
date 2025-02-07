@@ -1,3 +1,5 @@
+#:import RecorderWidget component.recorder_widget
+
 BoxLayout:
     orientation: 'vertical'
 
@@ -13,8 +15,10 @@ BoxLayout:
                 on_release: app.next_screen('main')
                 title: 'Parrot'
 
-    Label:
-        text: 'Parrot game is under construction!'
+    RecorderWidget:
+        orientation: 'horizontal'
+        padding: 10
+        spacing: 10
 
     ActionBar:
         hidden: False if app.is_mobile else True

@@ -19,6 +19,10 @@ from kivy.utils import platform
 from kivy.base import EventLoop
 EventLoop.ensure_window()
 
+if platform == "android":
+    from android.permissions import request_permissions, Permission
+    request_permissions([Permission.RECORD_AUDIO, Permission.WRITE_EXTERNAL_STORAGE])
+
 if getattr(sys, 'frozen', False):
     kivy.resources.resource_add_path(sys._MEIPASS)
 

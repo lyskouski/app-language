@@ -1,4 +1,6 @@
 kivy[base]
 kivy[full]
 kivy_examples
+sounddevice
+soundfile
 pyinstaller
