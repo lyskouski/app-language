@@ -31,7 +31,7 @@ exe = EXE(
     a.scripts,
     a.binaries,
     a.datas,
-    *[Tree(p) for p in (sdl2.dep_bins + glew.dep_bins + gstreamer.dep_bins)],
+    *[Tree(p) for p in (sdl2.dep_bins + glew.dep_bins)],
     [],
     name='tlum',
     debug=False,
