@@ -1,5 +1,6 @@
-skoregorkowa_001.mp3 : Król Karol kupił królowej Karolinie korale koloru koralowego.
-skoregorkowa_002.ogg : Stół z powyłamywanymi nogami.
-skoregorkowa_003.ogg : ...
-skoregorkowa_004.ogg : Wyindywidualizowaliśmy się z rozentuzjazmowanego tłumu.
-skoregorkowa_005.ogg : ...
+skoregorkowa_001.mp3 : Król Karol kupił królowej Karolinie korale koloru koralowego
+skoregorkowa_002.ogg : Stół z powyłamywanymi nogami
+skoregorkowa_003.ogg : W Szczebrzeszynie chrząszcz brzmi w trzcinie i Szczebrzeszyn z tego słynie. Wół go pyta „Panie chrząszczu, Po co pan tak brzęczy w gąszczu?” 
+skoregorkowa_004.ogg : Wyindywidualizowaliśmy się z rozentuzjazmowanego tłumu
+skoregorkowa_005.ogg : Spod czeskich strzech szło Czechów trzech
+skoregorkowa_006.ogg : Szedł Sasza suchą szosą i suszył sobie spodnie
