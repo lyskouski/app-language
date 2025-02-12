@@ -1,6 +1,6 @@
 # Initialization:
 # > python -m venv kivy_venv
-# > source kivy_venv/Scripts/activate
+# > source kivy_venv/Scripts/activate [OR] source kivy_venv/bin/activate
 # > pip install -r requirements.txt
 # > python ./src/main.py
 
