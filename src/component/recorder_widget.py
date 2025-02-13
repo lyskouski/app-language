@@ -21,12 +21,12 @@ class RecorderWidget(BoxLayout):
         self.main_layout = BoxLayout(orientation='vertical')
 
         self.scroll_view = ScrollView()
-        self.list_layout = GridLayout(cols=1, size_hint_y=None)
+        self.list_layout = GridLayout(cols=1, size_hint_y='1dp', spacing=5)
         self.list_layout.bind(minimum_height=self.list_layout.setter('height'))
         
         for file_name, sentence in self.audio_files.items():
-            row = BoxLayout(orientation='horizontal')
-            row.add_widget(Label(text=sentence, size_hint_x=0.8))
+            row = BoxLayout(orientation="horizontal")
+            row.add_widget(Label(text=sentence.replace('\\n', '\n'), size_hint_x=0.8, halign="left"))
             choose_button = Button(text="Choose", size_hint_x=0.2)
             choose_button.file_path = file_name
             choose_button.bind(on_release=self.choose_sentence)
@@ -39,7 +39,7 @@ class RecorderWidget(BoxLayout):
         self.control_layout = BoxLayout(size_hint_y=None, height=50)
         self.listen_button = Button(text="Listen", on_press=self.play_audio)
         self.listen_button.disabled = True
-        self.status_label = Label(text="Select a sentence")
+        self.status_label = Label(text="Select a sentence", size_hint_y='0.2dp')
         self.record_button = Button(text="Record", on_press=self.toggle_recording)
         self.play_button = Button(text="Play", on_press=self.play_audio, disabled=True)
 
