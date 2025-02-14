@@ -27,7 +27,7 @@ class HarmonicaWidget(ScrollView):
         self.add_widget(layout)
 
     def add_row(self, layout, origin, trans):
-        row = BoxLayout(orientation='horizontal')
+        row = BoxLayout(orientation='horizontal', size_hint_min_y=30)
         text_input = False
 
         if self.origin and self.secondary:

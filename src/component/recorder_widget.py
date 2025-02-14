@@ -21,11 +21,10 @@ class RecorderWidget(BoxLayout):
         self.main_layout = BoxLayout(orientation='vertical')
 
         self.scroll_view = ScrollView()
-        self.list_layout = GridLayout(cols=1, size_hint_y='1dp', spacing=5)
-        self.list_layout.bind(minimum_height=self.list_layout.setter('height'))
+        self.list_layout = GridLayout(cols=1, size_hint_y='1dp', minimum_height='0.8dp', spacing=5)
         
         for file_name, sentence in self.audio_files.items():
-            row = BoxLayout(orientation="horizontal")
+            row = BoxLayout(orientation="horizontal", size_hint_min_y=30)
             row.add_widget(Label(text=sentence.replace('\\n', '\n'), size_hint_x=0.8, halign="left"))
             choose_button = Button(text="Choose", size_hint_x=0.2)
             choose_button.file_path = file_name
