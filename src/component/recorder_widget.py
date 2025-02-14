@@ -51,7 +51,7 @@ class RecorderWidget(BoxLayout):
         self.add_widget(self.main_layout)
     
     def load_audio_files(self):
-        audio_path = "assets/audio/parrot.txt"
+        audio_path = "assets/audio/articulation.txt"
         audio_files = {}
         try:
             with open(audio_path, "r", encoding="utf-8") as f:
