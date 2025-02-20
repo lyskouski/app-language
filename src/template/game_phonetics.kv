@@ -1,3 +1,5 @@
+#:import PhoneticsWidget component.phonetics_widget
+
 BoxLayout:
     orientation: 'vertical'
 
@@ -12,9 +14,35 @@ BoxLayout:
                 with_previous: True
                 on_release: app.next_screen('main')
                 title: 'Phonetics'
+            ActionButton:
+                text: 'Clear'
+                on_release: app.next_screen('game_phonetics')
+            ActionButton:
+                text: 'Shuffle'
+                on_release: app.load_and_shuffle_data()
 
-    Label:
-        text: 'Phonetics game is under construction!'
+    Accordion:
+        AccordionItem:
+            title: 'PL & RU'
+            collapse: False
+            BoxLayout:
+                PhoneticsWidget:
+                    origin: True
+                    secondary: True
+        AccordionItem:
+            title: 'PL -> PL'
+            collapse: True
+            BoxLayout:
+                PhoneticsWidget:
+                    origin: True
+                    secondary: False
+        AccordionItem:
+            title: 'PL -> RU'
+            collapse: True
+            BoxLayout:
+                PhoneticsWidget:
+                    origin: False
+                    secondary: True
 
     ActionBar:
         hidden: False if app.is_mobile else True
@@ -26,4 +54,10 @@ BoxLayout:
             ActionPrevious:
                 with_previous: True
                 on_release: app.next_screen('main')
-                title: 'Harmonica'
+                title: 'Phonetics'
+            ActionButton:
+                text: 'Clear'
+                on_release: app.next_screen('game_phonetics')
+            ActionButton:
+                text: 'Shuffle'
+                on_release: app.load_and_shuffle_data()

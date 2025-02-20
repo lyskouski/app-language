@@ -11,6 +11,7 @@ import kivy.resources
 
 # hack to avoid "not found"-exception after tlum.spec usage
 import component.harmonica_widget
+import component.phonetics_widget
 import component.recorder_widget
 
 from kivy.app import App
