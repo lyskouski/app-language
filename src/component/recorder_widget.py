@@ -61,7 +61,7 @@ class RecorderWidget(BoxLayout):
                         file_name, sentence = line.strip().split(":", 1)
                         audio_files[file_name.strip()] = sentence.strip()
         except FileNotFoundError:
-            print("Error: parrot.txt not found!")
+            print(f"Error: {audio_path} not found!")
         return audio_files
     
     def choose_sentence(self, instance):

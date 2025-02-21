@@ -4,3 +4,5 @@ __pycache__
 /windows/dist
 /android/build
 /android/.buildozer
+/linux/build
+/linux/dist
