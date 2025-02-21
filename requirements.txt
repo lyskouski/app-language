@@ -4,3 +4,5 @@ kivy_examples
 sounddevice
 soundfile
 pyinstaller
+buildozer
+cython
