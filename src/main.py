@@ -11,15 +11,16 @@ import kivy.resources
 import random
 import sys
 
-# hack to avoid "not found"-exception after tlum.spec usage
-import component.harmonica_widget
-import component.phonetics_widget
-import component.recorder_widget
+from component.dictionary_screen import DictionaryScreen
+from component.phonetics_screen import PhoneticsScreen
+from component.articulation_screen import ArticulationScreen
 
 from kivy.app import App
 from kivy.lang import Builder
+from kivy.clock import Clock
 from kivy.properties import BooleanProperty, ObjectProperty, StringProperty, ListProperty
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.utils import platform
 
 from kivy.base import EventLoop
@@ -36,6 +37,9 @@ kivy.resources.resource_add_path(os.path.dirname(current_dir))
 if getattr(sys, 'frozen', False):
     kivy.resources.resource_add_path(sys._MEIPASS)
 
+class MainScreen(Screen):
+    pass
+
 class RootWidget(BoxLayout):
     data = ObjectProperty([])
     path = StringProperty('assets/source.json')
@@ -43,7 +47,7 @@ class RootWidget(BoxLayout):
     def __init__(self, **kwargs):
         super(RootWidget, self).__init__(**kwargs)
         self.load_data()
-        self.bind(parent=lambda *a: self.populate_rv())
+        Clock.schedule_once(lambda dt: self.populate_rv())
 
     def load_data(self):
         source_path = kivy.resources.resource_find(self.path)
@@ -65,8 +69,21 @@ class MainApp(App):
     def build(self):
         if platform in ['android', 'ios']:
             self.is_mobile = True
-        return RootWidget()
-    
+        sm = ScreenManager()
+        sm.add_widget(MainScreen(name='main'))
+        Builder.load_file('template/dictionary_screen.kv')
+        sm.add_widget(DictionaryScreen(name='dictionary_screen'))
+        Builder.load_file('template/phonetics_screen.kv')
+        sm.add_widget(PhoneticsScreen(name='phonetics_screen'))
+        Builder.load_file('template/articulation_screen.kv')
+        sm.add_widget(ArticulationScreen(name='articulation_screen'))
+        sm.current = 'main'
+        return sm
+
+    def next_screen(self, screen_name):
+        self.root.current = screen_name
+        self.refresh_widgets()
+
     def init_store(self, data_path):
         if not data_path:
             data_path = self.store_path
@@ -93,13 +110,6 @@ class MainApp(App):
 
         except FileNotFoundError:
             self.store = []
-
-    def next_screen(self, screen):
-        kvPath = kivy.resources.resource_find(self.kv_directory + '/' + screen + '.kv')
-        Builder.unload_file(kvPath)
-        self.root.clear_widgets()
-        screen = Builder.load_file(kvPath)
-        self.root.add_widget(screen)
 
     def refresh_widgets(self):
         if not self.root:

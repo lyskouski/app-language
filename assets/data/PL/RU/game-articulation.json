@@ -1,5 +1,5 @@
 [{
     "text": "Говорение",
-    "route_path": "game_articulation",
+    "route_path": "articulation_screen",
     "logo": "assets/data/PL/RU/image/dictionary.jpg"
 }]

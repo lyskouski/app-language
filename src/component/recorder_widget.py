@@ -13,7 +13,7 @@ import soundfile as sf
 import threading
 
 class RecorderWidget(BoxLayout):
-    def on_kv_post(self, base_widget):
+    def load_data(self):
         self.recording = False
         self.selected_file = None
         self.audio_files = self.load_audio_files()
