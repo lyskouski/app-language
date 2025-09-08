@@ -31,13 +31,6 @@ if platform == "android":
     from android.permissions import request_permissions, Permission
     request_permissions([Permission.RECORD_AUDIO, Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE])
 
-kivy.resources.resource_add_path(os.getcwd())
-current_dir = os.path.dirname(os.path.abspath(__file__))
-kivy.resources.resource_add_path(current_dir)
-kivy.resources.resource_add_path(os.path.dirname(current_dir))
-if getattr(sys, 'frozen', False):
-    kivy.resources.resource_add_path(sys._MEIPASS)
-
 class MainScreen(Screen):
     pass
 
@@ -67,6 +60,18 @@ class MainApp(App):
     store = ListProperty([])
     store_path = StringProperty('')
     locale = StringProperty('')
+
+    def __init__(self, **kwargs):
+        super(MainApp, self).__init__(**kwargs)
+        home_dir = os.path.join(App.get_running_app().user_data_dir, ".terCAD", "app-language")
+        os.makedirs(home_dir, exist_ok=True)
+        kivy.resources.resource_add_path(home_dir)
+        kivy.resources.resource_add_path(os.getcwd())
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        kivy.resources.resource_add_path(current_dir)
+        kivy.resources.resource_add_path(os.path.dirname(current_dir))
+        if getattr(sys, 'frozen', False):
+            kivy.resources.resource_add_path(sys._MEIPASS)
 
     def _(self, key, locale):
         return labels.get(locale, labels.get('en', {})).get(key, '['+key+']')
