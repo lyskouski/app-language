@@ -1,0 +1,13 @@
+[{
+    "text": "Гармошка",
+    "route_path": "game_dictionary",
+    "logo": "assets/data/PL/RU/image/dictionary.jpg"
+},{
+    "text": "Гармошка на слух",
+    "route_path": "game_phonetics",
+    "logo": "assets/data/PL/RU/image/dictionary.jpg"
+},{
+    "text": "Говорение",
+    "route_path": "game_articulation",
+    "logo": "assets/data/PL/RU/image/dictionary.jpg"
+}]

@@ -1,0 +1,13 @@
+[{
+    "text": "BY-PL (Belarusian - Polish)",
+    "source": "assets/data/PL/BY/source.json",
+    "logo": "assets/images/error.png"
+},{
+    "text": "RU-PL (Russian - Polish)",
+    "source": "assets/data/PL/RU/source.json",
+    "logo": "assets/images/dictionary.jpg"
+},{
+    "text": "UA-PL (Ukrainian - Polish)",
+    "source": "assets/data/PL/UA/source.json",
+    "logo": "assets/images/error.png"
+}]

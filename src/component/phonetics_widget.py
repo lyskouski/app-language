@@ -25,7 +25,7 @@ class PhoneticsWidget(ScrollView):
         layout.bind(minimum_height=layout.setter("height"))
 
         app = App.get_running_app()
-        for origin, trans in app.data:
+        for origin, trans, _ in app.store:
             self.add_row(layout, origin, trans)
 
         self.add_widget(layout)
@@ -36,7 +36,7 @@ class PhoneticsWidget(ScrollView):
 
         listen_button = Button(text="Listen", on_press=self.play_audio)
         listen_button.origin_value = origin
-        listen_button.file_path = f"assets/audio/words/{origin}.mp3"
+        listen_button.file_path = f"assets/data/PL/audio/{origin}.mp3"
 
         if self.origin and self.secondary:
             row.add_widget(Label(text=origin))
@@ -68,7 +68,7 @@ class PhoneticsWidget(ScrollView):
     def __get_pair(self, instance, is_origin):
         key = instance.parent.children[3].origin_value.strip()
         app = App.get_running_app()
-        for origin, trans in app.data:
+        for origin, trans, _ in app.store:
             if origin == key or trans == key:
                 return origin if is_origin else trans
             

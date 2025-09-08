@@ -4,10 +4,12 @@
 # > pip install -r requirements.txt
 # > python ./src/main.py
 
+import json
+import os
 import kivy
+import kivy.resources
 import random
 import sys
-import kivy.resources
 
 # hack to avoid "not found"-exception after tlum.spec usage
 import component.harmonica_widget
@@ -15,9 +17,8 @@ import component.phonetics_widget
 import component.recorder_widget
 
 from kivy.app import App
-from kivy.clock import Clock
 from kivy.lang import Builder
-from kivy.properties import ObjectProperty, BooleanProperty, StringProperty, ListProperty
+from kivy.properties import BooleanProperty, ObjectProperty, StringProperty, ListProperty
 from kivy.uix.boxlayout import BoxLayout
 from kivy.utils import platform
 
@@ -28,51 +29,77 @@ if platform == "android":
     from android.permissions import request_permissions, Permission
     request_permissions([Permission.RECORD_AUDIO, Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE])
 
+kivy.resources.resource_add_path(os.getcwd())
+current_dir = os.path.dirname(os.path.abspath(__file__))
+kivy.resources.resource_add_path(current_dir)
+kivy.resources.resource_add_path(os.path.dirname(current_dir))
 if getattr(sys, 'frozen', False):
     kivy.resources.resource_add_path(sys._MEIPASS)
 
 class RootWidget(BoxLayout):
-    container = ObjectProperty(None)
+    data = ObjectProperty([])
+    path = StringProperty('assets/source.json')
+
+    def __init__(self, **kwargs):
+        super(RootWidget, self).__init__(**kwargs)
+        self.load_data()
+        self.bind(parent=lambda *a: self.populate_rv())
+
+    def load_data(self):
+        source_path = kivy.resources.resource_find(self.path)
+        if source_path and os.path.exists(source_path):
+            with open(source_path, "r", encoding="utf-8") as f:
+                self.data = json.load(f)
+        else:
+            self.data = []
+
+    def populate_rv(self):
+        self.ids.recycle_view.data = self.data
 
 class MainApp(App):
     kv_directory = StringProperty('template')
     is_mobile = BooleanProperty(False)
-    data = ListProperty([])
+    store = ListProperty([])
+    store_path = StringProperty('')
 
     def build(self):
         if platform in ['android', 'ios']:
             self.is_mobile = True
-        self.load_and_shuffle_data()
-        kvPath = kivy.resources.resource_find(self.kv_directory + '/main.kv')
-        return Builder.load_file(kvPath)
-
-    def next_screen(self, screen):
-        kvPath = kivy.resources.resource_find(self.kv_directory + '/' + screen + '.kv')
-        Builder.unload_file(kvPath)
-        self.root.container.clear_widgets()
-        screen = Builder.load_file(kvPath)
-        self.root.container.add_widget(screen)
-
-    def load_and_shuffle_data(self):
-        data_file = "assets/data/dictionary.txt"
+        return RootWidget()
+    
+    def init_store(self, data_path):
+        if not data_path:
+            data_path = self.store_path
         try:
-            with open(data_file, "r", encoding="utf-8") as f:
+            self.store_path = data_path
+            with open(data_path, "r", encoding="utf-8") as f:
                 lines = f.readlines()
 
             parsed_data = []
             for line in lines:
-                if ":" in line:
-                    origin, trans = line.strip().split(":", 1)
-                    origin, trans = origin.strip(), trans.strip()
-                    parsed_data.append((origin, trans))
+                if ";" in line:
+                    parts = [p.strip() for p in line.strip().split(";")]
+                    if len(parts) == 3:
+                        origin, trans, sound = parts
+                    elif len(parts) == 2:
+                        origin, trans = parts
+                        sound = ''
+                    else:
+                        continue
+                    parsed_data.append((origin, trans, sound))
 
             random.shuffle(parsed_data)
-            self.data = parsed_data[:25]
+            self.store = parsed_data[:25]
 
         except FileNotFoundError:
-            self.data = []
+            self.store = []
 
-        Clock.schedule_once(lambda dt: self.refresh_widgets())
+    def next_screen(self, screen):
+        kvPath = kivy.resources.resource_find(self.kv_directory + '/' + screen + '.kv')
+        Builder.unload_file(kvPath)
+        self.root.clear_widgets()
+        screen = Builder.load_file(kvPath)
+        self.root.add_widget(screen)
 
     def refresh_widgets(self):
         if not self.root:

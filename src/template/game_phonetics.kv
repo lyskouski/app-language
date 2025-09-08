@@ -19,7 +19,9 @@ BoxLayout:
                 on_release: app.next_screen('game_phonetics')
             ActionButton:
                 text: 'Shuffle'
-                on_release: app.load_and_shuffle_data()
+                on_release:
+                    app.init_store('')
+                    app.refresh_widgets()
 
     Accordion:
         AccordionItem:
@@ -60,4 +62,6 @@ BoxLayout:
                 on_release: app.next_screen('game_phonetics')
             ActionButton:
                 text: 'Shuffle'
-                on_release: app.load_and_shuffle_data()
+                on_release:
+                    app.init_store('')
+                    app.refresh_widgets()

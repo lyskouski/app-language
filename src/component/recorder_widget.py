@@ -51,22 +51,16 @@ class RecorderWidget(BoxLayout):
         self.add_widget(self.main_layout)
     
     def load_audio_files(self):
-        audio_path = "assets/audio/articulation.txt"
+        app = App.get_running_app()
         audio_files = {}
-        try:
-            with open(audio_path, "r", encoding="utf-8") as f:
-                lines = f.readlines()
-                for line in lines:
-                    if ":" in line:
-                        file_name, sentence = line.strip().split(":", 1)
-                        audio_files[file_name.strip()] = sentence.strip()
-        except FileNotFoundError:
-            print(f"Error: {audio_path} not found!")
+        for line in app.store:
+            key = line[2] if line[2] != '' else line[0] + '.mp3'
+            audio_files[key] = line[0]
         return audio_files
     
     def choose_sentence(self, instance):
         self.listen_button.disabled = False
-        self.listen_button.file_path = f"assets/audio/{instance.file_path}"
+        self.listen_button.file_path = f"assets/data/PL/audio/{instance.file_path}"
         self.status_label.text = f"Selected: {self.audio_files.get(instance.file_path, '')}"
     
     def toggle_recording(self, instance):

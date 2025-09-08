@@ -1,19 +1,54 @@
 RootWidget:
-    container: container
-    id: container
-    StackLayout:
-        orientation: 'tb-lr'
-        padding: 10
-        spacing: 5
-        Button:
-            text: "Phonetics"
-            size_hint: .2, .4
-            on_release: app.next_screen('game_phonetics')
-        Button:
-            text: "Articulation"
-            size_hint: .2, .4
-            on_release: app.next_screen('game_articulation')
-        Button:
-            text: "Dictionary"
-            size_hint: .2, .4
-            on_release: app.next_screen('game_dictionary')
+
+<RootWidget@BoxLayout>:
+    id: root_widget
+    orientation: "vertical"
+    Widget:
+        size_hint_y: dp(0.08)
+    RecycleView:
+        id: recycle_view
+        viewclass: "RootItemWidget"
+        RecycleBoxLayout:
+            default_size: None, dp(48)
+            default_size_hint: 1, None
+            size_hint_y: None
+            height: self.minimum_height
+            orientation: "vertical"
+    Widget:
+        size_hint_x: 1
+#    Button:
+#        size_hint_y: None
+#        text:'Create New'
+
+<RootItemWidget@BoxLayout>:
+    orientation: "horizontal"
+    text: ""
+    source: ""
+    logo: ""
+    store_path: ""
+    route_path: ""
+    Widget:
+        size_hint_x: dp(0.05)
+    Image:
+        size_hint_x: None
+        source: root.logo
+    Label:
+        text: root.text
+    Button:
+        text: "Play" if root.route_path else ""
+        disabled: False if root.route_path else True
+        opacity: 1.0 if root.route_path else 0
+        size_hint_x: dp(0.5) if root.route_path else dp(0.01)
+        on_release:
+            app.next_screen(root.route_path)
+    Button:
+        text: "Select"
+        opacity: 1.0 if not root.route_path else 0
+        size_hint_x: dp(0.5) if not root.route_path else 0
+        on_release:
+            if (root.store_path != ""): app.init_store(root.store_path)
+            app.root.path = root.source
+            app.root.load_data()
+            app.root.populate_rv()
+    Widget:
+        size_hint_x: dp(0.05)

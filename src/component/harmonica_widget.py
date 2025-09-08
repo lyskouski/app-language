@@ -21,7 +21,7 @@ class HarmonicaWidget(ScrollView):
         layout.bind(minimum_height=layout.setter("height"))
 
         app = App.get_running_app()
-        for origin, trans in app.data:
+        for origin, trans, _ in app.store:
             self.add_row(layout, origin, trans)
 
         self.add_widget(layout)
@@ -61,7 +61,7 @@ class HarmonicaWidget(ScrollView):
     def __get_pair(self, instance, is_origin):
         key = instance.parent.children[3].text.strip()
         app = App.get_running_app()
-        for origin, trans in app.data:
+        for origin, trans, _ in app.store:
             if origin == key or trans == key:
                 return origin if is_origin else trans
             
