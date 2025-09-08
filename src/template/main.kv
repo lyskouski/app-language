@@ -28,6 +28,7 @@
     logo: ""
     store_path: ""
     route_path: ""
+    locale: ""
     Widget:
         size_hint_x: dp(0.05)
     Image:
@@ -36,18 +37,19 @@
     Label:
         text: root.text
     Button:
-        text: "Play" if root.route_path else ""
+        text: app._("button_play", app.locale) if root.route_path else ""
         disabled: False if root.route_path else True
         opacity: 1.0 if root.route_path else 0
         size_hint_x: dp(0.5) if root.route_path else dp(0.01)
         on_release:
             app.next_screen(root.route_path)
     Button:
-        text: "Select"
+        text: app._("button_select", app.locale)
         opacity: 1.0 if not root.route_path else 0
         size_hint_x: dp(0.5) if not root.route_path else 0
         on_release:
             if (root.store_path != ""): app.init_store(root.store_path)
+            if (root.locale != ""): app.update_locale(root.locale)
             app.root.get_screen('main').ids.root_widget.path = root.source
             app.root.get_screen('main').ids.root_widget.load_data()
             app.root.get_screen('main').ids.root_widget.populate_rv()

@@ -14,6 +14,7 @@ import sys
 from component.dictionary_screen import DictionaryScreen
 from component.phonetics_screen import PhoneticsScreen
 from component.articulation_screen import ArticulationScreen
+from l18n.labels import labels
 
 from kivy.app import App
 from kivy.lang import Builder
@@ -65,6 +66,14 @@ class MainApp(App):
     is_mobile = BooleanProperty(False)
     store = ListProperty([])
     store_path = StringProperty('')
+    locale = StringProperty('')
+
+    def _(self, key, locale):
+        return labels.get(locale, labels.get('en', {})).get(key, '['+key+']')
+    
+    def update_locale(self, locale):
+        self.locale = locale
+        
 
     def build(self):
         if platform in ['android', 'ios']:
