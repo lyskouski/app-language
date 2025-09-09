@@ -1,0 +1,83 @@
+<MainScreen>:
+    RootWidget:
+        id: root_widget
+
+<RootWidget@BoxLayout>:
+    orientation: "vertical"
+    RecycleView:
+        id: breadcrumb_view
+        data: []
+        viewclass: "BreadcrumbWidget"
+        RecycleBoxLayout:
+            default_size: None, None
+            default_size_hint: None, None
+            size_hint_y: None
+            height: self.minimum_height
+            orientation: "horizontal"
+    Widget:
+        size_hint_y: dp(0.04)
+    RecycleView:
+        id: recycle_view
+        viewclass: "RootItemWidget"
+        RecycleBoxLayout:
+            default_size: None, dp(48)
+            default_size_hint: 1, None
+            size_hint_y: None
+            height: self.minimum_height
+            orientation: "vertical"
+    Widget:
+        size_hint_x: 1
+    BoxLayout:
+        orientation: "horizontal"
+        Widget:
+            size_hint_x: dp(0.02)
+        Button:
+            size_hint_y: None
+            opacity: 1.0 if app.store else 0
+            text: app._("button_update" if app.store else "button_add", app.locale)
+            on_release:
+                app.next_screen('store_update_screen')
+        Widget:
+            size_hint_x: dp(0.02)
+    Widget:
+        size_hint_y: dp(0.08)
+
+<RootItemWidget@BoxLayout>:
+    orientation: "horizontal"
+    text: ""
+    source: ""
+    logo: ""
+    store_path: ""
+    route_path: ""
+    locale: ""
+    Widget:
+        size_hint_x: dp(0.05)
+    Image:
+        size_hint_x: None
+        source: root.logo
+    Label:
+        text: root.text
+    Button:
+        text: app._('button_play', app.locale) if root.route_path else ""
+        disabled: False if root.route_path else True
+        opacity: 1.0 if root.route_path else 0
+        size_hint_x: dp(0.5) if root.route_path else dp(0.01)
+        on_release:
+            app.next_screen(root.route_path)
+    Button:
+        text: app._('button_select', app.locale)
+        opacity: 1.0 if not root.route_path else 0
+        size_hint_x: dp(0.5) if not root.route_path else 0
+        on_release:
+            app.root.get_screen('main_screen').ids.root_widget.update_data(root)
+    Widget:
+        size_hint_x: dp(0.05)
+
+<BreadcrumbWidget@BoxLayout>:
+    orientation: "horizontal"
+    text: ""
+    source: ""
+    Button:
+        text: root.text + ' / '
+        on_release:
+            app.root.get_screen('main_screen').ids.root_widget.load_breadcrumb(root.source)

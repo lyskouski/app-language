@@ -1,0 +1,22 @@
+[{
+    "text": "Частотный словарь",
+    "source": "assets/data/PL/RU/games.json",
+    "store_path": "assets/data/PL/RU/data/dictionary.csv",
+    "route_path": "",
+    "logo": "assets/data/PL/RU/image/dictionary.jpg",
+    "locale": "ru"
+}, {
+    "text": "Глаголы",
+    "source": "assets/data/PL/RU/games.json",
+    "store_path": "assets/data/PL/RU/data/verbs.csv",
+    "route_path": "",
+    "logo": "assets/data/PL/RU/image/verbs.jpg",
+    "locale": "ru"
+}, {
+    "text": "Скороговорки",
+    "source": "assets/data/PL/RU/game-articulation.json",
+    "store_path": "assets/data/PL/RU/data/articulation.csv",
+    "route_path": "",
+    "logo": "assets/data/PL/RU/image/articulation.jpg",
+    "locale": "ru"
+}]

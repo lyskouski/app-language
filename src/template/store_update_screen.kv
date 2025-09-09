@@ -1,0 +1,26 @@
+<StoreUpdateScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 10
+        spacing: 10
+        TextInput:
+            id: textarea
+            text: root.data
+            multiline: True
+            size_hint_y: 82
+        Widget:
+            size_hint_y: 0.5
+        BoxLayout:
+            orientation: "horizontal"
+            Widget:
+                size_hint_x: dp(0.01)
+            Button:
+                size_hint_y: 6
+                text: app._("button_save", app.locale)
+                on_release:
+                    root.save_data()
+                    app.next_screen('main_screen')
+            Widget:
+                size_hint_x: dp(0.01)
+        Widget:
+            size_hint_y: 0.5
