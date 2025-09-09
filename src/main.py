@@ -14,6 +14,7 @@ import sys
 from component.dictionary_screen import DictionaryScreen
 from component.phonetics_screen import PhoneticsScreen
 from component.articulation_screen import ArticulationScreen
+from component.store_update_screen import StoreUpdateScreen
 from l18n.labels import labels
 
 from kivy.app import App
@@ -63,7 +64,7 @@ class MainApp(App):
 
     def __init__(self, **kwargs):
         super(MainApp, self).__init__(**kwargs)
-        home_dir = os.path.join(App.get_running_app().user_data_dir, ".terCAD", "app-language")
+        home_dir = self.get_home_dir()
         os.makedirs(home_dir, exist_ok=True)
         kivy.resources.resource_add_path(home_dir)
         kivy.resources.resource_add_path(os.getcwd())
@@ -78,7 +79,9 @@ class MainApp(App):
     
     def update_locale(self, locale):
         self.locale = locale
-        
+
+    def get_home_dir(self):
+        return os.path.join(App.get_running_app().user_data_dir, ".terCAD", "app-language")
 
     def build(self):
         if platform in ['android', 'ios']:
@@ -91,6 +94,8 @@ class MainApp(App):
         sm.add_widget(PhoneticsScreen(name='phonetics_screen'))
         Builder.load_file('template/articulation_screen.kv')
         sm.add_widget(ArticulationScreen(name='articulation_screen'))
+        Builder.load_file('template/store_update_screen.kv')
+        sm.add_widget(StoreUpdateScreen(name='store_update_screen'))
         sm.current = 'main'
         return sm
 
@@ -103,9 +108,10 @@ class MainApp(App):
             data_path = self.store_path
         try:
             self.store_path = data_path
-            with open(data_path, "r", encoding="utf-8") as f:
+            path = kivy.resources.resource_find(data_path)
+            lines = []
+            with open(path, "r", encoding="utf-8") as f:
                 lines = f.readlines()
-
             parsed_data = []
             for line in lines:
                 if ";" in line:
