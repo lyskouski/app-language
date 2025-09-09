@@ -41,7 +41,8 @@ class MainApp(App):
         super(MainApp, self).__init__(**kwargs)
         home_dir = self.get_home_dir()
         os.makedirs(home_dir, exist_ok=True)
-        kivy.resources.resource_add_path(home_dir)
+        # FIXME: Priorities are not working for additional DIR...
+        kivy.resources.resource_paths.insert(0, home_dir)
         kivy.resources.resource_add_path(os.getcwd())
         current_dir = os.path.dirname(os.path.abspath(__file__))
         kivy.resources.resource_add_path(current_dir)
@@ -86,6 +87,8 @@ class MainApp(App):
         try:
             self.store_path = data_path
             path = kivy.resources.resource_find(data_path)
+            print(kivy.resources.resource_paths)
+            print('PATH:', path)
             lines = []
             with open(path, "r", encoding="utf-8") as f:
                 lines = f.readlines()
