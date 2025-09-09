@@ -18,7 +18,7 @@ class HarmonicaWidget(ScrollView):
         self.clear_widgets()
 
         layout = GridLayout(cols=1, size_hint_y='2dp', spacing=5)
-        layout.bind(minimum_height=layout.setter("height"))
+        layout.bind(minimum_height=layout.setter('height'))
 
         app = App.get_running_app()
         for origin, trans, _ in app.store:
@@ -37,20 +37,20 @@ class HarmonicaWidget(ScrollView):
         elif self.origin and not self.secondary:
             row.add_widget(Label(text=origin))
             # row.add_widget(TextInput(text=trans))
-            text_input = TextInput(text="", multiline=False)
+            text_input = TextInput(text='', multiline=False)
             text_input.bind(on_text_validate=self.validate_trans)
             row.add_widget(text_input)
 
         elif not self.origin and self.secondary:
             row.add_widget(Label(text=trans))
             # row.add_widget(TextInput(text=origin))
-            text_input = TextInput(text="", multiline=False)
+            text_input = TextInput(text='', multiline=False)
             text_input.bind(on_text_validate=self.validate_origin)
             row.add_widget(text_input)
 
         if text_input:
-            success_icon = Image(source="assets/images/success.png", size_hint=(None, None), size=(30, 30), opacity=0)
-            error_icon = Image(source="assets/images/error.png", size_hint=(None, None), size=(30, 30), opacity=0)
+            success_icon = Image(source='assets/images/success.png', size_hint=(None, None), size=(30, 30), opacity=0)
+            error_icon = Image(source='assets/images/error.png', size_hint=(None, None), size=(30, 30), opacity=0)
             row.add_widget(success_icon)
             row.add_widget(error_icon)
             text_input.success_icon = success_icon

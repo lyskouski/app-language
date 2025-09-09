@@ -22,7 +22,7 @@ class PhoneticsWidget(ScrollView):
         self.clear_widgets()
 
         layout = GridLayout(cols=1, size_hint_y='2dp', spacing=5)
-        layout.bind(minimum_height=layout.setter("height"))
+        layout.bind(minimum_height=layout.setter('height'))
 
         app = App.get_running_app()
         for origin, trans, _ in app.store:
@@ -31,10 +31,11 @@ class PhoneticsWidget(ScrollView):
         self.add_widget(layout)
 
     def add_row(self, layout, origin, trans):
+        app = App.get_running_app()
         row = BoxLayout(orientation='horizontal', size_hint_min_y=30)
         text_input = False
 
-        listen_button = Button(text="Listen", on_press=self.play_audio)
+        listen_button = Button(text=app._('button_listen', app.locale), on_press=self.play_audio)
         listen_button.origin_value = origin
         listen_button.file_path = f"assets/data/PL/audio/{origin}.mp3"
 
@@ -45,19 +46,19 @@ class PhoneticsWidget(ScrollView):
 
         elif self.origin and not self.secondary:
             row.add_widget(listen_button)
-            text_input = TextInput(text="", multiline=False)
+            text_input = TextInput(text='', multiline=False)
             text_input.bind(on_text_validate=self.validate_origin)
             row.add_widget(text_input)
 
         elif not self.origin and self.secondary:
             row.add_widget(listen_button)
-            text_input = TextInput(text="", multiline=False)
+            text_input = TextInput(text='', multiline=False)
             text_input.bind(on_text_validate=self.validate_trans)
             row.add_widget(text_input)
 
         if text_input:
-            success_icon = Image(source="assets/images/success.png", size_hint=(None, None), size=(30, 30), opacity=0)
-            error_icon = Image(source="assets/images/error.png", size_hint=(None, None), size=(30, 30), opacity=0)
+            success_icon = Image(source='assets/images/success.png', size_hint=(None, None), size=(30, 30), opacity=0)
+            error_icon = Image(source='assets/images/error.png', size_hint=(None, None), size=(30, 30), opacity=0)
             row.add_widget(success_icon)
             row.add_widget(error_icon)
             text_input.success_icon = success_icon

@@ -14,6 +14,7 @@ import threading
 
 class RecorderWidget(BoxLayout):
     def load_data(self):
+        app = App.get_running_app()
         self.recording = False
         self.selected_file = None
         self.audio_files = self.load_audio_files()
@@ -24,9 +25,9 @@ class RecorderWidget(BoxLayout):
         self.list_layout = GridLayout(cols=1, size_hint_y='1dp', minimum_height='0.8dp', spacing=5)
         
         for file_name, sentence in self.audio_files.items():
-            row = BoxLayout(orientation="horizontal", size_hint_min_y=30)
-            row.add_widget(Label(text=sentence.replace('\\n', '\n'), size_hint_x=0.8, halign="left"))
-            choose_button = Button(text="Choose", size_hint_x=0.2)
+            row = BoxLayout(orientation='horizontal', size_hint_min_y=30)
+            row.add_widget(Label(text=sentence.replace('\\n', '\n'), size_hint_x=0.8, halign='left'))
+            choose_button = Button(text=app._('button_choose', app.locale), size_hint_x=0.2)
             choose_button.file_path = file_name
             choose_button.bind(on_release=self.choose_sentence)
             row.add_widget(choose_button)
@@ -36,11 +37,11 @@ class RecorderWidget(BoxLayout):
         self.main_layout.add_widget(self.scroll_view)
 
         self.control_layout = BoxLayout(size_hint_y=None, height=50)
-        self.listen_button = Button(text="Listen", on_press=self.play_audio)
+        self.listen_button = Button(text=app._('button_listen', app.locale), on_press=self.play_audio)
         self.listen_button.disabled = True
-        self.status_label = Label(text="Select a sentence", size_hint_y='0.2dp')
-        self.record_button = Button(text="Record", on_press=self.toggle_recording)
-        self.play_button = Button(text="Play", on_press=self.play_audio, disabled=True)
+        self.status_label = Label(text=app._('status_select_sentence', app.locale), size_hint_y='0.2dp')
+        self.record_button = Button(text=app._('button_record', app.locale), on_press=self.toggle_recording)
+        self.play_button = Button(text=app._('button_play', app.locale), on_press=self.play_audio, disabled=True)
 
         self.control_layout.add_widget(self.listen_button)
         self.main_layout.add_widget(self.status_label)
@@ -64,24 +65,26 @@ class RecorderWidget(BoxLayout):
         self.status_label.text = f"Selected: {self.audio_files.get(instance.file_path, '')}"
     
     def toggle_recording(self, instance):
+        app = App.get_running_app()
         if not self.recording:
             self.recording = True
-            self.status_label.text = "Recording..."
-            self.record_button.text = "Stop Recording"
+            self.status_label.text = app._('status_recording', app.locale)
+            self.record_button.text = app._('button_stop_recording', app.locale)
             self.play_button.disabled = True
 
             self.audio_thread = threading.Thread(target=self.record_audio)
             self.audio_thread.start()
         else:
             self.recording = False
-            self.status_label.text = "Saving..."
-            self.record_button.text = "Processing"
+            self.status_label.text = app._('status_saving', app.locale)
+            self.record_button.text = app._('button_processing', app.locale)
             self.record_button.disabled = True
     
-    def record_audio(self):       
+    def record_audio(self):
+        app = App.get_running_app()
         fs = 44100
         max_duration = 15
-        recorded_file = os.path.join(App.get_running_app().user_data_dir, "recorded_audio.wav")
+        recorded_file = os.path.join(app.get_user_data_dir(), 'recorded_audio.wav')
         self.play_button.file_path = recorded_file
 
         buffer = []
@@ -97,12 +100,13 @@ class RecorderWidget(BoxLayout):
 
         self.play_button.disabled = False
         self.record_button.disabled = False
-        self.status_label.text = "Recording stopped"
-        self.record_button.text = "Record"
-    
+        self.status_label.text = app._('status_recording_stopped', app.locale)
+        self.record_button.text = app._('button_record', app.locale)
+
     def play_audio(self, instance):
+        app = App.get_running_app()
         if os.path.exists(instance.file_path):
             music = MusicSDL2(source=instance.file_path)
             music.play()
         else:
-            self.status_label.text = "Error: No recorded file found"
+            self.status_label.text = app._('error_not_found', app.locale)

@@ -14,12 +14,12 @@
                 ActionPrevious:
                     with_previous: True
                     on_release: app.next_screen('main_screen')
-                    title: 'Phonetics'
+                    title: app._('game_phonetics', app.locale)
                 ActionButton:
-                    text: 'Clear'
+                    text: app._('button_clear', app.locale)
                     on_release: app.next_screen('phonetics_screen')
                 ActionButton:
-                    text: 'Shuffle'
+                    text: app._('button_shuffle', app.locale)
                     on_release:
                         app.init_store('')
                         app.refresh_widgets()
@@ -57,12 +57,12 @@
                 ActionPrevious:
                     with_previous: True
                     on_release: app.next_screen('main_screen')
-                    title: 'Phonetics'
+                    title: app._('game_phonetics', app.locale)
                 ActionButton:
-                    text: 'Clear'
+                    text: app._('button_clear', app.locale)
                     on_release: app.next_screen('phonetics_screen')
                 ActionButton:
-                    text: 'Shuffle'
+                    text: app._('button_shuffle', app.locale)
                     on_release:
                         app.init_store('')
                         app.refresh_widgets()

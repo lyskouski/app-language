@@ -12,7 +12,7 @@ class StoreUpdateScreen(Screen):
         app = App.get_running_app()
         path = kivy.resources.resource_find(app.store_path)
         lines = []
-        with open(path, "r", encoding="utf-8") as f:
+        with open(path, 'r', encoding='utf-8') as f:
             lines = f.readlines()
         self.data = ''.join(lines)
 
@@ -20,6 +20,6 @@ class StoreUpdateScreen(Screen):
         app = App.get_running_app()
         path = os.path.join(app.get_home_dir(), app.store_path)
         os.makedirs(os.path.dirname(path), exist_ok=True)
-        with open(path, "w", encoding="utf-8") as f:
+        with open(path, 'w', encoding='utf-8') as f:
             f.write(self.data)
         app.init_store(app.store_path)

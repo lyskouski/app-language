@@ -14,7 +14,7 @@
                 ActionPrevious:
                     with_previous: True
                     on_release: app.next_screen('main_screen')
-                    title: 'Articulation'
+                    title: app._('game_articulation', app.locale)
 
         RecorderWidget:
             orientation: 'horizontal'
@@ -31,4 +31,4 @@
                 ActionPrevious:
                     with_previous: True
                     on_release: app.next_screen('main_screen')
-                    title: 'Articulation'
+                    title: app._('game_articulation', app.locale)
