@@ -4,8 +4,18 @@
 
 <RootWidget@BoxLayout>:
     orientation: "vertical"
+    RecycleView:
+        id: breadcrumb_view
+        data: []
+        viewclass: "BreadcrumbWidget"
+        RecycleBoxLayout:
+            default_size: None, None
+            default_size_hint: None, None
+            size_hint_y: None
+            height: self.minimum_height
+            orientation: "horizontal"
     Widget:
-        size_hint_y: dp(0.08)
+        size_hint_y: dp(0.04)
     RecycleView:
         id: recycle_view
         viewclass: "RootItemWidget"
@@ -48,21 +58,26 @@
     Label:
         text: root.text
     Button:
-        text: app._("button_play", app.locale) if root.route_path else ""
+        text: app._('button_play', app.locale) if root.route_path else ""
         disabled: False if root.route_path else True
         opacity: 1.0 if root.route_path else 0
         size_hint_x: dp(0.5) if root.route_path else dp(0.01)
         on_release:
             app.next_screen(root.route_path)
     Button:
-        text: app._("button_select", app.locale)
+        text: app._('button_select', app.locale)
         opacity: 1.0 if not root.route_path else 0
         size_hint_x: dp(0.5) if not root.route_path else 0
         on_release:
-            if (root.store_path != ""): app.init_store(root.store_path)
-            if (root.locale != ""): app.update_locale(root.locale)
-            app.root.get_screen('main_screen').ids.root_widget.path = root.source
-            app.root.get_screen('main_screen').ids.root_widget.load_data()
-            app.root.get_screen('main_screen').ids.root_widget.populate_rv()
+            app.root.get_screen('main_screen').ids.root_widget.update_data(root)
     Widget:
         size_hint_x: dp(0.05)
+
+<BreadcrumbWidget@BoxLayout>:
+    orientation: "horizontal"
+    text: ""
+    source: ""
+    Button:
+        text: root.text + ' / '
+        on_release:
+            app.root.get_screen('main_screen').ids.root_widget.load_breadcrumb(root.source)

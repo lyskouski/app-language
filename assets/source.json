@@ -1,16 +1,19 @@
 [{
     "text": "BY-PL (Belarusian - Polish)",
     "source": "assets/data/PL/BY/source.json",
+    "route_path": "",
     "logo": "assets/images/error.png",
     "locale": "be"
 },{
     "text": "RU-PL (Russian - Polish)",
     "source": "assets/data/PL/RU/source.json",
+    "route_path": "",
     "logo": "assets/images/dictionary.jpg",
     "locale": "ru"
 },{
     "text": "UK-PL (Ukrainian - Polish)",
     "source": "assets/data/PL/UK/source.json",
+    "route_path": "",
     "logo": "assets/images/error.png",
     "locale": "uk"
 }]
