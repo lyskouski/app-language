@@ -34,7 +34,7 @@ Native speakers (and translators) are welcomed to improve our translations since
 with an assistance of automation tools ([DeepL](https://www.deepl.com/translator), [Linguee](https://www.linguee.com/), 
 and [Google Translate](https://translate.google.com/)). 
 
-Check [Localization Details](./lib/l10n/README.md).
+Check [Localization Details](./src/l10n/).
 
 ## Outreach
 
