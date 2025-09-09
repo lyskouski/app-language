@@ -4,7 +4,6 @@
 # > pip install -r requirements.txt
 # > python ./src/main.py
 
-import json
 import os
 import kivy
 import kivy.resources
@@ -20,7 +19,7 @@ from l18n.labels import labels
 
 from kivy.app import App
 from kivy.lang import Builder
-from kivy.properties import BooleanProperty, ObjectProperty, StringProperty, ListProperty
+from kivy.properties import BooleanProperty, StringProperty, ListProperty
 from kivy.uix.screenmanager import ScreenManager
 from kivy.utils import platform
 
@@ -63,16 +62,17 @@ class MainApp(App):
         if platform in ['android', 'ios']:
             self.is_mobile = True
         sm = ScreenManager()
-        Builder.load_file('template/main_screen.kv')
-        sm.add_widget(MainScreen(name='main_screen'))
-        Builder.load_file('template/dictionary_screen.kv')
-        sm.add_widget(DictionaryScreen(name='dictionary_screen'))
-        Builder.load_file('template/phonetics_screen.kv')
-        sm.add_widget(PhoneticsScreen(name='phonetics_screen'))
-        Builder.load_file('template/articulation_screen.kv')
-        sm.add_widget(ArticulationScreen(name='articulation_screen'))
-        Builder.load_file('template/store_update_screen.kv')
-        sm.add_widget(StoreUpdateScreen(name='store_update_screen'))
+        screens = [
+            (MainScreen, 'main_screen'),
+            (DictionaryScreen, 'dictionary_screen'),
+            (PhoneticsScreen, 'phonetics_screen'),
+            (ArticulationScreen, 'articulation_screen'),
+            (StoreUpdateScreen, 'store_update_screen'),
+        ]
+        for cls, name in screens:
+            path = kivy.resources.resource_find(f'template/{name}.kv')
+            Builder.load_file(path)
+            sm.add_widget(cls(name=name))
         sm.current = 'main_screen'
         return sm
 
