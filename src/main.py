@@ -11,6 +11,7 @@ import kivy.resources
 import random
 import sys
 
+from component.main_screen import MainScreen
 from component.dictionary_screen import DictionaryScreen
 from component.phonetics_screen import PhoneticsScreen
 from component.articulation_screen import ArticulationScreen
@@ -19,10 +20,8 @@ from l18n.labels import labels
 
 from kivy.app import App
 from kivy.lang import Builder
-from kivy.clock import Clock
 from kivy.properties import BooleanProperty, ObjectProperty, StringProperty, ListProperty
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.screenmanager import ScreenManager, Screen
+from kivy.uix.screenmanager import ScreenManager
 from kivy.utils import platform
 
 from kivy.base import EventLoop
@@ -31,29 +30,6 @@ EventLoop.ensure_window()
 if platform == "android":
     from android.permissions import request_permissions, Permission
     request_permissions([Permission.RECORD_AUDIO, Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE])
-
-class MainScreen(Screen):
-    pass
-
-class RootWidget(BoxLayout):
-    data = ObjectProperty([])
-    path = StringProperty('assets/source.json')
-
-    def __init__(self, **kwargs):
-        super(RootWidget, self).__init__(**kwargs)
-        self.load_data()
-        Clock.schedule_once(lambda dt: self.populate_rv())
-
-    def load_data(self):
-        source_path = kivy.resources.resource_find(self.path)
-        if source_path and os.path.exists(source_path):
-            with open(source_path, "r", encoding="utf-8") as f:
-                self.data = json.load(f)
-        else:
-            self.data = []
-
-    def populate_rv(self):
-        self.ids.recycle_view.data = self.data
 
 class MainApp(App):
     kv_directory = StringProperty('template')
@@ -87,7 +63,8 @@ class MainApp(App):
         if platform in ['android', 'ios']:
             self.is_mobile = True
         sm = ScreenManager()
-        sm.add_widget(MainScreen(name='main'))
+        Builder.load_file('template/main_screen.kv')
+        sm.add_widget(MainScreen(name='main_screen'))
         Builder.load_file('template/dictionary_screen.kv')
         sm.add_widget(DictionaryScreen(name='dictionary_screen'))
         Builder.load_file('template/phonetics_screen.kv')
@@ -96,7 +73,7 @@ class MainApp(App):
         sm.add_widget(ArticulationScreen(name='articulation_screen'))
         Builder.load_file('template/store_update_screen.kv')
         sm.add_widget(StoreUpdateScreen(name='store_update_screen'))
-        sm.current = 'main'
+        sm.current = 'main_screen'
         return sm
 
     def next_screen(self, screen_name):
