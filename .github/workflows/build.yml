@@ -54,11 +54,12 @@ jobs:
           Copy-Item -Path "..\assets\*" -Destination ".\dist\assets\" -Recurse
           Copy-Item -Path "AppxManifest.xml" -Destination "dist"
 
-      - name: Update Version
-        shell: powershell
-        run: |
-          $manifestPath = "windows\dist\AppxManifest.xml"
-          (Get-Content $manifestPath -Raw) -replace 'Version="[^"]+"', "Version=""${{ needs.release.outputs.version }}.${{ needs.release.outputs.build_number }}""" | Set-Content $manifestPath -Encoding utf8
+## MakeAppx : error: 0x80080204 - The specified package format is not valid: The package manifest is not valid.
+#      - name: Update Version
+#        shell: powershell
+#        run: |
+#          $manifestPath = "windows\dist\AppxManifest.xml"
+#          (Get-Content $manifestPath -Raw) -replace 'Version="[^"]+"', "Version=""${{ needs.release.outputs.version }}.${{ needs.release.outputs.build_number }}""" | Set-Content $manifestPath -Encoding utf8
 
       # Generate ZIP for Artifacts
       - name: Compress Windows Package
