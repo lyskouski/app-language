@@ -17,6 +17,12 @@ from component.articulation_screen import ArticulationScreen
 from component.store_update_screen import StoreUpdateScreen
 from l18n.labels import labels
 
+## Load all widgets to avoid:
+# AttributeError: module 'component' has no attribute 'recorder_widget'
+import component.harmonica_widget
+import component.phonetics_widget
+import component.recorder_widget
+
 from kivy.app import App
 from kivy.lang import Builder
 from kivy.properties import BooleanProperty, StringProperty, ListProperty

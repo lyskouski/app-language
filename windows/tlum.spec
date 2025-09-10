@@ -1,4 +1,19 @@
-# python -m PyInstaller tlum.spec
+# Build Windows application:
+# > cd windows
+# > python -m PyInstaller tlum.spec
+# > mkdir dist/assets
+# > xcopy "./../assets/*" "./dist/assets/" /E /I /Y
+# > cp AppxManifest.xml dist
+# > choco install windows-sdk-10.0 -y
+# # > winget install "MSIX Packaging Tool" --disable-interactivity
+# > makeappx pack /d "dist" /p "tlum.msix"
+# # For the case of not being recognized, use:
+# # > $SdkPath = Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\bin\" -Directory |
+#       Sort-Object Name -Descending |
+#       Select-Object -First 1
+#     $MakeAppx = Join-Path $SdkPath.FullName "x64\makeappx.exe"
+# # It would be something like:
+# # &"C:/Program Files (x86)/Windows Kits/10/bin/10.0.22621.0/x64/makeappx.exe" pack /d "dist" /p "tlum.msix"
 
 # -*- mode: python ; coding: utf-8 -*-
 from kivy_deps import sdl2, glew, angle, gstreamer
@@ -10,6 +25,7 @@ a = Analysis(
     binaries=collect_dynamic_libs('kivy'),
     datas=[
         ("..\\src\\component\\*.py","component"),
+        ("..\\src\\l18n\\*.py","l18n"),
         ("..\\src\\template\\*.kv","template"),
     ],
     hiddenimports=['kivy.core.audio.audio_gstplayer'],
