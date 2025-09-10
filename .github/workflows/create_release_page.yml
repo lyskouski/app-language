@@ -41,7 +41,7 @@ jobs:
       # TODO: Replace "echo" with a proper changelog generator
       - name: Prepare Release Notes
         run: |
-          echo. 2>release_notes.log
+          : > release_notes.log
           echo "RELEASE_NOTES<<EOF" >> $GITHUB_ENV
           while IFS= read -r line; do
             echo "$line" >> $GITHUB_ENV
