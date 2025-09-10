@@ -1,0 +1,132 @@
+name: Project Release Artifacts
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    uses: ./.github/workflows/create_release_page.yml
+    secrets: inherit
+    with:
+      draft: false
+
+  build:
+    name: Create ${{ matrix.target }} build
+    runs-on: ${{ matrix.os }}
+    needs: release
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [Windows]
+        include:
+          - os: windows-latest
+            target: Windows
+            build_path: windows/dist
+            asset_extension: .zip
+            asset_content_type: application/zip
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Create venv
+        shell: powershell
+        run: |
+          python -m venv kivy_venv
+          $env:VENV_ACTIVATE = "kivy_venv\Scripts\Activate.ps1"
+          Write-Host "VENV_ACTIVATE=$env:VENV_ACTIVATE" >> $env:GITHUB_ENV
+
+      - name: Install requirements
+        shell: powershell
+        run: |
+          & $env:VENV_ACTIVATE
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+# Windows
+      # Generate EXE
+      - name: Build executable
+        shell: powershell
+        run: |
+          & $env:VENV_ACTIVATE
+          cd windows
+          python -m PyInstaller tlum.spec
+          New-Item -ItemType Directory -Force -Path dist/assets
+          Copy-Item -Path "..\assets\*" -Destination ".\dist\assets\" -Recurse
+          Copy-Item -Path "AppxManifest.xml" -Destination "dist"
+
+      - name: Update Version
+        shell: powershell
+        run: |
+          $manifestPath = "windows\dist\AppxManifest.xml"
+          (Get-Content $manifestPath) -replace 'Version="[^"]+"', "Version=`"${{ needs.release.outputs.version }}.${{ needs.release.outputs.build_number }}`"" | Set-Content $manifestPath
+
+      # Generate ZIP for Artifacts
+      - name: Compress Windows Package
+        if: matrix.target == 'Windows'
+        run: compress-archive -Path * -DestinationPath ${env:GITHUB_WORKSPACE}/tlum_${{ matrix.target }}${{ matrix.asset_extension }}
+        working-directory: ${{ matrix.build_path }}
+
+      # Generate MSIX
+      - name: Install Chocolatey
+        if: matrix.target == 'Windows'
+        shell: powershell
+        run: |
+          Set-ExecutionPolicy Bypass -Scope Process -Force
+          [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
+          iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+
+      - name: Verify Chocolatey
+        if: matrix.target == 'Windows'
+        shell: powershell
+        run: choco -v
+
+      - name: Install Windows 10 SDK
+        if: matrix.target == 'Windows'
+        shell: powershell
+        run: choco install windows-sdk-10.0 -y --ignore-checksums
+
+      - name: Locate Make Appx
+        if: matrix.target == 'Windows'
+        id: find_makeappx
+        shell: powershell
+        run: |
+          $makeappx = Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\bin" -Recurse -Filter makeappx.exe | Select-Object -First 1 -ExpandProperty FullName
+          if (-not $makeappx) { throw "makeappx.exe not found!" }
+          echo "Found makeappx.exe at $makeappx"
+          echo "MAKEAPPX=$makeappx" >> $env:GITHUB_ENV
+
+      - name: Package Application
+        if: matrix.target == 'Windows'
+        shell: powershell
+        run: |
+          & "${{ env.MAKEAPPX }}" pack /d "${{ matrix.build_path }}" /p "${{ matrix.build_path }}/tlum.msix"
+
+      # Publish to Microsoft Store
+      - name: Setup MS Store CLI
+        if: matrix.target == 'Windows'
+        uses: microsoft/setup-msstore-cli@ec39acd1144351ab7a9d8d25e12bf6fd1ba03150
+
+      - name: Publish MSIX to the Microsoft Store
+        if: matrix.target == 'Windows'
+        run: |
+          msstore reconfigure --tenantId ${{ secrets.WINDOWS_TENANT_ID }} --clientId ${{ secrets.WINDOWS_CLIENT_ID }} --clientSecret ${{ secrets.WINDOWS_SECRET }} --sellerId ${{ secrets.WINDOWS_SELLER_ID }}
+          msstore publish -i ${{ matrix.build_path }}  || echo "Publishing failed since replaced build in review state."
+
+#
+      - name: Upload ${{ matrix.target }} Artifact
+        id: upload_release_asset
+        uses: actions/upload-release-asset@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.release.outputs.upload_url }}
+          asset_path: ./tlum_${{ matrix.target }}${{ matrix.asset_extension }}
+          asset_name: tlum_${{ matrix.target }}${{ matrix.asset_extension }}
+          asset_content_type: ${{ matrix.asset_content_type }}
