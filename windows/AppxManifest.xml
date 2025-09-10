@@ -28,7 +28,7 @@
   </Resources>
 
   <Applications>
-    <Application Id="9NMKX9HVSVBP"
+    <Application Id="Tlum"
                  Executable="tlum.exe"
                  EntryPoint="Windows.FullTrustApplication">
       <uap:VisualElements
