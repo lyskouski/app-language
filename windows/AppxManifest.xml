@@ -6,7 +6,7 @@
   IgnorableNamespaces="uap rescap">
 
   <Identity
-    Name="com.tercad.tlum"
+    Name="Tlum"
     Publisher="CN=78144012-EC6A-4BE8-97BF-A392EF55482E"
     Version="0.0.1.10" />
 
@@ -28,7 +28,7 @@
   </Resources>
 
   <Applications>
-    <Application Id="Tlum"
+    <Application Id="App"
                  Executable="tlum.exe"
                  EntryPoint="Windows.FullTrustApplication">
       <uap:VisualElements
