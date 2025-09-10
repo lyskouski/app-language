@@ -9,6 +9,8 @@ jobs:
   release:
     uses: ./.github/workflows/create_release_page.yml
     secrets: inherit
+    permissions:
+      contents: write
     with:
       draft: false
 
