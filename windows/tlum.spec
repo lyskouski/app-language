@@ -19,6 +19,9 @@
 from kivy_deps import sdl2, glew, angle, gstreamer
 from PyInstaller.utils.hooks import collect_dynamic_libs
 
+import os
+os.environ['KIVY_GL_BACKEND'] = 'angle_sdl2'
+
 a = Analysis(
     ['..\\src\\main.py'],
     pathex=['.'],
@@ -31,7 +34,7 @@ a = Analysis(
     hiddenimports=['kivy.core.audio.audio_gstplayer'],
     hookspath=[],
     hooksconfig={},
-    runtime_hooks=[],
+    runtime_hooks=['..\\src\\set_kivy_backend.py'],
     excludes=[],
     noarchive=False,
     optimize=0,
@@ -43,7 +46,7 @@ exe = EXE(
     a.scripts,
     a.binaries,
     a.datas,
-    *[Tree(p) for p in (sdl2.dep_bins + glew.dep_bins)],
+    *[Tree(p) for p in (sdl2.dep_bins + glew.dep_bins + angle.dep_bins)],
     [],
     name='tlum',
     debug=False,
