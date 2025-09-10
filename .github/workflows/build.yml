@@ -37,17 +37,9 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Create venv
-        shell: powershell
-        run: |
-          python -m venv kivy_venv
-          $env:VENV_ACTIVATE = "kivy_venv\Scripts\Activate.ps1"
-          Write-Host "VENV_ACTIVATE=$env:VENV_ACTIVATE" >> $env:GITHUB_ENV
-
       - name: Install requirements
         shell: powershell
         run: |
-          & $env:VENV_ACTIVATE
           pip install --upgrade pip
           pip install -r requirements.txt
 
@@ -56,7 +48,6 @@ jobs:
       - name: Build executable
         shell: powershell
         run: |
-          & $env:VENV_ACTIVATE
           cd windows
           python -m PyInstaller tlum.spec
           New-Item -ItemType Directory -Force -Path dist/assets
