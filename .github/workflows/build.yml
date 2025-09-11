@@ -58,7 +58,7 @@ jobs:
         shell: powershell
         run: |
           $manifestPath = "windows\dist\AppxManifest.xml"
-          (Get-Content $manifestPath -Raw) -replace '(<Identity[^>]*\sVersion=")[^"]+(")', "`${1}${{ needs.release.outputs.version }}.${{ needs.release.outputs.build_number }}`${2}" | Set-Content $manifestPath -Encoding utf8
+          (Get-Content $manifestPath -Raw) -replace '(<Identity[^>]*\sVersion=")[^"]+(")', "`${1}${{ needs.release.outputs.version }}.0`${2}" | Set-Content $manifestPath -Encoding utf8
 
         # Generate ZIP for Artifacts
       - name: Compress Windows Package
