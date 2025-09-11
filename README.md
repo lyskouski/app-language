@@ -4,6 +4,11 @@
 **Tlum** - open-source cross-platform language learning application leverages the power of natural language processing to 
 pinpoint pronunciation gaps, computer vision to enhance articulation, and machine learning to boost vocabulary proficiency.
 
+| Type                     | Alpha Version         | Pre-Release                   | Release                       |
+| ------------------------ | ----------------------| ----------------------------- | ----------------------------- |
+| ![Windows](./docs/design-flow/icons/windows.png) Windows (Partner Center) | [tlum_Windows.zip](https://github.com/lyskouski/app-language/releases/latest) | Not defined | [![Microsoft Store](./docs/design-flow/badges/windows.png)](https://apps.microsoft.com/detail/9nmkx9hvsvbp) |
+
+
 ## Functionality
 
 TBD
