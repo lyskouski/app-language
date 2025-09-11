@@ -110,7 +110,8 @@ jobs:
         if: matrix.target == 'Windows'
         run: |
           msstore reconfigure --tenantId ${{ secrets.WINDOWS_TENANT_ID }} --clientId ${{ secrets.WINDOWS_CLIENT_ID }} --clientSecret ${{ secrets.WINDOWS_SECRET }} --sellerId ${{ secrets.WINDOWS_SELLER_ID }}
-          msstore publish -v -i "${{ github.workspace }}/${{ matrix.build_path }}"
+          msstore publish -v -i .
+        working-directory: ${{ matrix.build_path }}
 #
       - name: Upload ${{ matrix.target }} Artifact
         id: upload_release_asset
