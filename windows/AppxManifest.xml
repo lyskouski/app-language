@@ -8,7 +8,7 @@
   <Identity
     Name="terCAD.Tlum"
     Publisher="CN=78144012-EC6A-4BE8-97BF-A392EF55482E"
-    Version="0.0.1.10" />
+    Version="0.0.0.0" />
 
   <Properties>
     <DisplayName>Tlum</DisplayName>
@@ -19,7 +19,7 @@
 
   <Dependencies>
     <TargetDeviceFamily Name="Windows.Desktop"
-                        MinVersion="10.0.0.0"
+                        MinVersion="10.0.17763.0"
                         MaxVersionTested="10.0.19041.0" />
   </Dependencies>
 
