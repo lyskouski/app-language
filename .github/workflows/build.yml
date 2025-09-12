@@ -16,6 +16,8 @@ jobs:
 
   build:
     name: Create ${{ matrix.target }} build
+    permissions:
+      contents: write
     runs-on: ${{ matrix.os }}
     needs: release
     strategy:
