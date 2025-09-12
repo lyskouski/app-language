@@ -66,52 +66,52 @@ jobs:
         run: compress-archive -Path * -DestinationPath ${env:GITHUB_WORKSPACE}/tlum_${{ matrix.target }}${{ matrix.asset_extension }}
         working-directory: ${{ matrix.build_path }}
 
-      # Generate MSIX
-      - name: Install Chocolatey
-        if: matrix.target == 'Windows'
-        shell: powershell
-        run: |
-          Set-ExecutionPolicy Bypass -Scope Process -Force
-          [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
-          iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
-
-      - name: Verify Chocolatey
-        if: matrix.target == 'Windows'
-        shell: powershell
-        run: choco -v
-
-      - name: Install Windows 10 SDK
-        if: matrix.target == 'Windows'
-        shell: powershell
-        run: choco install windows-sdk-10.0 -y --ignore-checksums
-
-      - name: Locate Make Appx
-        if: matrix.target == 'Windows'
-        id: find_makeappx
-        shell: powershell
-        run: |
-          $makeappx = Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\bin" -Recurse -Filter makeappx.exe | Select-Object -First 1 -ExpandProperty FullName
-          if (-not $makeappx) { throw "makeappx.exe not found!" }
-          echo "Found makeappx.exe at $makeappx"
-          echo "MAKEAPPX=$makeappx" >> $env:GITHUB_ENV
-
-      - name: Package Application
-        if: matrix.target == 'Windows'
-        shell: powershell
-        run: |
-          & "${{ env.MAKEAPPX }}" pack /d "${{ matrix.build_path }}" /p "${{ matrix.build_path }}/tlum.msix"
-
-      # Publish to Microsoft Store
-      - name: Setup MS Store CLI
-        if: matrix.target == 'Windows'
-        uses: microsoft/setup-msstore-cli@ec39acd1144351ab7a9d8d25e12bf6fd1ba03150
-
-      - name: Publish MSIX to the Microsoft Store
-        if: matrix.target == 'Windows'
-        run: |
-          msstore reconfigure --tenantId ${{ secrets.WINDOWS_TENANT_ID }} --clientId ${{ secrets.WINDOWS_CLIENT_ID }} --clientSecret ${{ secrets.WINDOWS_SECRET }} --sellerId ${{ secrets.WINDOWS_SELLER_ID }}
-          msstore publish "${{ github.workspace }}/${{ matrix.build_path }}/tlum.msix" -v -id 9NMKX9HVSVBP
-        working-directory: ${{ matrix.build_path }}
+#      # Generate MSIX
+#      - name: Install Chocolatey
+#        if: matrix.target == 'Windows'
+#        shell: powershell
+#        run: |
+#          Set-ExecutionPolicy Bypass -Scope Process -Force
+#          [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
+#          iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+#
+#      - name: Verify Chocolatey
+#        if: matrix.target == 'Windows'
+#        shell: powershell
+#        run: choco -v
+#
+#      - name: Install Windows 10 SDK
+#        if: matrix.target == 'Windows'
+#        shell: powershell
+#        run: choco install windows-sdk-10.0 -y --ignore-checksums
+#
+#      - name: Locate Make Appx
+#        if: matrix.target == 'Windows'
+#        id: find_makeappx
+#        shell: powershell
+#        run: |
+#          $makeappx = Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\bin" -Recurse -Filter makeappx.exe | Select-Object -First 1 -ExpandProperty FullName
+#          if (-not $makeappx) { throw "makeappx.exe not found!" }
+#          echo "Found makeappx.exe at $makeappx"
+#          echo "MAKEAPPX=$makeappx" >> $env:GITHUB_ENV
+#
+#      - name: Package Application
+#        if: matrix.target == 'Windows'
+#        shell: powershell
+#        run: |
+#          & "${{ env.MAKEAPPX }}" pack /d "${{ matrix.build_path }}" /p "${{ matrix.build_path }}/tlum.msix"
+#
+#      # Publish to Microsoft Store
+#      - name: Setup MS Store CLI
+#        if: matrix.target == 'Windows'
+#        uses: microsoft/setup-msstore-cli@ec39acd1144351ab7a9d8d25e12bf6fd1ba03150
+#
+#      - name: Publish MSIX to the Microsoft Store
+#        if: matrix.target == 'Windows'
+#        run: |
+#          msstore reconfigure --tenantId ${{ secrets.WINDOWS_TENANT_ID }} --clientId ${{ secrets.WINDOWS_CLIENT_ID }} --clientSecret ${{ secrets.WINDOWS_SECRET }} --sellerId ${{ secrets.WINDOWS_SELLER_ID }}
+#          msstore publish "${{ github.workspace }}/${{ matrix.build_path }}/tlum.msix" -v -id 9NMKX9HVSVBP
+#        working-directory: ${{ matrix.build_path }}
 #
       - name: Upload ${{ matrix.target }} Artifact
         id: upload_release_asset
