@@ -43,17 +43,19 @@ class RootWidget(BoxLayout):
         else:
             self.data = []
 
-    def update_data(self, root):
+    def update_data(self, info):
         app = App.get_running_app()
-        if (root.store_path != ''):
-            app.init_store(root.store_path)
-        if (root.locale != ''):
-            app.update_locale(root.locale)
+        if (info.store_path != ''):
+            app.init_store(info.store_path)
+        if (info.locale != ''):
+            app.update_locale(info.locale)
+        if (info.locale_to != ''):
+            app.locale_to = info.locale_to
         if not self.ids.breadcrumb_view.data:
             self.ids.breadcrumb_view.data = []
             self.path = 'assets/source.json'
-        self.ids.breadcrumb_view.data.append({'text': root.text, 'source': self.path})
-        self.path = root.source
+        self.ids.breadcrumb_view.data.append({'text': info.text, 'source': self.path})
+        self.path = info.source
         self.load_data()
         self.populate_rv()
 

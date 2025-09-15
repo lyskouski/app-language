@@ -24,21 +24,21 @@
                         app.refresh_widgets()
         Accordion:
             AccordionItem:
-                title: 'PL & RU'
+                title: "%s & %s" % (app.locale_to, app.locale)
                 collapse: False
                 BoxLayout:
                     HarmonicaWidget:
                         origin: True
                         secondary: True
             AccordionItem:
-                title: 'PL -> RU'
+                title: "%s -> %s" % (app.locale_to, app.locale)
                 collapse: True
                 BoxLayout:
                     HarmonicaWidget:
                         origin: True
                         secondary: False
             AccordionItem:
-                title: 'RU -> PL'
+                title: "%s -> %s" % (app.locale, app.locale_to)
                 collapse: True
                 BoxLayout:
                     HarmonicaWidget:

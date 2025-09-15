@@ -1,5 +1,5 @@
 labels = {
-    "en": {
+    "EN": {
         "status_saving": "Saving...",
         "status_select_sentence": "Select a sentence",
         "status_recording": "Recording...",
@@ -22,7 +22,7 @@ labels = {
         "button_add": "Add",
         "_": "Fatal Error"
     },
-    "ru": {
+    "RU": {
         "status_saving": "Сохранение...",
         "status_select_sentence": "Выберите предложение",
         "status_recording": "Запись...",
