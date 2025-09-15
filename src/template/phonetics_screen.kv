@@ -26,21 +26,21 @@
 
         Accordion:
             AccordionItem:
-                title: 'PL & RU'
+                title: "%s & %s" % (app.locale_to, app.locale)
                 collapse: False
                 BoxLayout:
                     PhoneticsWidget:
                         origin: True
                         secondary: True
             AccordionItem:
-                title: 'PL -> PL'
+                title: "%s -> %s" % (app.locale_to, app.locale_to)
                 collapse: True
                 BoxLayout:
                     PhoneticsWidget:
                         origin: True
                         secondary: False
             AccordionItem:
-                title: 'PL -> RU'
+                title: "%s -> %s" % (app.locale_to, app.locale)
                 collapse: True
                 BoxLayout:
                     PhoneticsWidget:
