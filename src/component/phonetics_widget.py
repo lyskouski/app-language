@@ -1,6 +1,7 @@
 import os
 
 from component.harmonica_widget import HarmonicaWidget
+from controller.media_controller import MediaController
 from kivy.app import App
 from kivy.core.audio.audio_sdl2 import MusicSDL2
 from kivy.uix.boxlayout import BoxLayout
@@ -15,11 +16,14 @@ class PhoneticsWidget(HarmonicaWidget):
 
     def add_row(self, layout, origin, trans):
         app = App.get_running_app()
+        path = os.path.join(app.get_home_dir(), "assets", app.locale_to, "audio")
+        os.makedirs(path, exist_ok=True)
+        media_controller = MediaController(app.locale_to, path)
         row = BoxLayout(orientation='horizontal', size_hint_min_y=30)
 
         listen_button = Button(text=app._('button_listen', app.locale), on_press=self.play_audio)
         listen_button.origin_value = origin
-        listen_button.file_path = f"assets/data/PL/audio/{origin}.mp3"
+        listen_button.file_path = media_controller.get(origin)
 
         if self.origin and self.secondary:
             row.add_widget(Label(text=origin))

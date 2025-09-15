@@ -28,6 +28,7 @@ a = Analysis(
     binaries=collect_dynamic_libs('kivy'),
     datas=[
         ("..\\src\\component\\*.py","component"),
+        ("..\\src\\controller\\*.py","controller"),
         ("..\\src\\l18n\\*.py","l18n"),
         ("..\\src\\template\\*.kv","template"),
     ],
