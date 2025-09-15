@@ -6,14 +6,14 @@
     orientation: "vertical"
     RecycleView:
         id: breadcrumb_view
-        data: []
         viewclass: "BreadcrumbWidget"
+        data: []
+        size_hint_y: dp(0.17)
         RecycleBoxLayout:
-            default_size: None, None
-            default_size_hint: None, None
-            size_hint_y: None
-            height: self.minimum_height
             orientation: "horizontal"
+            height: self.minimum_height
+            size_hint_y: None
+            default_size: None, dp(24)
     Widget:
         size_hint_y: dp(0.04)
     RecycleView:
@@ -73,11 +73,10 @@
     Widget:
         size_hint_x: dp(0.05)
 
-<BreadcrumbWidget@BoxLayout>:
-    orientation: "horizontal"
+<BreadcrumbWidget@Button>:
     text: ""
     source: ""
-    Button:
-        text: root.text + ' / '
-        on_release:
-            app.root.get_screen('main_screen').ids.root_widget.load_breadcrumb(root.source)
+    width: self.texture_size[0] + dp(20)
+    size_hint_x: None
+    on_release:
+        app.root.get_screen('main_screen').ids.root_widget.load_breadcrumb(root.source)

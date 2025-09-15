@@ -93,8 +93,6 @@ class MainApp(App):
         try:
             self.store_path = data_path
             path = kivy.resources.resource_find(data_path)
-            print(kivy.resources.resource_paths)
-            print('PATH:', path)
             lines = []
             with open(path, "r", encoding="utf-8") as f:
                 lines = f.readlines()
