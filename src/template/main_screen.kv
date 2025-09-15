@@ -76,7 +76,18 @@
 <BreadcrumbWidget@Button>:
     text: ""
     source: ""
+    cursor: "hand"
     width: self.texture_size[0] + dp(20)
     size_hint_x: None
+    background_normal: ""
+    background_color: 0,0,0,0
+    canvas.after:
+        Color:
+            rgba: 1, 1, 1, 1
+        Triangle:
+            points: (self.right - dp(5), self.y + dp(6), self.right - dp(2), self.center_y, self.right - dp(5), self.top - dp(6))
+        Line:
+            points: (self.x + dp(10), self.y - dp(1), self.right - dp(10), self.y - dp(1))
+            width: 0.25
     on_release:
         app.root.get_screen('main_screen').ids.root_widget.load_breadcrumb(root.source)
