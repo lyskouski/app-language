@@ -3,17 +3,20 @@
     "source": "assets/data/PL/BY/source.json",
     "route_path": "",
     "logo": "assets/images/error.png",
-    "locale": "be"
+    "locale": "BE",
+    "locale_to": "PL"
 },{
     "text": "RU-PL (Russian - Polish)",
     "source": "assets/data/PL/RU/source.json",
     "route_path": "",
     "logo": "assets/images/dictionary.jpg",
-    "locale": "ru"
+    "locale": "RU",
+    "locale_to": "PL"
 },{
     "text": "UK-PL (Ukrainian - Polish)",
     "source": "assets/data/PL/UK/source.json",
     "route_path": "",
     "logo": "assets/images/error.png",
-    "locale": "uk"
+    "locale": "UK",
+    "locale_to": "PL"
 }]

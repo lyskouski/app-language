@@ -42,6 +42,7 @@ class MainApp(App):
     store = ListProperty([])
     store_path = StringProperty('')
     locale = StringProperty('')
+    locale_to = StringProperty('')
 
     def __init__(self, **kwargs):
         super(MainApp, self).__init__(**kwargs)
@@ -57,7 +58,7 @@ class MainApp(App):
             kivy.resources.resource_add_path(sys._MEIPASS)
 
     def _(self, key, locale):
-        return labels.get(locale, labels.get('en', {})).get(key, '['+key+']')
+        return labels.get(locale, labels.get('EN', {})).get(key, '['+key+']')
     
     def update_locale(self, locale):
         self.locale = locale

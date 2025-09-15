@@ -71,7 +71,7 @@ class HarmonicaWidget(ScrollView):
         if (pair == text):
             icon = Image(source='assets/images/success.png', size_hint=(None, None), size=(30, 30))
             parent.add_widget(icon)
-            parent.add_widget(Label(text=pair, markup=True))
+            parent.add_widget(Label(text=pair))
         else:
             icon = Image(source='assets/images/error.png', size_hint=(None, None), size=(30, 30))
             parent.add_widget(icon)
