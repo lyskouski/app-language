@@ -11,9 +11,6 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.widget import Widget
 
 class PhoneticsWidget(HarmonicaWidget):
-    def load_data(self):
-        super().load_data()
-
     def add_row(self, layout, origin, trans):
         app = App.get_running_app()
         path = os.path.join(app.get_home_dir(), "assets", app.locale_to, "audio")
