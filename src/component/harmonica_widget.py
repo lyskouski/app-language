@@ -37,28 +37,27 @@ class HarmonicaWidget(ScrollView):
         elif self.origin and not self.secondary:
             row.add_widget(Label(text=origin))
             text_input = TextInput(text='', multiline=False)
-            text_input.bind(on_text_validate=self.validate_trans)
+            text_input.bind(on_text_validate=lambda instance: self.validate(instance, origin, False))
             row.add_widget(text_input)
 
         elif not self.origin and self.secondary:
             row.add_widget(Label(text=trans))
             text_input = TextInput(text='', multiline=False)
-            text_input.bind(on_text_validate=self.validate_origin)
+            text_input.bind(on_text_validate=lambda instance: self.validate(instance, trans, True))
             row.add_widget(text_input)
 
         row.add_widget(Widget(size_hint_x=None, width=10))
         layout.add_widget(row)
 
-    def __get_pair(self, instance, is_origin):
-        key = instance.parent.children[2].text.strip()
+    def get_pair(self, key, is_origin):
         app = App.get_running_app()
         for origin, trans, _ in app.store:
             if origin == key or trans == key:
                 return origin if is_origin else trans
             
-    def __validate(self, instance, is_origin):
+    def validate(self, instance, key, is_origin):
         text = instance.text.strip()
-        pair = self.__get_pair(instance, is_origin)
+        pair = self.get_pair(key, is_origin)
         parent = instance.parent
         parent.remove_widget(instance)
         if (pair == text):
@@ -69,9 +68,3 @@ class HarmonicaWidget(ScrollView):
             icon = Image(source='assets/images/error.png', size_hint=(None, None), size=(30, 30))
             parent.add_widget(icon)
             parent.add_widget(Label(text=f'[s]{text}[/s] {pair}', markup=True))
-
-    def validate_origin(self, instance):
-        self.__validate(instance, True)
-
-    def validate_trans(self, instance):
-        self.__validate(instance, False)
