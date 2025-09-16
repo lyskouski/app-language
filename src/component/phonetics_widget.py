@@ -13,9 +13,7 @@ from kivy.uix.widget import Widget
 class PhoneticsWidget(HarmonicaWidget):
     def add_row(self, layout, origin, trans):
         app = App.get_running_app()
-        path = os.path.join(app.get_home_dir(), "assets", app.locale_to, "audio")
-        os.makedirs(path, exist_ok=True)
-        media_controller = MediaController(app.locale_to, path)
+        media_controller = MediaController(app.locale_to, app.get_audio_dir())
         row = BoxLayout(orientation='horizontal', size_hint_min_y=30)
 
         listen_button = Button(text=app._('button_listen', app.locale), on_press=self.play_audio)
