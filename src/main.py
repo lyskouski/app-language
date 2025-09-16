@@ -17,7 +17,7 @@ from component.articulation_screen import ArticulationScreen
 from component.store_update_screen import StoreUpdateScreen
 from l18n.labels import labels
 
-## Load all widgets to avoid:
+## Load all widgets (for distribution) to avoid:
 # AttributeError: module 'component' has no attribute 'recorder_widget'
 import component.harmonica_widget
 import component.phonetics_widget
@@ -65,6 +65,11 @@ class MainApp(App):
 
     def get_home_dir(self):
         return os.path.join(App.get_running_app().user_data_dir, ".terCAD", "app-language")
+    
+    def get_audio_dir(self):
+        path = os.path.join(self.get_home_dir(), "assets", self.locale_to, "audio")
+        os.makedirs(path, exist_ok=True)
+        return path
 
     def build(self):
         if platform in ['android', 'ios']:

@@ -11,13 +11,15 @@ class MediaController:
         self.lang = lang.lower()
         self.path = path
 
-    def get(self, word):
-        filename = f"{self.path}/{word}.mp3"
+    def get(self, word, name=None):
+        if not name:
+            name = f"{word}.mp3"
+        filename = f"{self.path}/{name}"
         if not os.path.exists(filename):
-            self.save_sound(word)
+            self.save_sound(word, filename)
         return filename if os.path.exists(filename) else None
 
-    def save_sound(self, word):
+    def save_sound(self, word, filename):
         data = {
             'f.req': json.dumps([
                 [
@@ -41,7 +43,6 @@ class MediaController:
         if response.status_code == 200:
             match = re.search(r'//OE[^\\]+', response.text)
             if match:
-                filename = f"{self.path}/{word}.mp3"
                 with open(filename, 'wb') as f:
                     f.write(base64.b64decode(match.group(0)))
             else:
