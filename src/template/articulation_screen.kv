@@ -32,3 +32,10 @@
                     with_previous: True
                     on_release: app.next_screen('main_screen')
                     title: app._('game_articulation', app.locale)
+
+<MultilineLabel>:
+    size_hint_y: None
+    height: self.texture_size[1]
+    text_size: self.width, None
+    halign: "left"
+    valign: "middle"

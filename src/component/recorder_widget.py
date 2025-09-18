@@ -14,6 +14,9 @@ import sounddevice as sd
 import soundfile as sf
 import threading
 
+class MultilineLabel(Label):
+    pass
+
 class RecorderWidget(BoxLayout):
     def load_data(self):
         app = App.get_running_app()
@@ -28,7 +31,7 @@ class RecorderWidget(BoxLayout):
         
         for file_name, sentence in self.audio_files.items():
             row = BoxLayout(orientation='horizontal', size_hint_min_y=30)
-            row.add_widget(Label(text=sentence.replace('\\n', '\n'), size_hint_x=0.8, halign='left'))
+            row.add_widget(MultilineLabel(text=sentence))
             choose_button = Button(text=app._('button_choose', app.locale), size_hint_x=0.2)
             choose_button.file_path = file_name
             choose_button.bind(on_release=self.choose_sentence)
