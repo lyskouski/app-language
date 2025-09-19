@@ -4,6 +4,9 @@
 # > pip install -r requirements.txt
 # > python ./src/main.py
 
+# Dependencies:
+# > choco install ffmpeg
+
 import os
 import kivy
 import kivy.resources
