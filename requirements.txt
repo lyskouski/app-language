@@ -6,3 +6,6 @@ soundfile
 pyinstaller
 buildozer
 cython
+pydub
+numpy
+librosa 
