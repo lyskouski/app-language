@@ -29,6 +29,7 @@ class RootWidget(BoxLayout):
                 cut_index = i
                 break
         if cut_index is not None:
+            self.path = path
             self.ids.breadcrumb_view.data = breadcrumbs[:cut_index]
         self.load_data(path)
         self.populate_rv()
