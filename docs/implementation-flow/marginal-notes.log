@@ -1,0 +1,17 @@
+
+Issue#: 0001
+Title: RecycleView item property persistence issue
+Description: When clicking on an item in the RecycleView, the locale property is set correctly for the first 
+clicked item. However, when clicking on a second item, the locale property from the first item persists, 
+leading to incorrect behavior.
+Steps to Reproduce:
+1. Click on an item in the RecycleView to set its locale property.
+2. Click on a different item in the RecycleView.
+3. Observe that the locale property from the first item is still applied to the second item.
+
+Error is still exists, the previous state of RootItemWidget is preserved, as example if locale is set for the
+first clicked item, then it's exist in second list
+
+This issue happens because the RecycleView reuses instances of RootItemWidget for performance, so if you set a 
+property (like locale) on one item, it can persist when the widget is reused for another item unless you 
+explicitly reset all properties in your RootItemWidget.

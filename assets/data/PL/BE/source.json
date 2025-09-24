@@ -2,32 +2,32 @@
     "text": "Дзеясловы",
     "source": "assets/data/PL/BE/games.json",
     "store_path": "assets/data/PL/BE/data/verbs.csv",
-    "route_path": "",
     "logo": "assets/data/PL/BE/verbs.png",
-    "locale": "BE",
-    "locale_to": "PL"
+    "route_path": "",
+    "locale": "",
+    "locale_to": ""
 }, {
     "text": "Хуткамоўкі",
     "source": "assets/data/PL/BE/game-articulation.json",
     "store_path": "assets/data/PL/BE/data/articulation.csv",
-    "route_path": "",
     "logo": "assets/data/PL/BE/articulation.png",
-    "locale": "BE",
-    "locale_to": "PL"
+    "route_path": "",
+    "locale": "",
+    "locale_to": ""
 }, {
     "text": "Частотны слоўнік",
     "source": "assets/data/PL/BE/games.json",
     "store_path": "assets/data/PL/BE/data/dictionary.csv",
-    "route_path": "",
     "logo": "assets/data/PL/BE/dictionary.png",
-    "locale": "BE",
-    "locale_to": "PL"
+    "route_path": "",
+    "locale": "",
+    "locale_to": ""
 }, {
     "text": "Лічэбнікі",
     "source": "assets/data/PL/BE/games.json",
     "store_path": "assets/data/PL/BE/data/numbers.csv",
-    "route_path": "",
     "logo": "assets/data/PL/BE/numbers.png",
-    "locale": "BE",
-    "locale_to": "PL"
+    "route_path": "",
+    "locale": "",
+    "locale_to": ""
 }]

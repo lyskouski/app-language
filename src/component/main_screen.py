@@ -29,19 +29,19 @@ class RootWidget(BoxLayout):
                 cut_index = i
                 break
         if cut_index is not None:
+            self.path = path
             self.ids.breadcrumb_view.data = breadcrumbs[:cut_index]
         self.load_data(path)
         self.populate_rv()
 
     def load_data(self, path = None):
+        self.data = []
         if not path:
             path = self.path
         source_path = kivy.resources.resource_find(path)
         if source_path and os.path.exists(source_path):
             with open(source_path, 'r', encoding='utf-8') as f:
                 self.data = json.load(f)
-        else:
-            self.data = []
 
     def update_data(self, info):
         app = App.get_running_app()
