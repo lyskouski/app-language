@@ -2,7 +2,7 @@ import os
 import numpy as np
 import time
 
-from controller.audio_comparator_controller import AudioComparatorController
+from controller.audio_comparator import AudioComparator
 from controller.media_controller import MediaController
 from kivy.app import App
 from kivy.core.audio.audio_sdl2 import MusicSDL2
@@ -124,7 +124,7 @@ class RecorderWidget(BoxLayout):
         self.status_label.text = app._('status_recording_stopped', app.locale)
         self.record_button.text = app._('button_record', app.locale)
         print("Comparing:", self.listen_button.file_path, recorded_file)
-        result = AudioComparatorController().compare_audio(self.listen_button.file_path, recorded_file)
+        result = AudioComparator().compare_audio(self.listen_button.file_path, recorded_file)
         print("Comparison result:", result)
 
     def play_audio(self, instance):

@@ -4,7 +4,7 @@ import os
 
 from pydub import AudioSegment
 
-class AudioComparatorController:
+class AudioComparator:
     def compare_audio(self, audio_original, audio_recorded):
         print("Comparing audio files:", audio_original, audio_recorded)
         parts_original = self.chunk_audio(audio_original)
