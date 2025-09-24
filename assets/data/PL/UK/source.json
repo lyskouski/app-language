@@ -2,32 +2,32 @@
     "text": "Дієслова",
     "source": "assets/data/PL/UK/games.json",
     "store_path": "assets/data/PL/UK/data/verbs.csv",
-    "route_path": "",
     "logo": "assets/data/PL/UK/verbs.png",
-    "locale": "UK",
-    "locale_to": "PL"
+    "route_path": "",
+    "locale": "",
+    "locale_to": ""
 }, {
     "text": "Скоромовки",
     "source": "assets/data/PL/UK/game-articulation.json",
     "store_path": "assets/data/PL/UK/data/articulation.csv",
-    "route_path": "",
     "logo": "assets/data/PL/UK/articulation.png",
-    "locale": "UK",
-    "locale_to": "PL"
+    "route_path": "",
+    "locale": "",
+    "locale_to": ""
 }, {
     "text": "Частотний словник",
     "source": "assets/data/PL/UK/games.json",
     "store_path": "assets/data/PL/UK/data/dictionary.csv",
-    "route_path": "",
     "logo": "assets/data/PL/UK/dictionary.png",
-    "locale": "UK",
-    "locale_to": "PL"
+    "route_path": "",
+    "locale": "",
+    "locale_to": ""
 }, {
     "text": "Чисельні",
     "source": "assets/data/PL/UK/games.json",
     "store_path": "assets/data/PL/UK/data/numbers.csv",
-    "route_path": "",
     "logo": "assets/data/PL/UK/numbers.png",
-    "locale": "UK",
-    "locale_to": "PL"
+    "route_path": "",
+    "locale": "",
+    "locale_to": ""
 }]

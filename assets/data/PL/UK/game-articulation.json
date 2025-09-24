@@ -1,5 +1,8 @@
 [{
     "text": "Говорити",
     "route_path": "articulation_screen",
-    "logo": "assets/images/game/articulation.png"
+    "logo": "assets/images/game/articulation.png",
+    "store_path": "",
+    "locale": "",
+    "locale_to": ""
 }]
