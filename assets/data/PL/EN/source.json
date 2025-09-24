@@ -1,0 +1,33 @@
+[{
+    "text": "Verbs",
+    "source": "assets/data/PL/EN/games.json",
+    "store_path": "assets/data/PL/EN/data/verbs.csv",
+    "route_path": "",
+    "logo": "assets/data/PL/EN/verbs.png",
+    "locale": "EN",
+    "locale_to": "PL"
+}, {
+    "text": "Tongue twisters",
+    "source": "assets/data/PL/EN/game-articulation.json",
+    "store_path": "assets/data/PL/EN/data/articulation.csv",
+    "route_path": "",
+    "logo": "assets/data/PL/EN/articulation.png",
+    "locale": "EN",
+    "locale_to": "PL"
+}, {
+    "text": "Frequency dictionary",
+    "source": "assets/data/PL/EN/games.json",
+    "store_path": "assets/data/PL/EN/data/dictionary.csv",
+    "route_path": "",
+    "logo": "assets/data/PL/EN/dictionary.png",
+    "locale": "EN",
+    "locale_to": "PL"
+}, {
+    "text": "Numerals",
+    "source": "assets/data/PL/EN/games.json",
+    "store_path": "assets/data/PL/EN/data/numbers.csv",
+    "route_path": "",
+    "logo": "assets/data/PL/EN/numbers.png",
+    "locale": "EN",
+    "locale_to": "PL"
+}]

@@ -1,22 +1,29 @@
 [{
-    "text": "BY-PL (Belarusian - Polish)",
-    "source": "assets/data/PL/BY/source.json",
+    "text": "BY-PL (Беларуская - Польская)",
+    "source": "assets/data/PL/BE/source.json",
     "route_path": "",
-    "logo": "assets/images/error.png",
+    "logo": "assets/images/language/by-pl.png",
     "locale": "BE",
     "locale_to": "PL"
 },{
-    "text": "RU-PL (Russian - Polish)",
+    "text": "EN-PL (English - Polish)",
+    "source": "assets/data/PL/EN/source.json",
+    "route_path": "",
+    "logo": "assets/images/language/en-pl.png",
+    "locale": "EN",
+    "locale_to": "PL"
+},{
+    "text": "RU-PL (Русский - Польский)",
     "source": "assets/data/PL/RU/source.json",
     "route_path": "",
-    "logo": "assets/images/dictionary.jpg",
+    "logo": "assets/images/language/ru-pl.png",
     "locale": "RU",
     "locale_to": "PL"
 },{
-    "text": "UK-PL (Ukrainian - Polish)",
+    "text": "UA-PL (Українська - Польська)",
     "source": "assets/data/PL/UK/source.json",
     "route_path": "",
-    "logo": "assets/images/error.png",
+    "logo": "assets/images/language/uk-pl.png",
     "locale": "UK",
     "locale_to": "PL"
 }]
