@@ -1,4 +1,27 @@
 labels = {
+    "BE": {
+        "status_saving": "Захоўваецца...",
+        "status_select_sentence": "Выберыце сказ",
+        "status_recording": "Запіс...",
+        "status_recording_stopped": "Запіс спынены",
+        "game_phonetics": "Фанетыка",
+        "game_harmonica": "Гармонік",
+        "game_articulation": "Артыкуляцыя",
+        "error_not_found": "Памылка: Запісаны файл не знойдзен",
+        "button_update": "Абнавіць",
+        "button_stop_recording": "Спыніць запіс",
+        "button_shuffle": "Перамяшаць",
+        "button_select": "Выбраць",
+        "button_save": "Захаваць",
+        "button_record": "Запісаць",
+        "button_processing": "Апрацоўка",
+        "button_play": "Прайграць",
+        "button_listen": "Праслухаць",
+        "button_clear": "Ачысціць",
+        "button_choose": "Выбраць",
+        "button_add": "Дадаць",
+        "_": "Фатальная памылка"
+    },
     "EN": {
         "status_saving": "Saving...",
         "status_select_sentence": "Select a sentence",
@@ -44,5 +67,28 @@ labels = {
         "button_choose": "Выбрать",
         "button_add": "Добавить",
         "_": "Фатальная ошибка"
+    },
+    "UK": {
+        "status_saving": "Збереження...",
+        "status_select_sentence": "Виберіть речення",
+        "status_recording": "Запис...",
+        "status_recording_stopped": "Запис зупинено",
+        "game_phonetics": "Фонетика",
+        "game_harmonica": "Гармоніка",
+        "game_articulation": "Артикуляція",
+        "error_not_found": "Помилка: Записаний файл не знайдено",
+        "button_update": "Оновити",
+        "button_stop_recording": "Зупинити запис",
+        "button_shuffle": "Перемішати",
+        "button_select": "Вибрати",
+        "button_save": "Зберегти",
+        "button_record": "Записати",
+        "button_processing": "Обробка",
+        "button_play": "Відтворити",
+        "button_listen": "Слухати",
+        "button_clear": "Очистити",
+        "button_choose": "Вибрати",
+        "button_add": "Додати",
+        "_": "Фатальна помилка"        
     }
 }

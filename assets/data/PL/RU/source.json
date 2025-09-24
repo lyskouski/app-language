@@ -1,17 +1,9 @@
 [{
-    "text": "Частотный словарь",
-    "source": "assets/data/PL/RU/games.json",
-    "store_path": "assets/data/PL/RU/data/dictionary.csv",
-    "route_path": "",
-    "logo": "assets/data/PL/RU/image/dictionary.jpg",
-    "locale": "RU",
-    "locale_to": "PL"
-}, {
     "text": "Глаголы",
     "source": "assets/data/PL/RU/games.json",
     "store_path": "assets/data/PL/RU/data/verbs.csv",
     "route_path": "",
-    "logo": "assets/data/PL/RU/image/verbs.jpg",
+    "logo": "assets/data/PL/RU/verbs.png",
     "locale": "RU",
     "locale_to": "PL"
 }, {
@@ -19,7 +11,23 @@
     "source": "assets/data/PL/RU/game-articulation.json",
     "store_path": "assets/data/PL/RU/data/articulation.csv",
     "route_path": "",
-    "logo": "assets/data/PL/RU/image/articulation.jpg",
+    "logo": "assets/data/PL/RU/articulation.png",
+    "locale": "RU",
+    "locale_to": "PL"
+}, {
+    "text": "Частотный словарь",
+    "source": "assets/data/PL/RU/games.json",
+    "store_path": "assets/data/PL/RU/data/dictionary.csv",
+    "route_path": "",
+    "logo": "assets/data/PL/RU/dictionary.png",
+    "locale": "RU",
+    "locale_to": "PL"
+}, {
+    "text": "Числительные",
+    "source": "assets/data/PL/RU/games.json",
+    "store_path": "assets/data/PL/RU/data/numbers.csv",
+    "route_path": "",
+    "logo": "assets/data/PL/RU/numbers.png",
     "locale": "RU",
     "locale_to": "PL"
 }]
