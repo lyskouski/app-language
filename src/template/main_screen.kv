@@ -32,10 +32,13 @@
         Widget:
             size_hint_x: dp(0.02)
         Button:
-            size_hint_y: None
-            text: app._("button_update" if app.store else "button_add", app.locale)
+            size_hint_y: None if root.path == 'assets/source.json' else 0
+            disabled: False if root.path == 'assets/source.json' else True
+            opacity: 1.0 if root.path == 'assets/source.json' else 0
+            height: '48dp' if root.path == 'assets/source.json' else 0
+            text: app._("button_add", app.locale)
             on_release:
-                app.next_screen('store_update_screen' if app.store else 'structure_screen')
+                app.next_screen('structure_screen')
         Widget:
             size_hint_x: dp(0.02)
     Widget:
