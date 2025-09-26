@@ -1,5 +1,6 @@
 [{
     "text": "Говорение",
+    "source": "",
     "route_path": "articulation_screen",
     "logo": "assets/images/game/articulation.png",
     "store_path": "",

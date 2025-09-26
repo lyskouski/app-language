@@ -33,10 +33,9 @@
             size_hint_x: dp(0.02)
         Button:
             size_hint_y: None
-            opacity: 1.0 if app.store else 0
             text: app._("button_update" if app.store else "button_add", app.locale)
             on_release:
-                app.next_screen('store_update_screen')
+                app.next_screen('store_update_screen' if app.store else 'structure_screen')
         Widget:
             size_hint_x: dp(0.02)
     Widget:

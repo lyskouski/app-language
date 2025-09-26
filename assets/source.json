@@ -1,6 +1,7 @@
 [{
     "text": "BY-PL (Беларуская - Польская)",
     "source": "assets/data/PL/BE/source.json",
+    "store_path": "",
     "route_path": "",
     "logo": "assets/images/language/by-pl.png",
     "locale": "BE",
@@ -8,6 +9,7 @@
 },{
     "text": "EN-PL (English - Polish)",
     "source": "assets/data/PL/EN/source.json",
+    "store_path": "",
     "route_path": "",
     "logo": "assets/images/language/en-pl.png",
     "locale": "EN",
@@ -15,6 +17,7 @@
 },{
     "text": "RU-PL (Русский - Польский)",
     "source": "assets/data/PL/RU/source.json",
+    "store_path": "",
     "route_path": "",
     "logo": "assets/images/language/ru-pl.png",
     "locale": "RU",
@@ -22,6 +25,7 @@
 },{
     "text": "UA-PL (Українська - Польська)",
     "source": "assets/data/PL/UK/source.json",
+    "store_path": "",
     "route_path": "",
     "logo": "assets/images/language/uk-pl.png",
     "locale": "UK",

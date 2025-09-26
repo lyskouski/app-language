@@ -18,6 +18,7 @@ from component.dictionary_screen import DictionaryScreen
 from component.phonetics_screen import PhoneticsScreen
 from component.articulation_screen import ArticulationScreen
 from component.store_update_screen import StoreUpdateScreen
+from component.structure_screen import StructureScreen
 from l18n.labels import labels
 
 ## Load all widgets (for distribution) to avoid:
@@ -83,6 +84,7 @@ class MainApp(App):
             (DictionaryScreen, 'dictionary_screen'),
             (PhoneticsScreen, 'phonetics_screen'),
             (ArticulationScreen, 'articulation_screen'),
+            (StructureScreen, 'structure_screen'),
             (StoreUpdateScreen, 'store_update_screen'),
         ]
         for cls, name in screens:

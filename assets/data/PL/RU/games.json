@@ -1,5 +1,6 @@
 [{
     "text": "Гармошка",
+    "source": "",
     "route_path": "dictionary_screen",
     "logo": "assets/images/game/dictionary.png",
     "store_path": "",
@@ -7,6 +8,7 @@
     "locale_to": ""
 },{
     "text": "Звуковая Гармошка",
+    "source": "",
     "route_path": "phonetics_screen",
     "logo": "assets/images/game/phonetics.png",
     "store_path": "",
@@ -14,6 +16,7 @@
     "locale_to": ""
 },{
     "text": "Говорение",
+    "source": "",
     "route_path": "articulation_screen",
     "logo": "assets/images/game/articulation.png",
     "store_path": "",

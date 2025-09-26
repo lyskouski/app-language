@@ -1,5 +1,6 @@
 [{
     "text": "Гармонік",
+    "source": "",
     "route_path": "dictionary_screen",
     "logo": "assets/images/game/dictionary.png",
     "store_path": "",
@@ -7,6 +8,7 @@
     "locale_to": ""
 },{
     "text": "Гукавы гармонік",
+    "source": "",
     "route_path": "phonetics_screen",
     "logo": "assets/images/game/phonetics.png",
     "store_path": "",
@@ -14,6 +16,7 @@
     "locale_to": ""
 },{
     "text": "Гаворка",
+    "source": "",
     "route_path": "articulation_screen",
     "logo": "assets/images/game/articulation.png",
     "store_path": "",

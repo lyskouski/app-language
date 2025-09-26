@@ -1,0 +1,59 @@
+<StructureScreen>:
+    BoxLayout:
+        orientation: "vertical"
+        Widget:
+            size_hint_y: dp(0.04)
+        RecycleView:
+            id: structure_view
+            viewclass: "StructureWidget"
+            RecycleBoxLayout:
+                default_size: None, dp(48)
+                default_size_hint: 1, None
+                size_hint_y: None
+                height: self.minimum_height
+                orientation: "vertical"
+        Widget:
+            size_hint_y: dp(0.08)
+
+<StructureWidget@BoxLayout>:
+    orientation: "horizontal"
+    text: ""
+    source: ""
+    logo: ""
+    store_path: ""
+    route_path: ""
+    locale: ""
+    locale_to: ""
+    indent: 0
+    Widget:
+        size_hint_x: dp(0.04)
+    Widget:
+        size_hint_x: dp(root.indent) if root.indent else dp(0.01)
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, 1
+            Line:
+                points: (self.right - dp(5), self.top - dp(20), self.right, self.top - dp(20))
+                width: 0.25
+            Line:
+                points: (self.right - dp(5), self.top, self.right - dp(5), self.top - dp(20))
+                width: 0.25
+    Button:
+        text: app._('button_expand', app.locale) if root.source else ""
+        disabled: False if root.source else True
+        opacity: 1.0 if root.source else 0
+        size_hint_x: dp(0.5 if root.source else 0.01)
+        on_release:
+            root.expand()
+    Label:
+        text: root.text
+        halign: "left"
+        valign: "middle"
+        text_size: self.size
+    Button:
+        text: app._('button_edit', app.locale)
+        size_hint_x: dp(0.5)
+        on_release:
+            app.next_screen(root.route_path)
+    Widget:
+        size_hint_x: dp(0.05)
