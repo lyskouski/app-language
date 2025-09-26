@@ -15,13 +15,31 @@ class StructureScreen(Screen):
         self.load_data()
         Clock.schedule_once(lambda dt: self.populate_rv())
 
+    def get_new_item(self):
+        app = App.get_running_app()
+        return [{
+            'text': app._('item_new', app.locale),
+            'source': '',
+            'indent': None,
+            'logo': '',
+            'store_path': '',
+            'route_path': '',
+            'locale': '',
+            'locale_to': '',
+        }]
+
     def get_data(self, path):
         app = App.get_running_app()
         source_path = app.find_resource(path)
+        data = []
         if source_path and os.path.exists(source_path):
             with open(source_path, 'r', encoding='utf-8') as f:
-                return json.load(f)
-        return []
+                data = json.load(f)
+        data += self.get_new_item()
+        for item in data:
+            if isinstance(item, dict):
+                item['parent_source'] = path
+        return data
 
     def load_data(self):
         self.data = self.get_data('assets/source.json')
@@ -31,6 +49,7 @@ class StructureScreen(Screen):
 
 class StructureWidget(BoxLayout):
     source = StringProperty('')
+    parent_source = StringProperty('')
     indent = NumericProperty(0, allownone=True)
     text = StringProperty('')
     logo = StringProperty('')

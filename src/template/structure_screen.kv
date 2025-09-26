@@ -61,7 +61,8 @@
         on_release:
             root.expand()
     Label:
-        text: root.text
+        text: '[b]' + root.text + '[/b]\n' + root.source
+        markup: True
         halign: "left"
         valign: "middle"
         text_size: self.size
@@ -69,6 +70,6 @@
         text: app._('button_edit', app.locale)
         size_hint_x: dp(0.5)
         on_release:
-            app.next_screen(root.route_path)
+            app.next_screen('structure_update_screen', root)
     Widget:
         size_hint_x: dp(0.05)

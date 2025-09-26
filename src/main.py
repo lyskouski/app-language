@@ -19,6 +19,7 @@ from component.phonetics_screen import PhoneticsScreen
 from component.articulation_screen import ArticulationScreen
 from component.store_update_screen import StoreUpdateScreen
 from component.structure_screen import StructureScreen
+from component.structure_update_screen import StructureUpdateScreen
 from l18n.labels import labels
 
 ## Load all widgets (for distribution) to avoid:
@@ -91,6 +92,7 @@ class MainApp(App):
             (PhoneticsScreen, 'phonetics_screen'),
             (ArticulationScreen, 'articulation_screen'),
             (StructureScreen, 'structure_screen'),
+            (StructureUpdateScreen, 'structure_update_screen'),
             (StoreUpdateScreen, 'store_update_screen'),
         ]
         for cls, name in screens:
@@ -100,9 +102,9 @@ class MainApp(App):
         sm.current = 'main_screen'
         return sm
 
-    def next_screen(self, screen_name):
+    def next_screen(self, screen_name, widget = None):
         self.root.current = screen_name
-        self.refresh_widgets()
+        self.refresh_widgets(widget)
 
     def init_store(self, data_path):
         if not data_path:
@@ -132,13 +134,15 @@ class MainApp(App):
         except FileNotFoundError:
             self.store = []
 
-    def refresh_widgets(self):
+    def refresh_widgets(self, item = None):
         if not self.root:
             return
 
         for widget in self.root.walk():
             if hasattr(widget, 'load_data'):
                 widget.load_data()
+            if widget is not None and hasattr(widget, 'init_data'):
+                widget.init_data(item)
 
 if __name__ == '__main__':
     MainApp().run()

@@ -1,0 +1,121 @@
+<StructureUpdateScreen@Screen>:
+    BoxLayout:
+        orientation: 'vertical'
+        padding: dp(10)
+        spacing: dp(10)
+        ScrollView:
+            do_scroll_x: False
+            do_scroll_y: True
+            BoxLayout:
+                orientation: 'vertical'
+                padding: dp(10)
+                spacing: dp(10)
+                size_hint_y: None
+                height: self.minimum_height
+                Label:
+                    text: app._('field_text', app.locale)
+                    size_hint_y: None
+                    halign: "left"
+                    valign: "middle"
+                    height: dp(40)
+                    size_hint_y: None
+                TextInput:
+                    text: root.text
+                    hint_text: app._('field_text__hint', app.locale)
+                    multiline: False
+                    size_hint_y: None
+                    height: dp(40)
+                Label:
+                    text: app._('field_source', app.locale)
+                    size_hint_y: None
+                    halign: "left"
+                    valign: "middle"
+                    height: dp(40)
+                    size_hint_y: None
+                TextInput:
+                    text: root.source
+                    hint_text: app._('field_source__hint', app.locale)
+                    multiline: False
+                    size_hint_y: None
+                    height: dp(40)
+                Label:
+                    text: app._('field_logo', app.locale)
+                    size_hint_y: None
+                    halign: "left"
+                    valign: "middle"
+                    height: dp(40)
+                    size_hint_y: None
+                TextInput:
+                    text: root.logo
+                    hint_text: app._('field_logo__hint', app.locale)
+                    multiline: False
+                    size_hint_y: None
+                    height: dp(40)
+                Label:
+                    text: app._('field_store_path', app.locale)
+                    size_hint_y: None
+                    halign: "left"
+                    valign: "middle"
+                    height: dp(40)
+                    size_hint_y: None
+                TextInput:
+                    text: root.store_path
+                    hint_text: app._('field_store_path__hint', app.locale)
+                    multiline: False
+                    size_hint_y: None
+                    height: dp(40)
+                Label:
+                    text: app._('field_route_path', app.locale)
+                    size_hint_y: None
+                    halign: "left"
+                    valign: "middle"
+                    height: dp(40)
+                    size_hint_y: None
+                TextInput:
+                    text: root.route_path
+                    hint_text: app._('field_route_path__hint', app.locale)
+                    multiline: False
+                    size_hint_y: None
+                    height: dp(40)
+                Label:
+                    text: app._('field_locale', app.locale)
+                    size_hint_y: None
+                    halign: "left"
+                    valign: "middle"
+                    height: dp(40)
+                    size_hint_y: None
+                TextInput:
+                    text: root.locale
+                    hint_text: app._('field_locale__hint', app.locale)
+                    multiline: False
+                    size_hint_y: None
+                    height: dp(40)
+                Label:
+                    text: app._('field_locale_to', app.locale)
+                    size_hint_y: None
+                    halign: "left"
+                    valign: "middle"
+                    height: dp(40)
+                    size_hint_y: None
+                TextInput:
+                    text: root.locale_to
+                    hint_text: app._('field_locale_to__hint', app.locale)
+                    multiline: False
+                    size_hint_y: None
+                    height: dp(40)
+        BoxLayout:
+            size_hint_y: None
+            height: dp(40)
+            Button:
+                text: app._('button_back', app.locale)
+                size_hint_x: dp(0.5)
+                on_release:
+                    app.next_screen('structure_screen')
+            Button:
+                text: app._('button_save', app.locale)
+                size_hint_x: dp(0.5)
+                on_release:
+                    # @TODO: save data
+                    app.root.get_screen('structure_screen').load_data()
+                    app.root.get_screen('structure_screen').populate_rv()
+                    app.next_screen('structure_screen')
