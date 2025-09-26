@@ -67,6 +67,12 @@ class MainApp(App):
     def update_locale(self, locale):
         self.locale = locale
 
+    def find_resource(self, path):
+        user_path = os.path.join(self.get_home_dir(), path)
+        if os.path.exists(user_path):
+            return user_path
+        return kivy.resources.resource_find(path)
+
     def get_home_dir(self):
         return os.path.join(App.get_running_app().user_data_dir, ".terCAD", "app-language")
     
@@ -103,7 +109,7 @@ class MainApp(App):
             data_path = self.store_path
         try:
             self.store_path = data_path
-            path = kivy.resources.resource_find(data_path)
+            path = self.find_resource(data_path)
             lines = []
             with open(path, "r", encoding="utf-8") as f:
                 lines = f.readlines()

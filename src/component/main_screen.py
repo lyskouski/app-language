@@ -38,7 +38,8 @@ class RootWidget(BoxLayout):
         self.data = []
         if not path:
             path = self.path
-        source_path = kivy.resources.resource_find(path)
+        app = App.get_running_app()
+        source_path = app.find_resource(path)
         if source_path and os.path.exists(source_path):
             with open(source_path, 'r', encoding='utf-8') as f:
                 self.data = json.load(f)

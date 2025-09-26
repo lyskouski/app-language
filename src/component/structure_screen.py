@@ -16,7 +16,8 @@ class StructureScreen(Screen):
         Clock.schedule_once(lambda dt: self.populate_rv())
 
     def get_data(self, path):
-        source_path = kivy.resources.resource_find(path)
+        app = App.get_running_app()
+        source_path = app.find_resource(path)
         if source_path and os.path.exists(source_path):
             with open(source_path, 'r', encoding='utf-8') as f:
                 return json.load(f)
@@ -31,6 +32,12 @@ class StructureScreen(Screen):
 class StructureWidget(BoxLayout):
     source = StringProperty('')
     indent = NumericProperty(0, allownone=True)
+    text = StringProperty('')
+    logo = StringProperty('')
+    store_path = StringProperty('')
+    route_path = StringProperty('')
+    locale = StringProperty('')
+    locale_to = StringProperty('')
 
     def expand(self):
         app = App.get_running_app()
