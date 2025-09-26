@@ -6,6 +6,7 @@ class StructureUpdateScreen(Screen):
     source = StringProperty('')
     parent_source = StringProperty('')
     text = StringProperty('')
+    text_initial = StringProperty('')
     logo = StringProperty('')
     store_path = StringProperty('')
     route_path = StringProperty('')
@@ -17,6 +18,7 @@ class StructureUpdateScreen(Screen):
             self.source = widget.source
             self.parent_source = widget.parent_source
             self.text = widget.text
+            self.text_initial = widget.text
             self.logo = widget.logo
             self.store_path = widget.store_path
             self.route_path = widget.route_path
