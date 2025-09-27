@@ -44,7 +44,7 @@ pyz = PYZ(a.pure)
 exe = EXE(
     pyz,
     a.scripts,
-    a.binaries + sdl2.dep_bins + glew.dep_bins + angle.dep_bins,
+    a.binaries,
     [],
     exclude_binaries=True,
     name='tlum',
