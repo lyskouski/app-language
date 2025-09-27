@@ -14,7 +14,11 @@ parts:
     source: .
     stage-packages:
       - ffmpeg
+      - libpulse0
+      - libasound2
       - libportaudio2
+      - libsdl2-2.0-0
+      - libsdl2-mixer-2.0-0
     override-build: |
       python3 -m pip install --upgrade pip
       python3 -m pip install --prefix=$SNAPCRAFT_PART_INSTALL -r requirements.txt
@@ -25,6 +29,12 @@ parts:
 apps:
   tlum:
     command: bin/python3 $SNAP/src/main.py
+    environment:
+      KIVY_AUDIO: sdl2,ffpyplayer
+      XDG_RUNTIME_DIR: /tmp
+      SDL_AUDIODRIVER: pulse
+      PULSE_SERVER: unix:/run/user/1000/pulse/native
+      LD_LIBRARY_PATH: $SNAP/usr/lib:$SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET:$LD_LIBRARY_PATH
     plugs:
       - home
       - desktop
@@ -32,6 +42,7 @@ apps:
       - opengl
       - x11
       - audio-playback
+      - audio-record
       - pulseaudio
     extensions:
       - gnome
