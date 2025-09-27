@@ -37,6 +37,7 @@ jobs:
         shell: bash
         run: |
           cd linux
+          export SDL_VIDEODRIVER=dummy
           python -m PyInstaller tlum.spec
           mkdir -p ./dist/tlum/assets
           cp -r ./../assets/* ./dist/tlum/assets/
