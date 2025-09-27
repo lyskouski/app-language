@@ -6,7 +6,9 @@ on:
 jobs:
   build:
     name: Create Linux Build
-    runs-on: ubuntu-latest
+    # Error: version `GLIBC_2.38' not found
+    # Build Linux app in the oldest Ubuntu for better compatibility
+    runs-on: ubuntu-22.04
 
     steps:
       - uses: actions/checkout@v4
