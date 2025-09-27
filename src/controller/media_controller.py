@@ -3,6 +3,10 @@ import re
 import requests
 import json
 import base64
+import threading
+
+from kivy.core.audio import SoundLoader
+from kivy.clock import Clock
 
 class MediaController:
     lang = 'en'
@@ -49,3 +53,21 @@ class MediaController:
                 print(f"Error: No match for '{word}'")
         else:
             print(f"HTTP error: {response.status_code} for '{word}'")
+
+    @staticmethod
+    def play_sound(path):
+        if not os.path.exists(path):
+            print(f"[AudioPlayer] File not found: {path}")
+            return
+
+        def _play():
+            sound = SoundLoader.load(path)
+            if sound:
+                # Schedule playback on the main thread to avoid SDL2 freeze
+                Clock.schedule_once(lambda dt: sound.play(), 0)
+            else:
+                print(f"[AudioPlayer] Cannot load audio: {path}")
+
+        # Run in a daemon thread
+        threading.Thread(target=_play, daemon=True).start()
+

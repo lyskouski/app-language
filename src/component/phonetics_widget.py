@@ -3,7 +3,6 @@ import os
 from component.harmonica_widget import HarmonicaWidget
 from controller.media_controller import MediaController
 from kivy.app import App
-from kivy.core.audio.audio_sdl2 import MusicSDL2
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.label import Label
@@ -41,6 +40,4 @@ class PhoneticsWidget(HarmonicaWidget):
         layout.add_widget(row)
 
     def play_audio(self, instance):
-        if os.path.exists(instance.file_path):
-            music = MusicSDL2(source=instance.file_path)
-            music.play()
+        MediaController.play_sound(instance.file_path)

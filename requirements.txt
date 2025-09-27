@@ -8,4 +8,5 @@ buildozer
 cython
 pydub
 numpy
-librosa 
+librosa
+ffpyplayer
