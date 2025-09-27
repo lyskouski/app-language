@@ -34,8 +34,10 @@ labels_en = {
     "button_listen": "Listen",
     "button_expand": "Expand",
     "button_edit": "Edit",
+    "button_collapse": "Collapse",
     "button_clear": "Clear",
     "button_choose": "Choose",
+    "button_back": "Back",
     "button_add": "Add",
     "_": "Fatal Error"
 }

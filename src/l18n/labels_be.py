@@ -34,8 +34,10 @@ labels_be = {
     "button_listen": "Праслухаць",
     "button_expand": "Раскрыць",
     "button_edit": "Рэдагаваць",
+    "button_collapse": "Згарнуць",
     "button_clear": "Ачысціць",
     "button_choose": "Выбраць",
+    "button_back": "Вярнуцца",
     "button_add": "Дадаць",
     "_": "Фатальная памылка"
 }

@@ -34,8 +34,10 @@ labels_ru = {
     "button_listen": "Слушать",
     "button_expand": "Раскрыть",
     "button_edit": "Редактировать",
+    "button_collapse": "Свернуть",
     "button_clear": "Очистить",
     "button_choose": "Выбрать",
+    "button_back": "Вернуться",
     "button_add": "Добавить",
     "_": "Фатальная ошибка"
 }
