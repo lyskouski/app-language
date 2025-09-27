@@ -26,7 +26,12 @@ a = Analysis(
         ("../src/l18n/*.py","l18n"),
         ("../src/template/*.kv","template"),
     ],
-    hiddenimports=['kivy.core.audio'],
+    hiddenimports=[
+        'kivy.core.window',
+        'kivy.core.image',
+        'kivy.core.audio',
+        'kivy.core.audio.audio_sdl2'
+    ],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
@@ -39,6 +44,7 @@ pyz = PYZ(a.pure)
 exe = EXE(
     pyz,
     a.scripts,
+    a.binaries + sdl2.dep_bins + glew.dep_bins + angle.dep_bins,
     [],
     exclude_binaries=True,
     name='tlum',
