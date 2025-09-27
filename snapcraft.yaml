@@ -12,12 +12,14 @@ parts:
   tlum:
     plugin: python
     source: .
-    requirements: requirements.txt
     stage-packages:
       - ffmpeg
-    stage:
-      - src
-      - assets
+    override-build: |
+      python3 -m pip install --upgrade pip
+      python3 -m pip install -r requirements.txt
+      snapcraftctl build
+      cp -r src $SNAPCRAFT_PART_INSTALL/
+      cp -r assets $SNAPCRAFT_PART_INSTALL/
 
 apps:
   tlum:
