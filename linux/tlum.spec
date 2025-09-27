@@ -27,9 +27,9 @@ a = Analysis(
         ("../src/template/*.kv","template"),
     ],
     hiddenimports=[
-        'kivy.core.window',
-        'kivy.core.image',
-        'kivy.core.audio',
+        'kivy.core.window.window_sdl2',
+        'kivy.core.window.window_egl_rpi',
+        'kivy.core.image.img_pil',
         'kivy.core.audio.audio_sdl2'
     ],
     hookspath=[],
