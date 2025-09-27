@@ -16,7 +16,7 @@ parts:
       - ffmpeg
     override-build: |
       python3 -m pip install --upgrade pip
-      python3 -m pip install -r requirements.txt
+      python3 -m pip install --prefix=$SNAPCRAFT_PART_INSTALL -r requirements.txt
       snapcraftctl build
       cp -r src $SNAPCRAFT_PART_INSTALL/
       cp -r assets $SNAPCRAFT_PART_INSTALL/
