@@ -1,0 +1,35 @@
+name: Project Verification Steps
+
+on:
+  pull_request:
+
+jobs:
+  build:
+    name: Create Linux Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install requirements
+        shell: bash
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+    
+      - name: Build executable
+        shell: bash
+        run: |
+          cd linux
+          python -m PyInstaller tlum.spec
+          mkdir -p ./dist/tlum/assets
+          cp -r ./../assets/* ./dist/tlum/assets/
+
+      - name: Compress Linux Package
+        run: tar -czf ${env:GITHUB_WORKSPACE}/tlum_Linux.tar.gz .
+        working-directory: linux/dist/tlum
