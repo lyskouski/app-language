@@ -5,7 +5,7 @@ import kivy.resources
 
 from kivy.app import App
 from kivy.clock import Clock
-from kivy.properties import NumericProperty, StringProperty
+from kivy.properties import BooleanProperty, NumericProperty, StringProperty
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.screenmanager import Screen
 
@@ -39,6 +39,7 @@ class StructureScreen(Screen):
         for item in data:
             if isinstance(item, dict):
                 item['parent_source'] = path
+                item['indent'] = None
         return data
 
     def load_data(self):
@@ -57,6 +58,7 @@ class StructureWidget(BoxLayout):
     route_path = StringProperty('')
     locale = StringProperty('')
     locale_to = StringProperty('')
+    is_expanded = BooleanProperty(False)
 
     def expand(self):
         app = App.get_running_app()
@@ -71,8 +73,27 @@ class StructureWidget(BoxLayout):
             if isinstance(item, dict) and item.get('text') == self.text:
                 insert_idx = idx
                 break
+        self.is_expanded = True
         if insert_idx is not None:
             screen.data = screen.data[:insert_idx+1] + new_data + screen.data[insert_idx+1:]
         else:
             screen.data += new_data
+        screen.populate_rv()
+
+    def collapse(self):
+        app = App.get_running_app()
+        screen = app.root.get_screen('structure_screen')
+        data = []
+        indent = None
+        for _, item in enumerate(screen.data):
+            if isinstance(item, dict):
+                if item.get('text') == self.text:
+                    indent = item.get('indent')
+                if indent is not None and indent < item.get('indent'):
+                    continue
+                if indent is not None and indent >= item.get('indent'):
+                    indent = None
+                data += item
+        self.is_expanded = False
+        screen.data = data
         screen.populate_rv()
