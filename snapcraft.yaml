@@ -14,6 +14,10 @@ parts:
     source: .
     stage-packages:
       - ffmpeg
+    override-build: |
+      snapcraftctl build
+      cp -r src $SNAPCRAFT_PART_INSTALL/
+      cp -r assets $SNAPCRAFT_PART_INSTALL/
 
 apps:
   tlum:
