@@ -22,6 +22,8 @@ parts:
       - libsdl2-2.0-0
       - libsdl2-mixer-2.0-0
       - libsndfile1
+      - xclip
+      - xsel
     override-build: |
       python3 -m pip install --upgrade pip
       python3 -m pip install --prefix=$SNAPCRAFT_PART_INSTALL -r requirements.txt
