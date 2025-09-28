@@ -24,17 +24,9 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Install Snapcraft
-        uses: canonical/setup-lxd@v0.1.1
 
-      - name: Build Snap
-        run: |
-          sudo snap install snapcraft --classic
-          snapcraft pack --verbose
-          cp tlum_0.0.1+1_amd64.snap "$GITHUB_WORKSPACE/tlum_LinuxSnap.snap"
-
-      - name: Add Artifact to Build
-        uses: actions/upload-artifact@v4
-        with:
-          name: tlum_LinuxSnap
-          path: tlum_LinuxSnap.snap
+#      - name: Add Artifact to Build
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: tlum_LinuxSnap
+#          path: tlum_LinuxSnap.snap
