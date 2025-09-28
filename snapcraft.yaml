@@ -38,6 +38,8 @@ apps:
       SDL_AUDIODRIVER: pulse
       PULSE_SERVER: unix:/run/user/1000/pulse/native
       LD_LIBRARY_PATH: $SNAP/usr/lib:$SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET:$LD_LIBRARY_PATH
+      KIVY_WINDOW: sdl2
+      KIVY_GL_BACKEND: gl
     plugs:
       - home
       - desktop
