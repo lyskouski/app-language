@@ -42,6 +42,11 @@ jobs:
             build_path: ./
             asset_extension: .snap
             asset_content_type: application/gzip
+          - os: ubuntu-22.04
+            target: LinuxAppImage
+            build_path: linux-appimage
+            asset_extension: .AppImage
+            asset_content_type: application/gzip
 
     steps:
       - uses: actions/checkout@v4
@@ -131,7 +136,7 @@ jobs:
 
 # Linux
       - name: Install system dependencies for Kivy
-        if: matrix.target == 'Linux'
+        if: matrix.target == 'Linux' or matrix.target == 'LinuxAppImage'
         shell: bash
         run: |
           sudo apt-get update
@@ -139,7 +144,7 @@ jobs:
           sudo apt-get install ffmpeg libavdevice-dev libavformat-dev libavfilter-dev libswscale-dev
 
       - name: Build executable
-        if: matrix.target == 'Linux'
+        if: matrix.target == 'Linux' or matrix.target == 'LinuxAppImage'
         shell: bash
         run: |
           cd linux
@@ -154,6 +159,25 @@ jobs:
       - name: Compress Linux Package
         if: matrix.target == 'Linux'
         run: tar -czf "$GITHUB_WORKSPACE/tlum_Linux.tar.gz" .
+        working-directory: ${{ matrix.build_path }}
+
+# Linux: AppImage
+      - name: Patch Manifest
+        if: matrix.target == 'LinuxAppImage'
+        run: |
+          cp -r ./../linux/dist/tlum/* ./AppDir
+          tar -xzf fingrom_Linux.tar.gz -C AppDir
+          sh patch.sh -v "${{ needs.release.outputs.version }}"
+        working-directory: ${{ matrix.build_path }}
+
+      - name: Build Linux AppImage
+        if: matrix.target == 'LinuxAppImage'
+        run: |
+          sudo apt-get install -y libfuse2
+          wget -O appimage-builder-x86_64.AppImage https://github.com/AppImageCrafters/appimage-builder/releases/download/v1.1.0/appimage-builder-1.1.0-x86_64.AppImage
+          chmod +x appimage-builder-x86_64.AppImage
+          ./appimage-builder-x86_64.AppImage --recipe AppImageBuilder.yml
+          cp Tlum_${{ needs.release.outputs.version }}-x86_64.AppImage "$GITHUB_WORKSPACE/tlum_${{ matrix.target }}.AppImage"
         working-directory: ${{ matrix.build_path }}
 
 # Linux: Snap

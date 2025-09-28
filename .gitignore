@@ -6,3 +6,7 @@ __pycache__
 /android/.buildozer
 /linux/build
 /linux/dist
+/linux-appimage/AppDir
+/linux-appimage/appimage-build
+/linux-appimage/*.AppImage
+/linux-appimage/*.zsync
