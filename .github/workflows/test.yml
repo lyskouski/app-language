@@ -1,0 +1,32 @@
+name: Project Verification Steps
+
+on:
+  pull_request:
+
+jobs:
+  build:
+    name: Create Linux Build
+    # Error: version `GLIBC_2.38' not found
+    # Build Linux app in the oldest Ubuntu for better compatibility
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install requirements
+        shell: bash
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+
+#      - name: Add Artifact to Build
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: tlum_LinuxSnap
+#          path: tlum_LinuxSnap.snap

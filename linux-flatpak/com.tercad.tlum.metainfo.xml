@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>com.tercad.tlum</id>
+  <name>Tlum</name>
+  <developer_name>lyskouski</developer_name>
+  <summary>(WIP) Platform-agnostic language learning app</summary>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>CC-BY-NC-ND-4.0</project_license>
+  <recommends>
+    <control>pointing</control>
+    <control>keyboard</control>
+    <control>touch</control>
+  </recommends>
+  <categories>
+    <category>Office</category>
+  </categories>
+  <url type="homepage">https://github.com/lyskouski/app-finance</url>
+  <url type="bugtracker">https://github.com/lyskouski/app-finance/issues</url>
+  <url type="translate">https://github.com/lyskouski/app-finance/tree/main/lib/l10n</url>
+  <description>
+    <p>
+        [DEMO] [Work in Progress: <a href="https://github.com/lyskouski/app-language">https://github.com/lyskouski/app-language</a>]
+        Tlum - cross-platform language learning application leverages the power of natural language processing to 
+        pinpoint pronunciation gaps, computer vision to enhance articulation, and machine learning to 
+        boost vocabulary proficiency. 
+    </p>
+    <p>Features</p>
+    <ul>
+        <li>TBD</li>
+    </ul>
+    <p>
+      If you would like to come with suggestions, report bugs, translate the app, or contribute otherwise,
+      feel free to reach out - 
+      <a href="https://github.com/lyskouski/app-language">https://github.com/lyskouski/app-language</a>!
+    </p>
+    <p>
+        This is the "open-source code" (whitebox) application that welcomes and values contributions from the community.
+        However, there are some limitations when it comes to making external modifications and distributions,
+        as it follows the CC-BY-NC-ND-4.0 license. As the project's author, I am committed to upholding the
+        "Terms of Use" and "Privacy Policy" to ensure the well-being and satisfaction of all users across
+        all platforms (Linux, Windows, macOS, iOS, Android).
+    </p>
+  </description>
+  <screenshots>
+    <screenshot type="default">
+      <image type="source">https://raw.githubusercontent.com/lyskouski/app-language/main/docs/marketing-flow/screenshots/desktop-main-page.png</image>
+      <caption>Home Page</caption>
+    </screenshot>
+    <screenshot>
+      <image type="source">https://raw.githubusercontent.com/lyskouski/app-language/main/docs/marketing-flow/screenshots/desktop-harmonica-form.png</image>
+      <caption>Harmonica Game: Main Screen</caption>
+    </screenshot>
+  </screenshots>
+  <launchable type="desktop-id">com.tercad.tlum.desktop</launchable>
+  <releases>
+    <release version="{VERSION}" date="{DATE}">
+      <description translatable="no">
+        <ul>
+          <li>{CHANGE}</li>
+        </ul>
+      </description>
+    </release>
+  </releases>
+  <content_rating type="oars-1.1">
+  </content_rating>
+  <update_contact>support@tercad.pl</update_contact>
+</component>

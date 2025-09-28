@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Tlum
+Comment=Open-source platform-agnostic language learning application
+Categories=Finance;Utility;
+Icon=com.tercad.tlum
+Exec=tlum
+StartupWMClass=tlum
+X-Purism-FormFactor=Workstation;Mobile;
+X-KDE-FormFactors=desktop;tablet;handset;mediacenter;

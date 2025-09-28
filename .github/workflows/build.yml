@@ -30,6 +30,18 @@ jobs:
             build_path: windows/dist
             asset_extension: .zip
             asset_content_type: application/zip
+          # Error: version `GLIBC_2.38' not found
+          # Build Linux app in the oldest Ubuntu for better compatibility
+          - os: ubuntu-22.04
+            target: Linux
+            build_path: linux/dist/tlum
+            asset_extension: .tar.gz
+            asset_content_type: application/gzip
+          - os: ubuntu-22.04
+            target: LinuxSnap
+            build_path: ./
+            asset_extension: .snap
+            asset_content_type: application/gzip
 
     steps:
       - uses: actions/checkout@v4
@@ -48,6 +60,7 @@ jobs:
 # Windows
       # Generate EXE
       - name: Build executable
+        if: matrix.target == 'Windows'
         shell: powershell
         run: |
           cd windows
@@ -57,6 +70,7 @@ jobs:
           Copy-Item -Path "AppxManifest.xml" -Destination "dist"
 
       - name: Update Version
+        if: matrix.target == 'Windows'
         shell: powershell
         run: |
           $manifestPath = "windows\dist\AppxManifest.xml"
@@ -114,6 +128,61 @@ jobs:
           msstore reconfigure --tenantId ${{ secrets.WINDOWS_TENANT_ID }} --clientId ${{ secrets.WINDOWS_CLIENT_ID }} --clientSecret ${{ secrets.WINDOWS_SECRET }} --sellerId ${{ secrets.WINDOWS_SELLER_ID }}
           msstore publish "${{ github.workspace }}/${{ matrix.build_path }}/tlum.msix" -v -id 9NMKX9HVSVBP
         working-directory: ${{ matrix.build_path }}
+
+# Linux
+      - name: Install system dependencies for Kivy
+        if: matrix.target == 'Linux'
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install libsdl2-2.0-0 libsdl2-dev libsdl2-mixer-2.0-0 libsdl2-mixer-dev
+          sudo apt-get install ffmpeg libavdevice-dev libavformat-dev libavfilter-dev libswscale-dev
+
+      - name: Build executable
+        if: matrix.target == 'Linux'
+        shell: bash
+        run: |
+          cd linux
+          export KIVY_WINDOW=sdl2
+          export SDL_VIDEODRIVER=dummy
+          export KIVY_GL_BACKEND=angle_sdl2
+          export KIVY_LOG_LEVEL=warning
+          python -m PyInstaller tlum.spec
+          mkdir -p ./dist/tlum/assets
+          cp -r ./../assets/* ./dist/tlum/assets/
+
+      - name: Compress Linux Package
+        if: matrix.target == 'Linux'
+        run: tar -czf "$GITHUB_WORKSPACE/tlum_Linux.tar.gz" .
+        working-directory: ${{ matrix.build_path }}
+
+# Linux: Snap
+      - name: Install Snapcraft
+        if: matrix.target == 'LinuxSnap'
+        uses: canonical/setup-lxd@v0.1.1
+
+      - name: Update Version
+        if: matrix.target == 'LinuxSnap'
+        run: |
+          VERSION="${{ needs.release.outputs.version }}+${{ needs.release.outputs.build_number }}"
+          echo "Updating snap version to $VERSION"
+          sed -i "s/^version:.*$/version: $VERSION/" snapcraft.yaml
+          cat snapcraft.yaml | grep version
+
+      - name: Build Snap
+        if: matrix.target == 'LinuxSnap'
+        run: |
+          sudo snap install snapcraft --classic
+          snapcraft pack --verbose
+          cp tlum_${{ needs.release.outputs.version }}+${{ needs.release.outputs.build_number }}_amd64.snap "$GITHUB_WORKSPACE/tlum_${{ matrix.target }}.snap"
+
+## TODO: Resolve failure on start: "Emergency stop (memory image dumped to disk)"
+#      - name: Publish Snap
+#        if: matrix.target == 'LinuxSnap'
+#        env:
+#          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_CREDENTIALS }}
+#        run: |
+#          sudo --preserve-env=SNAPCRAFT_STORE_CREDENTIALS snapcraft upload tlum_${{ matrix.target }}.snap --release=latest/stable
 
 #
       - name: Upload ${{ matrix.target }} Artifact

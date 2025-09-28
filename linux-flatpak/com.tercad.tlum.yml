@@ -1,0 +1,43 @@
+app-id: com.tercad.tlum
+runtime: org.gnome.Platform
+runtime-version: "45"
+sdk: org.gnome.Sdk
+command: tlum
+separate-locales: false
+finish-args:
+  - --socket=fallback-x11
+  - --socket=wayland
+  - --socket=pulseaudio
+  - --share=network
+  - --share=ipc
+  - --device=dri
+  - --filesystem=xdg-documents/.terCAD:create
+modules:
+  - name: Tlum
+    buildsystem: simple
+    only-arches:
+      - x86_64
+    build-commands:
+      - mkdir -p Tlum
+      - tar -xf v{VERSION}.tar.gz -C Tlum
+      - cp -r Tlum /app/Tlum
+      - python -m pip install --upgrade pip
+      - python -m pip install -r /app/Tlum/requirements.txt
+      - cd /app/Tlum/linux
+      - python -m PyInstaller tlum.spec
+      - chmod +x /app/Tlum/linux/dist/tlum/tlum
+      - mkdir -p /app/bin
+      - ln -s /app/Tlum/linux/dist/tlum/tlum /app/bin/tlum
+      - mkdir -p /app/bin/assets
+      - cp -r /app/Tlum/assets/* /app/bin/assets/
+      - export XDG_DATA_HOME="/var/lib/flatpak/exports/share:$XDG_DATA_HOME" 
+      - export XDG_DATA_DIRS="/var/lib/flatpak/exports/share:$XDG_DATA_DIRS" 
+      - install -Dm644 /app/Tlum/com.tercad.tlum.svg /app/share/icons/hicolor/scalable/apps/com.tercad.tlum.svg
+      - install -Dm644 /app/Tlum/com.tercad.tlum.desktop /app/share/applications/com.tercad.tlum.desktop
+      - install -Dm644 com.tercad.tlum.metainfo.xml /app/share/appdata/com.tercad.tlum.metainfo.xml
+    sources:
+      - type: file
+        url: https://github.com/lyskouski/app-language/archive/refs/tags/v{VERSION}.tar.gz
+        sha256: "{SHA256}"
+      - type: file
+        path: com.tercad.tlum.metainfo.xml
