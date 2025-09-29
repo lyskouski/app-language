@@ -2,7 +2,7 @@
 [![License: CC BY-NC-ND 4.0](https://img.shields.io/badge/License-CC_BY--NC--ND_4.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-nd/4.0/) 
 [![Build Status](https://github.com/lyskouski/app-language/actions/workflows/build.yml/badge.svg)](https://github.com/lyskouski/app-language/actions/workflows/build.yml)
 
-**Tlum** - open-source cross-platform language learning application leverages the power of natural language processing to 
+**Tlum** - open source code (whitebox) cross-platform language learning application leverages the power of natural language processing to 
 pinpoint pronunciation gaps, computer vision to enhance articulation, and machine learning to boost vocabulary proficiency.
 
 | Type                     | Alpha Version         | Pre-Release                   | Release                       |
