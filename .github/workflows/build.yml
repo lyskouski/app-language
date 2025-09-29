@@ -173,6 +173,7 @@ jobs:
           wget -O appimage-builder-x86_64.AppImage https://github.com/AppImageCrafters/appimage-builder/releases/download/v1.1.0/appimage-builder-1.1.0-x86_64.AppImage
           chmod +x appimage-builder-x86_64.AppImage
           ./appimage-builder-x86_64.AppImage --recipe AppImageBuilder.yml
+          ls -l
           cp Tlum_${{ needs.release.outputs.version }}-x86_64.AppImage "$GITHUB_WORKSPACE/tlum_${{ matrix.target }}.AppImage"
         working-directory: ${{ matrix.build_path }}
 
