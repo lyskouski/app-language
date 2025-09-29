@@ -40,6 +40,7 @@ class StructureScreen(Screen):
             if isinstance(item, dict):
                 item['parent_source'] = path
                 item['indent'] = None
+                item['is_expanded'] = False
         return data
 
     def load_data(self):
