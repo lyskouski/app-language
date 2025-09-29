@@ -163,7 +163,6 @@ jobs:
         if: matrix.target == 'LinuxAppImage'
         run: |
           cp -r ./../linux/dist/tlum/* ./AppDir
-          tar -xzf fingrom_Linux.tar.gz -C AppDir
           sh patch.sh -v "${{ needs.release.outputs.version }}"
         working-directory: ${{ matrix.build_path }}
 
