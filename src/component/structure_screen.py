@@ -72,8 +72,8 @@ class StructureWidget(BoxLayout):
         for idx, item in enumerate(screen.data):
             if isinstance(item, dict) and item.get('text') == self.text:
                 insert_idx = idx
+                screen.data[idx]['is_expanded'] = True
                 break
-        self.is_expanded = True
         if insert_idx is not None:
             screen.data = screen.data[:insert_idx+1] + new_data + screen.data[insert_idx+1:]
         else:
@@ -87,13 +87,16 @@ class StructureWidget(BoxLayout):
         indent = None
         for _, item in enumerate(screen.data):
             if isinstance(item, dict):
-                if item.get('text') == self.text:
-                    indent = item.get('indent')
-                if indent is not None and indent < item.get('indent'):
-                    continue
-                if indent is not None and indent >= item.get('indent'):
+                curr_indent = item.get('indent', 0)
+                if (curr_indent is None):
+                    curr_indent = 0
+                if indent is not None and indent >= curr_indent:
                     indent = None
-                data += item
-        self.is_expanded = False
+                if item.get('text') == self.text:
+                    indent = curr_indent
+                    item['is_expanded'] = False
+                if indent is not None and indent < curr_indent:
+                    continue
+                data += [item]
         screen.data = data
         screen.populate_rv()
