@@ -136,7 +136,7 @@ jobs:
 
 # Linux
       - name: Install system dependencies for Kivy
-        if: matrix.target == 'Linux' or matrix.target == 'LinuxAppImage'
+        if: ${{ matrix.target == 'Linux' || matrix.target == 'LinuxAppImage' }}
         shell: bash
         run: |
           sudo apt-get update
@@ -144,7 +144,7 @@ jobs:
           sudo apt-get install ffmpeg libavdevice-dev libavformat-dev libavfilter-dev libswscale-dev
 
       - name: Build executable
-        if: matrix.target == 'Linux' or matrix.target == 'LinuxAppImage'
+        if: ${{ matrix.target == 'Linux' || matrix.target == 'LinuxAppImage' }}
         shell: bash
         run: |
           cd linux
