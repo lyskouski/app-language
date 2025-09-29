@@ -71,5 +71,12 @@
         size_hint_x: dp(0.5)
         on_release:
             app.next_screen('structure_update_screen', root)
+    Button:
+        text: app._('button_update', app.locale)
+        disabled: False if root.store_path else True
+        opacity: 1.0 if root.store_path else 0
+        size_hint_x: dp(0.5 if root.store_path else 0.01)
+        on_release:
+            app.next_screen('store_update_screen', root)
     Widget:
         size_hint_x: dp(0.05)
