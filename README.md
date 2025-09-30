@@ -7,7 +7,8 @@ pinpoint pronunciation gaps, computer vision to enhance articulation, and machin
 
 | Type                     | Alpha Version         | Pre-Release                   | Release                       |
 | ------------------------ | ----------------------| ----------------------------- | ----------------------------- |
-| ![Linux](./docs/design-flow/icons/linux.png) Linux (AppImage)         | [tlum_Linux.AppImage](https://github.com/lyskouski/app-language/releases/latest) | [Pling Store](https://www.pling.com/p/2322736/) | [![App Image Hub](./docs/design-flow/badges/appimagehub.png)](https://www.appimagehub.com/p/2322736/) |
+| ![Linux](./docs/design-flow/icons/linux.png) Linux (Snap Store)       | [fingrom_LinuxSnap.snap](https://github.com/lyskouski/app-language/releases/latest) | Blocked [#24](https://github.com/lyskouski/app-language/issues/24) | Blocked [#24](https://github.com/lyskouski/app-language/issues/24) |
+| ![Linux](./docs/design-flow/icons/linux.png) Linux (AppImage)         | [tlum_LinuxAppImage.AppImage](https://github.com/lyskouski/app-language/releases/latest) | [Pling Store](https://www.pling.com/p/2322736/) | [![App Image Hub](./docs/design-flow/badges/appimagehub.png)](https://www.appimagehub.com/p/2322736/) |
 | ![Windows](./docs/design-flow/icons/windows.png) Windows (Partner Center) | [tlum_Windows.zip](https://github.com/lyskouski/app-language/releases/latest) | Not defined | [![Microsoft Store](./docs/design-flow/badges/windows.png)](https://apps.microsoft.com/detail/9nmkx9hvsvbp) |
 
 
