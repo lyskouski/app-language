@@ -19,6 +19,11 @@ class MultilineLabel(Label):
     pass
 
 class RecorderWidget(BoxLayout):
+    loading_widget = None
+
+    def init_data(self, item):
+        self.loading_widget = item
+
     def load_data(self):
         app = App.get_running_app()
         self.recording = False
@@ -65,6 +70,9 @@ class RecorderWidget(BoxLayout):
         for line in app.store:
             key = line[2] if line[2] != '' else line[0] + '.mp3'
             audio_files[media_controller.get(line[0], key)] = line[0]
+            # TODO: Update loading status (not reflecting, just a freeze)
+            #if (self.loading_widget and hasattr(self.loading_widget, 'status')):
+            #    self.loading_widget.status += 1
         return audio_files
     
     def choose_sentence(self, instance):
