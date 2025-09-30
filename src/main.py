@@ -141,10 +141,10 @@ class MainApp(App):
             return
 
         for widget in self.root.walk():
-            if hasattr(widget, 'load_data'):
-                widget.load_data()
             if item is not None and hasattr(widget, 'init_data'):
                 widget.init_data(item)
+            if hasattr(widget, 'load_data'):
+                widget.load_data()
 
 if __name__ == '__main__':
     MainApp().run()

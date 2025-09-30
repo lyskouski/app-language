@@ -1,4 +1,5 @@
+from kivy.properties import NumericProperty
 from kivy.uix.screenmanager import Screen
 
 class LoadingScreen(Screen):
-    pass
+    status = NumericProperty(0)

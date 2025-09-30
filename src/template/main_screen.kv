@@ -67,7 +67,7 @@
         size_hint_x: dp(0.5) if root.route_path else dp(0.01)
         on_release:
             app.next_screen('loading_screen')
-            kivy.clock.Clock.schedule_once(lambda dt: app.next_screen(root.route_path), 1)
+            kivy.clock.Clock.schedule_once(lambda dt: app.next_screen(root.route_path, app.root.get_screen('loading_screen')), 1)
     Button:
         text: app._('button_select', app.locale)
         opacity: 1.0 if not root.route_path else 0

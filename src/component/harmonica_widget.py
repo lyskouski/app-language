@@ -1,4 +1,5 @@
 from kivy.app import App
+from kivy.clock import Clock
 from kivy.properties import BooleanProperty
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.scrollview import ScrollView
@@ -11,6 +12,10 @@ from kivy.uix.widget import Widget
 class HarmonicaWidget(ScrollView):
     origin = BooleanProperty(False)
     secondary = BooleanProperty(False)
+    loading_widget = None
+
+    def init_data(self, item):
+        self.loading_widget = item
 
     def on_kv_post(self, base_widget):
         self.load_data()
@@ -21,9 +26,15 @@ class HarmonicaWidget(ScrollView):
         layout = GridLayout(cols=1, size_hint_y='2dp', spacing=5)
         layout.bind(minimum_height=layout.setter('height'))
 
+        if self.loading_widget and hasattr(self.loading_widget, 'status'):
+            self.loading_widget.status = 0
+        
         app = App.get_running_app()
         for origin, trans, _ in app.store:
             self.add_row(layout, origin, trans)
+            # TODO: Update loading status (not reflecting, just a freeze)
+            if self.loading_widget and hasattr(self.loading_widget, 'status'):
+                self.loading_widget.status += 1
 
         self.add_widget(layout)
 
