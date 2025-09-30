@@ -5,7 +5,7 @@ import json
 import base64
 import threading
 
-from kivy.core.audio import SoundLoader
+from kivy.core.audio.audio_sdl2 import MusicSDL2
 from kivy.clock import Clock
 
 class MediaController:
@@ -61,13 +61,11 @@ class MediaController:
             return
 
         def _play():
-            sound = SoundLoader.load(path)
+            sound = MusicSDL2(source=path)
             if sound:
-                # Schedule playback on the main thread to avoid SDL2 freeze
                 Clock.schedule_once(lambda dt: sound.play(), 0)
             else:
                 print(f"[AudioPlayer] Cannot load audio: {path}")
 
         # Run in a daemon thread
         threading.Thread(target=_play, daemon=True).start()
-

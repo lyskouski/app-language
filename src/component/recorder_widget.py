@@ -71,8 +71,8 @@ class RecorderWidget(BoxLayout):
             key = line[2] if line[2] != '' else line[0] + '.mp3'
             audio_files[media_controller.get(line[0], key)] = line[0]
             # TODO: Update loading status (not reflecting, just a freeze)
-            #if (self.loading_widget and hasattr(self.loading_widget, 'status')):
-            #    self.loading_widget.status += 1
+            if (self.loading_widget and hasattr(self.loading_widget, 'status')):
+                self.loading_widget.status += 1
         return audio_files
     
     def choose_sentence(self, instance):
@@ -136,15 +136,4 @@ class RecorderWidget(BoxLayout):
         print("Comparison result:", result)
 
     def play_audio(self, instance):
-        app = App.get_running_app()
-        if os.path.exists(instance.file_path):
-            if hasattr(self, 'music') and self.music:
-                try:
-                    self.music.stop()
-                except Exception:
-                    pass
-                self.music = None
-            self.music = MusicSDL2(source=instance.file_path)
-            self.music.play()
-        else:
-            self.status_label.text = app._('error_not_found', app.locale)
+        MediaController.play_sound(instance.file_path)
