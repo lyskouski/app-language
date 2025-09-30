@@ -3,6 +3,7 @@ labels_en = {
     "status_select_sentence": "Select a sentence",
     "status_recording": "Recording...",
     "status_recording_stopped": "Recording stopped",
+    "status_loading": "Loading...",
     "field_text": "Title",
     "field_text__hint": "Enter title",
     "field_source": "Source",

@@ -3,6 +3,7 @@ labels_be = {
     "status_select_sentence": "Выберыце сказ",
     "status_recording": "Запіс...",
     "status_recording_stopped": "Запіс спынены",
+    "status_loading": "Загрузка...",
     "field_text": "Загаловак",
     "field_text__hint": "Увядзіце тэкст",
     "field_source": "Крыніца",
