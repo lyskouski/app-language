@@ -3,6 +3,7 @@ labels_uk = {
     "status_select_sentence": "Виберіть речення",
     "status_recording": "Запис...",
     "status_recording_stopped": "Запис зупинено",
+    "status_loading": "Загрузка...",
     "field_text": "Заголовок",
     "field_text__hint": "Введіть текст",
     "field_source": "Джерело",

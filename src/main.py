@@ -13,6 +13,7 @@ import kivy.resources
 import random
 import sys
 
+from component.loading_screen import LoadingScreen
 from component.main_screen import MainScreen
 from component.dictionary_screen import DictionaryScreen
 from component.phonetics_screen import PhoneticsScreen
@@ -94,6 +95,7 @@ class MainApp(App):
             (StructureScreen, 'structure_screen'),
             (StructureUpdateScreen, 'structure_update_screen'),
             (StoreUpdateScreen, 'store_update_screen'),
+            (LoadingScreen, 'loading_screen')
         ]
         for cls, name in screens:
             path = kivy.resources.resource_find(f'template/{name}.kv')

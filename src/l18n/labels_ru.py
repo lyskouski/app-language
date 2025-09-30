@@ -3,6 +3,7 @@ labels_ru = {
     "status_select_sentence": "Выберите предложение",
     "status_recording": "Запись...",
     "status_recording_stopped": "Запись остановлена",
+    "status_loading": "Загрузка...",
     "field_text": "Заголовок",
     "field_text__hint": "Введите текст",
     "field_source": "Источник",
