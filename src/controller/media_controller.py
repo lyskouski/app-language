@@ -5,7 +5,8 @@ import json
 import base64
 import threading
 
-from kivy.core.audio.audio_sdl2 import MusicSDL2
+from kivy.core.audio import SoundLoader
+# from kivy.core.audio.audio_sdl2 import MusicSDL2
 from kivy.clock import Clock
 
 class MediaController:
@@ -61,7 +62,8 @@ class MediaController:
             return
 
         def _play():
-            sound = MusicSDL2(source=path)
+            # sound = MusicSDL2(source=path)
+            sound = SoundLoader.load(path)
             if sound:
                 Clock.schedule_once(lambda dt: sound.play(), 0)
             else:

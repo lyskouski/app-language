@@ -11,6 +11,7 @@ from kivy.uix.button import Button
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
 from kivy.uix.scrollview import ScrollView
+from pydub import AudioSegment
 import sounddevice as sd
 import soundfile as sf
 import threading
@@ -100,8 +101,9 @@ class RecorderWidget(BoxLayout):
         app = App.get_running_app()
         fs = 44100
         max_duration = 15
-        recorded_file = os.path.join(app.get_home_dir(), f'tmp_{int(time.time())}.wav')
-        self.play_button.file_path = recorded_file
+        recorded_file_wav = os.path.join(app.get_home_dir(), f'tmp_{int(time.time())}.wav')
+        recorded_file_mp3 = os.path.join(app.get_home_dir(), f'tmp_{int(time.time())}.mp3')
+        self.play_button.file_path = recorded_file_mp3
 
         buffer = []
         with sd.InputStream(samplerate=fs, channels=1, dtype='int16') as stream:
@@ -112,28 +114,33 @@ class RecorderWidget(BoxLayout):
                 buffer.append(data)
         if buffer:
             self.audio_data = np.concatenate(buffer, axis=0)
-            if hasattr(self, 'music') and self.music:
-                try:
-                    self.music.stop()
-                except Exception:
-                    pass
-                self.music = None
+            # Save as WAV first
             for _ in range(5):
                 try:
-                    if os.path.exists(recorded_file):
-                        os.remove(recorded_file)
+                    if os.path.exists(recorded_file_wav):
+                        os.remove(recorded_file_wav)
                     break
                 except PermissionError:
                     time.sleep(0.2)
-            sf.write(recorded_file, self.audio_data, fs)
+            sf.write(recorded_file_wav, self.audio_data, fs)
+            # Convert mono WAV to stereo MP3 using pydub
+            audio = AudioSegment.from_wav(recorded_file_wav)
+            if audio.channels == 1:
+                audio = audio.set_channels(2)
+            audio.export(recorded_file_mp3, format="mp3")
+            # Optionally remove the temp wav file
+            try:
+                os.remove(recorded_file_wav)
+            except Exception:
+                pass
 
         self.play_button.disabled = False
         self.record_button.disabled = False
         self.status_label.text = app._('status_recording_stopped', app.locale)
         self.record_button.text = app._('button_record', app.locale)
-        print("Comparing:", self.listen_button.file_path, recorded_file)
-        result = AudioComparator().compare_audio(self.listen_button.file_path, recorded_file)
-        print("Comparison result:", result)
+        # print("Comparing:", self.listen_button.file_path, recorded_file_mp3)
+        # result = AudioComparator().compare_audio(self.listen_button.file_path, recorded_file_mp3)
+        # print("Comparison result:", result)
 
     def play_audio(self, instance):
         MediaController.play_sound(instance.file_path)
