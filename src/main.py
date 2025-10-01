@@ -29,6 +29,7 @@ from l18n.labels import labels
 import component.harmonica_widget
 import component.phonetics_widget
 import component.recorder_widget
+import component.card_layout_widget
 
 from kivy.app import App
 from kivy.lang import Builder

@@ -1,4 +1,4 @@
-#:import RecorderWidget component.recorder_widget
+#:import CardLayoutWidget component.card_layout_widget
 
 <CardScreen@Screen>:
     BoxLayout:
@@ -16,41 +16,17 @@
                     on_release: app.next_screen('main_screen')
                     title: app._('game_cards', app.locale)
 
-        StackLayout:
-            orientation: 'lr-tb'
-            spacing: [dp(5), dp(5)]
-            Button:
-                text: 'Pressed!' if self.state == 'down' else 'Error'
-                size_hint: None, None
-                size: max(dp(150), min(self.parent.width * 0.4, self.parent.height * 0.4)), max(dp(150), min(self.parent.width * 0.4, self.parent.height * 0.4))
-                background_normal: app.find_resource('assets/images/error.png')
-                background_down: app.find_resource('assets/images/success.png')
-                color: 1, 1, 1, 1
-                bold: True
-            Button:
-                text: 'Clicked!' if self.state == 'down' else 'Success'
-                size_hint: None, None
-                size: max(dp(150), min(self.parent.width * 0.4, self.parent.height * 0.4)), max(dp(150), min(self.parent.width * 0.4, self.parent.height * 0.4))
-                background_normal: app.find_resource('assets/images/success.png')
-                background_down: app.find_resource('assets/images/success.png')
-                color: 1, 1, 1, 1
-                bold: True
-            Button:
-                text: 'Loading...' if self.state == 'down' else 'Logo'
-                size_hint: None, None
-                size: max(dp(150), min(self.parent.width * 0.4, self.parent.height * 0.4)), max(dp(150), min(self.parent.width * 0.4, self.parent.height * 0.4))
-                background_normal: app.find_resource('assets/images/logo_300.png')
-                background_down: app.find_resource('assets/images/logo_300.png')
-                color: 1, 1, 1, 1
-                bold: True
-            Button:
-                text: 'Active!' if self.state == 'down' else 'Sample'
-                size_hint: None, None
-                size: max(dp(150), min(self.parent.width * 0.4, self.parent.height * 0.4)), max(dp(150), min(self.parent.width * 0.4, self.parent.height * 0.4))
-                background_normal: app.find_resource('assets/images/logo_300.png')
-                background_down: app.find_resource('assets/images/logo_300.png')
-                color: 1, 1, 1, 1
-                bold: True
+        ScrollView:
+            do_scroll_x: False
+            do_scroll_y: True
+            CardLayoutWidget:
+                id: card_widget
+                orientation: 'lr-tb'
+                spacing: dp(5), dp(5)
+                size_hint_y: None
+                height: self.minimum_height
+                size_hint_x: 1
+                width: self.parent.width
 
         ActionBar:
             hidden: False if app.is_mobile else True
@@ -63,3 +39,10 @@
                     with_previous: True
                     on_release: app.next_screen('main_screen')
                     title: app._('game_cards', app.locale)
+
+<CardWidget@Button>:
+    text: root.text_init if self.state == 'down' else root.text_flip
+    size_hint: None, None
+    size: max(dp(150), min(self.parent.width * 0.24, self.parent.height * 0.24)) if self.parent else dp(150), max(dp(150), min(self.parent.width * 0.24, self.parent.height * 0.24)) if self.parent else dp(150)
+    color: 1, 1, 1, 1
+    bold: True
