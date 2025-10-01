@@ -1,0 +1,73 @@
+name: Build Flatpak Package
+
+on:
+  workflow_call:
+    inputs:
+      upload_url:
+        description: "Release page URL"
+        type: string
+      version:
+        description: "Latest tag name"
+        type: string
+      sha:
+        description: "Current git commit"
+        type: string
+      is_release:
+        description: "Attach artifacts to Release"
+        default: false
+        type: boolean
+      is_build:
+        description: "Attach artifacts to Build"
+        default: false
+        type: boolean
+
+jobs:
+  build:
+    name: Create Linux Flatpak Build
+    # Error: undefined symbol: g_once_init_enter_pointer
+    # Build Linux app in the oldest Ubuntu for better compatibility
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Patch Manifest
+        run: |
+          ASSET_URL="https://github.com/lyskouski/app-language/releases/download/v${{ inputs.version }}/tlum_Linux.tar.gz"
+          curl -vLJO -H 'Accept: application/octet-stream' $ASSET_URL
+          sh patch.sh -i ${{ inputs.sha }} -v "${{ inputs.version }}" -s $(sha256sum tlum_Linux.tar.gz | gawk '{ print $1 }')
+        working-directory: linux-flatpak
+
+      - name: Build Linux Flatpak
+        run: |
+          sudo apt-get install -y flatpak flatpak-builder
+          sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+          sudo flatpak install flathub org.gnome.Platform//45 org.gnome.Sdk//45 -y
+          sudo flatpak-builder --install build-dir com.tercad.tlum.yml
+          sudo flatpak build-bundle /var/lib/flatpak/repo tlum_LinuxFlatpak.flatpak com.tercad.tlum
+        working-directory: linux-flatpak
+
+      - name: Store Configs for github.com/flathub
+        uses: actions/upload-artifact@v4
+        with:
+          name: flatpak-configs
+          path: |
+            linux-flatpak/com.tercad.tlum.metainfo.xml
+            linux-flatpak/com.tercad.tlum.yml
+
+      - name: Add Flatpak Artifact to Build
+        if: inputs.is_build
+        uses: actions/upload-artifact@v4
+        with:
+          name: tlum_LinuxFlatpak
+          path: linux-flatpak/tlum_LinuxFlatpak.flatpak
+
+      - name: Add Flatpak Artifact to Release
+        if: inputs.is_release
+        uses: actions/upload-release-asset@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ inputs.upload_url }}
+          asset_path: linux-flatpak/tlum_LinuxFlatpak.flatpak
+          asset_name: tlum_LinuxFlatpak.flatpak
+          asset_content_type: application/zip

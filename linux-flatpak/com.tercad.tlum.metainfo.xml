@@ -20,9 +20,9 @@
   <description>
     <p>
         [DEMO] [Work in Progress: <a href="https://github.com/lyskouski/app-language">https://github.com/lyskouski/app-language</a>]
-        Tlum - cross-platform language learning application leverages the power of natural language processing to 
-        pinpoint pronunciation gaps, computer vision to enhance articulation, and machine learning to 
-        boost vocabulary proficiency. 
+        Tlum - open source code (whitebox) cross-platform language learning application leverages the power of natural
+        language processing to pinpoint pronunciation gaps, computer vision to enhance articulation, and machine 
+        learning to boost vocabulary proficiency. 
     </p>
     <p>Features</p>
     <ul>
