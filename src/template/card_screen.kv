@@ -15,6 +15,16 @@
                     with_previous: True
                     on_release: app.next_screen('main_screen')
                     title: app._('game_cards', app.locale)
+                ActionButton:
+                    text: app._('button_flip', app.locale)
+                    on_release:
+                        root.ids.card_widget.flip = not root.ids.card_widget.flip
+                        root.ids.card_widget.load_data()
+                ActionButton:
+                    text: app._('button_shuffle', app.locale)
+                    on_release:
+                        app.init_store('')
+                        app.refresh_widgets()
 
         ScrollView:
             do_scroll_x: False
@@ -39,6 +49,16 @@
                     with_previous: True
                     on_release: app.next_screen('main_screen')
                     title: app._('game_cards', app.locale)
+                ActionButton:
+                    text: app._('button_flip', app.locale)
+                    on_release:
+                        root.ids.card_widget.flip = not root.ids.card_widget.flip
+                        root.ids.card_widget.load_data()
+                ActionButton:
+                    text: app._('button_shuffle', app.locale)
+                    on_release:
+                        app.init_store('')
+                        app.refresh_widgets()
 
 <CardWidget@Button>:
     text: root.text_init if self.state == 'down' else root.text_flip
