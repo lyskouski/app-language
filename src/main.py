@@ -13,6 +13,7 @@ import kivy.resources
 import random
 import sys
 
+from component.card_screen import CardScreen
 from component.loading_screen import LoadingScreen
 from component.main_screen import MainScreen
 from component.dictionary_screen import DictionaryScreen
@@ -28,6 +29,7 @@ from l18n.labels import labels
 import component.harmonica_widget
 import component.phonetics_widget
 import component.recorder_widget
+import component.card_layout_widget
 
 from kivy.app import App
 from kivy.lang import Builder
@@ -95,7 +97,8 @@ class MainApp(App):
             (StructureScreen, 'structure_screen'),
             (StructureUpdateScreen, 'structure_update_screen'),
             (StoreUpdateScreen, 'store_update_screen'),
-            (LoadingScreen, 'loading_screen')
+            (LoadingScreen, 'loading_screen'),
+            (CardScreen, 'card_screen')
         ]
         for cls, name in screens:
             path = kivy.resources.resource_find(f'template/{name}.kv')
@@ -121,14 +124,18 @@ class MainApp(App):
             for line in lines:
                 if ";" in line:
                     parts = [p.strip() for p in line.strip().split(";")]
-                    if len(parts) == 3:
+                    if len(parts) == 4:
+                        origin, trans, sound, image = parts
+                    elif len(parts) == 3:
                         origin, trans, sound = parts
+                        image = None
                     elif len(parts) == 2:
                         origin, trans = parts
-                        sound = ''
+                        sound = None
+                        image = None
                     else:
                         continue
-                    parsed_data.append((origin, trans, sound))
+                    parsed_data.append((origin, trans, sound, image))
 
             random.shuffle(parsed_data)
             self.store = parsed_data[:25]

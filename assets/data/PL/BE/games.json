@@ -15,6 +15,14 @@
     "locale": "",
     "locale_to": ""
 },{
+    "text": "Карткі",
+    "source": "",
+    "route_path": "card_screen",
+    "logo": "assets/images/game/card.png",
+    "store_path": "",
+    "locale": "",
+    "locale_to": ""
+},{
     "text": "Гаворка",
     "source": "",
     "route_path": "articulation_screen",
