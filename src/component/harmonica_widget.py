@@ -30,7 +30,7 @@ class HarmonicaWidget(ScrollView):
             self.loading_widget.status = 0
         
         app = App.get_running_app()
-        for origin, trans, _ in app.store:
+        for origin, trans, _, __ in app.store:
             self.add_row(layout, origin, trans)
             # TODO: Update loading status (not reflecting, just a freeze)
             if self.loading_widget and hasattr(self.loading_widget, 'status'):

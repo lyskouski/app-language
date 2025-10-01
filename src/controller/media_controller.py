@@ -16,7 +16,7 @@ class MediaController:
         self.path = path
 
     def get(self, word, name=None):
-        if not name:
+        if not name or not name.strip():
             name = f"{word}.mp3"
         filename = f"{self.path}/{name}"
         if not os.path.exists(filename):

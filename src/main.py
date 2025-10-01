@@ -124,14 +124,18 @@ class MainApp(App):
             for line in lines:
                 if ";" in line:
                     parts = [p.strip() for p in line.strip().split(";")]
-                    if len(parts) == 3:
+                    if len(parts) == 4:
+                        origin, trans, sound, image = parts
+                    elif len(parts) == 3:
                         origin, trans, sound = parts
+                        image = None
                     elif len(parts) == 2:
                         origin, trans = parts
-                        sound = ''
+                        sound = None
+                        image = None
                     else:
                         continue
-                    parsed_data.append((origin, trans, sound))
+                    parsed_data.append((origin, trans, sound, image))
 
             random.shuffle(parsed_data)
             self.store = parsed_data[:25]
