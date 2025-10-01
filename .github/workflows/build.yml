@@ -154,6 +154,8 @@ jobs:
           python -m PyInstaller tlum.spec
           mkdir -p ./dist/tlum/assets
           cp -r ./../assets/* ./dist/tlum/assets/
+          cp ./../com.tercad.tlum.svg ./dist/tlum/
+          cp ./../com.tercad.tlum.desktop ./dist/tlum/
 
       - name: Compress Linux Package
         if: matrix.target == 'Linux'
@@ -217,3 +219,19 @@ jobs:
           asset_path: ./tlum_${{ matrix.target }}${{ matrix.asset_extension }}
           asset_name: tlum_${{ matrix.target }}${{ matrix.asset_extension }}
           asset_content_type: ${{ matrix.asset_content_type }}
+
+# Linux: Flatpak
+  build-flatpak:
+    uses: ./.github/workflows/build_package_flatpak.yml
+    permissions:
+      contents: write
+    if: success()
+    needs:
+      - release
+      - build
+    secrets: inherit
+    with:
+      version: ${{ needs.release.outputs.version }}
+      sha: ${{ github.sha }}
+      upload_url: ${{ needs.release.outputs.upload_url }}
+      is_release: true

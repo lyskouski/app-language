@@ -10,3 +10,5 @@ __pycache__
 /linux-appimage/appimage-build
 /linux-appimage/*.AppImage
 /linux-appimage/*.zsync
+linux-flatpak/.flatpak-builder
+linux-flatpak/build-dir
