@@ -16,7 +16,37 @@
                     on_release: app.next_screen('main_screen')
                     title: app._('game_cards', app.locale)
 
-        
+        StackLayout:
+            orientation: 'lr-tb'
+            spacing: [dp(5), dp(5)]
+            Button:
+                text: 'Error'
+                size_hint: (.25, .25)
+                background_normal: app.find_resource('assets/images/error.png')
+                background_down: app.find_resource('assets/images/error.png')
+                color: 1, 1, 1, 1
+                bold: True
+            Button:
+                text: 'Success'
+                size_hint: (.25, .25)
+                background_normal: app.find_resource('assets/images/success.png')
+                background_down: app.find_resource('assets/images/success.png')
+                color: 1, 1, 1, 1
+                bold: True
+            Button:
+                text: 'Logo'
+                size_hint: (.25, .25)
+                background_normal: app.find_resource('assets/images/logo_300.png')
+                background_down: app.find_resource('assets/images/logo_300.png')
+                color: 1, 1, 1, 1
+                bold: True
+            Button:
+                text: 'Sample'
+                size_hint: (.25, .25)
+                background_normal: app.find_resource('assets/images/logo_300.png')
+                background_down: app.find_resource('assets/images/logo_300.png')
+                color: 1, 1, 1, 1
+                bold: True
 
         ActionBar:
             hidden: False if app.is_mobile else True
