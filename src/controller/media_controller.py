@@ -4,9 +4,12 @@ import requests
 import json
 import base64
 import threading
+import platform
 
-from kivy.core.audio import SoundLoader
-# from kivy.core.audio.audio_sdl2 import MusicSDL2
+if platform.system() == 'Windows':
+    from kivy.core.audio.audio_sdl2 import MusicSDL2
+else:
+    from kivy.core.audio import SoundLoader
 from kivy.clock import Clock
 
 class MediaController:
@@ -62,12 +65,14 @@ class MediaController:
             return
 
         def _play():
-            # sound = MusicSDL2(source=path)
-            sound = SoundLoader.load(path)
+            if platform.system() == 'Windows':
+                sound = MusicSDL2(source=path)
+            else:
+                sound = SoundLoader.load(path)
+            
             if sound:
                 Clock.schedule_once(lambda dt: sound.play(), 0)
             else:
                 print(f"[AudioPlayer] Cannot load audio: {path}")
 
-        # Run in a daemon thread
         threading.Thread(target=_play, daemon=True).start()
