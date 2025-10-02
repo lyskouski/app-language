@@ -1,54 +1,54 @@
-jeden ; one ; ; assets/data/PL/images/one.png
-dwa ; two ; ; assets/data/PL/images/two.png
-trzy ; three ; ; assets/data/PL/images/three.png
-cztery ; four ; ; assets/data/PL/images/four.png
-pięć ; five ; ; assets/data/PL/images/five.png
-sześć ; six ; ; assets/data/PL/images/six.png
-siedem ; seven ; ; assets/data/PL/images/seven.png
-osiem ; eight ; ; assets/data/PL/images/eight.png
-dziewięć ; nine ; ; assets/data/PL/images/nine.png
-dziesięć ; ten ; ; assets/data/PL/images/ten.png
-jedenaście ; eleven ; ; assets/data/PL/images/eleven.png
-dwanaście ; twelve ; ; assets/data/PL/images/twelve.png
-trzynaście ; thirteen ; ; assets/data/PL/images/thirteen.png
-czternaście ; fourteen ; ; assets/data/PL/images/fourteen.png
-piętnaście ; fifteen ; ; assets/data/PL/images/fifteen.png
-szesnaście ; sixteen ; ; assets/data/PL/images/sixteen.png
-siedemnaście ; seventeen ; ; assets/data/PL/images/seventeen.png
-osiemnaście ; eighteen ; ; assets/data/PL/images/eighteen.png
-dziewiętnaście ; nineteen ; ; assets/data/PL/images/nineteen.png
-dwadzieścia ; twenty ; ; assets/data/PL/images/twenty.png
-trzydzieści ; thirty ; ; assets/data/PL/images/thirty.png
-czterdzieści ; forty ; ; assets/data/PL/images/forty.png
-pięćdziesiąt ; fifty ; ; assets/data/PL/images/fifty.png
-sześćdziesiąt ; sixty ; ; assets/data/PL/images/sixty.png
-siedemdziesiąt ; seventy ; ; assets/data/PL/images/seventy.png
-osiemdziesiąt ; eighty ; ; assets/data/PL/images/eighty.png
-dziewięćdziesiąt ; ninety ; ; assets/data/PL/images/ninety.png
-sto ; one hundred ; ; assets/data/PL/images/one_hundred.png
-dwieście ; two hundred ; ; assets/data/PL/images/two_hundred.png
-trzysta ; three hundred ; ; assets/data/PL/images/three_hundred.png
-czterysta ; four hundred ; ; assets/data/PL/images/four_hundred.png
-pięćset ; five hundred ; ; assets/data/PL/images/five_hundred.png
-sześćset ; six hundred ; ; assets/data/PL/images/six_hundred.png
-siedemset ; seven hundred ; ; assets/data/PL/images/seven_hundred.png
-osiemset ; eight hundred ; ; assets/data/PL/images/eight_hundred.png
-dziewięćset ; nine hundred ; ; assets/data/PL/images/nine_hundred.png
-oba ; both ; ; assets/data/PL/images/both.png
-obydwa ; both ; ; assets/data/PL/images/both.png
-dwoje ; two (for people) ; ; assets/data/PL/images/two.png
-oboje ; both (people) ; ; assets/data/PL/images/both.png
-troje ; three (people) ; ; assets/data/PL/images/three.png
-czworo ; four (people) ; ; assets/data/PL/images/four.png
-pół ; half ; ; assets/data/PL/images/half.png
-półtora ; one and a half ; ; assets/data/PL/images/one_and_a_half.png
-kilka ; several ; ; assets/data/PL/images/several.png
-kilkanaście ; a dozen or so ; ; assets/data/PL/images/a_dozen_or_so.png
-kilkadziesiąt ; several tens ; ; assets/data/PL/images/several_tens.png
-kilkaset ; several hundreds ; ; assets/data/PL/images/several_hundreds.png
-parę ; a couple ; ; assets/data/PL/images/a_couple.png
-ile ; how many ; ; assets/data/PL/images/how_many.png
-ileż ; how many ; ; assets/data/PL/images/how_many.png
-tyle ; so many ; ; assets/data/PL/images/so_many.png
-wiele ; many ; ; assets/data/PL/images/many.png
-niewiele ; few ; ; assets/data/PL/images/few.png
+jeden ; one ; ; one.png
+dwa ; two ; ; two.png
+trzy ; three ; ; three.png
+cztery ; four ; ; four.png
+pięć ; five ; ; five.png
+sześć ; six ; ; six.png
+siedem ; seven ; ; seven.png
+osiem ; eight ; ; eight.png
+dziewięć ; nine ; ; nine.png
+dziesięć ; ten ; ; ten.png
+jedenaście ; eleven ; ; eleven.png
+dwanaście ; twelve ; ; twelve.png
+trzynaście ; thirteen ; ; thirteen.png
+czternaście ; fourteen ; ; fourteen.png
+piętnaście ; fifteen ; ; fifteen.png
+szesnaście ; sixteen ; ; sixteen.png
+siedemnaście ; seventeen ; ; seventeen.png
+osiemnaście ; eighteen ; ; eighteen.png
+dziewiętnaście ; nineteen ; ; nineteen.png
+dwadzieścia ; twenty ; ; twenty.png
+trzydzieści ; thirty ; ; thirty.png
+czterdzieści ; forty ; ; forty.png
+pięćdziesiąt ; fifty ; ; fifty.png
+sześćdziesiąt ; sixty ; ; sixty.png
+siedemdziesiąt ; seventy ; ; seventy.png
+osiemdziesiąt ; eighty ; ; eighty.png
+dziewięćdziesiąt ; ninety ; ; ninety.png
+sto ; one hundred ; ; one_hundred.png
+dwieście ; two hundred ; ; two_hundred.png
+trzysta ; three hundred ; ; three_hundred.png
+czterysta ; four hundred ; ; four_hundred.png
+pięćset ; five hundred ; ; five_hundred.png
+sześćset ; six hundred ; ; six_hundred.png
+siedemset ; seven hundred ; ; seven_hundred.png
+osiemset ; eight hundred ; ; eight_hundred.png
+dziewięćset ; nine hundred ; ; nine_hundred.png
+oba ; both ; ; both.png
+obydwa ; both ; ; both.png
+dwoje ; two (for people) ; ; two.png
+oboje ; both (people) ; ; both.png
+troje ; three (people) ; ; three.png
+czworo ; four (people) ; ; four.png
+pół ; half ; ; half.png
+półtora ; one and a half ; ; one_and_a_half.png
+kilka ; several ; ; several.png
+kilkanaście ; a dozen or so ; ; a_dozen_or_so.png
+kilkadziesiąt ; several tens ; ; several_tens.png
+kilkaset ; several hundreds ; ; several_hundreds.png
+parę ; a couple ; ; a_couple.png
+ile ; how many ; ; how_many.png
+ileż ; how many ; ; how_many.png
+tyle ; so many ; ; so_many.png
+wiele ; many ; ; many.png
+niewiele ; few ; ; few.png
