@@ -46,8 +46,8 @@ modules:
       - export XDG_DATA_HOME="/var/lib/flatpak/exports/share:$XDG_DATA_HOME"
       - export XDG_DATA_DIRS="/var/lib/flatpak/exports/share:$XDG_DATA_DIRS"
       - install -Dm644 com.tercad.tlum.svg /app/share/icons/hicolor/scalable/apps/com.tercad.tlum.svg
-      - install -Dm644 com.tercad.tlum.desktop /app/share/applications/com.tercad.tlum.desktop
-      - install -Dm644 com.tercad.tlum.metainfo.xml /app/share/appdata/com.tercad.tlum.metainfo.xml
+      - install -Dm644 /app/Tlum/com.tercad.tlum.desktop /app/share/applications/com.tercad.tlum.desktop
+      - install -Dm644 /app/Tlum/com.tercad.tlum.metainfo.xml /app/share/appdata/com.tercad.tlum.metainfo.xml
     sources:
       - type: file
         url: https://github.com/lyskouski/app-language/releases/download/v{VERSION}/tlum_Linux.tar.gz
