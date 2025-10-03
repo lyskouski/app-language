@@ -36,10 +36,10 @@ osiemset ; eight hundred ; ; eight_hundred.png
 dziewięćset ; nine hundred ; ; nine_hundred.png
 oba ; both ; ; both.png
 obydwa ; both ; ; both.png
-dwoje ; two (for people) ; ; two.png
-oboje ; both (people) ; ; both.png
-troje ; three (people) ; ; three.png
-czworo ; four (people) ; ; four.png
+dwoje ; two (for people) ; ; two_people.png
+oboje ; both (people) ; ; both_people.png
+troje ; three (people) ; ; three_people.png
+czworo ; four (people) ; ; four_people.png
 pół ; half ; ; half.png
 półtora ; one and a half ; ; one_and_a_half.png
 kilka ; several ; ; several.png
