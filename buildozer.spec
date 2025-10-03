@@ -353,7 +353,7 @@ android.allow_backup = True
 p4a.setup_py = false
 
 # (str) extra command line arguments to pass when invoking pythonforandroid.toolchain
-p4a.extra_args = --ignore-setup-py
+p4a.extra_args = --ignore-setup-py --blacklist=pyjnius,android --arch=arm64-v8a
 
 # (str) Bootstrap to use for creating the application
 p4a.bootstrap = sdl2
