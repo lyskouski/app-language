@@ -41,7 +41,7 @@ version = 0.0.1
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3,kivy,requests
+requirements = python3,kivy,requests,pyjnius
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
@@ -68,7 +68,7 @@ orientation = portrait
 author = © Viachaslau Lyskouski
 
 # change the major version of python used by the app
-osx.python_version = 3.12
+osx.python_version = 3.11
 
 # Kivy version to use
 osx.kivy_version = 2.3.0
@@ -105,7 +105,7 @@ android.permissions = android.permission.INTERNET, android.permission.RECORD_AUD
 #android.features = android.hardware.usb.host
 
 # (int) Target Android API, should be as high as possible.
-android.api = 29
+android.api = 33
 
 # (int) Minimum API your APK / AAB will support.
 android.minapi = 21
@@ -210,12 +210,12 @@ android.accept_sdk_license = True
 # (bool) Enable AndroidX support. Enable when 'android.gradle_dependencies'
 # contains an 'androidx' package, or any package from Kotlin source.
 # android.enable_androidx requires android.api >= 28
-#android.enable_androidx = True
+android.enable_androidx = True
 
 # (list) add java compile options
 # this can for example be necessary when importing certain java libraries using the 'android.gradle_dependencies' option
 # see https://developer.android.com/studio/write/java8-support for further information
-# android.add_compile_options = "sourceCompatibility = 1.8", "targetCompatibility = 1.8"
+android.add_compile_options = "sourceCompatibility = JavaVersion.VERSION_1_8", "targetCompatibility = JavaVersion.VERSION_1_8"
 
 # (list) Gradle repositories to add {can be necessary for some android.gradle_dependencies}
 # please enclose in double quotes
@@ -287,7 +287,7 @@ android.accept_sdk_license = True
 
 # (list) The Android archs to build for, choices: armeabi-v7a, arm64-v8a, x86, x86_64
 # In past, was `android.arch` as we weren't supporting builds for multiple archs at the same time.
-android.archs = armeabi-v7a
+android.archs = arm64-v8a
 
 # (int) overrides automatic versionCode computation (used in build.gradle)
 # this is not the same as app version and should only be edited if you know what you're doing
@@ -319,16 +319,16 @@ android.allow_backup = True
 #
 
 # (str) python-for-android URL to use for checkout
-#p4a.url =
+p4a.url = https://github.com/kivy/python-for-android.git
 
 # (str) python-for-android fork to use in case if p4a.url is not specified, defaults to upstream (kivy)
-#p4a.fork = kivy
+p4a.fork = kivy
 
 # (str) python-for-android branch to use, defaults to master
-#p4a.branch = master
+p4a.branch = develop
 
 # (str) python-for-android specific commit to use, defaults to HEAD, must be within p4a.branch
-#p4a.commit = HEAD
+p4a.commit = 2024.01.21
 
 # (str) python-for-android git clone directory (if empty, it will be automatically cloned from github)
 #p4a.source_dir =
@@ -353,7 +353,7 @@ android.allow_backup = True
 p4a.setup_py = false
 
 # (str) extra command line arguments to pass when invoking pythonforandroid.toolchain
-#p4a.extra_args =
+p4a.extra_args = --ignore-setup-py --debug
 
 # (str) Bootstrap to use for creating the application
 p4a.bootstrap = sdl2
