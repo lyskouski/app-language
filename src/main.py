@@ -43,13 +43,6 @@ from kivy.utils import platform
 from kivy.base import EventLoop
 EventLoop.ensure_window()
 
-if platform == "android":
-    try:
-        from android_permissions import request_android_permissions
-        request_android_permissions()
-    except Exception as e:
-        print(f"Could not request Android permissions: {e}")
-
 class MainApp(App):
     kv_directory = StringProperty('template')
     is_mobile = BooleanProperty(False)

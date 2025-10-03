@@ -353,7 +353,7 @@ p4a.bootstrap = sdl2
 p4a.setup_py = false
 
 # (str) extra command line arguments to pass when invoking pythonforandroid.toolchain
-p4a.extra_args = --ignore-setup-py
+p4a.extra_args = --ignore-setup-py --blacklist=pyjnius --bootstrap=sdl2
 
 
 [buildozer]
