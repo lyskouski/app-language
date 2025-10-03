@@ -25,16 +25,26 @@ jobs:
       - name: Compile Android package
         run: buildozer android debug
 
-      - name: Compile Android package
+      - name: List build directory contents
         run: ls -l
         working-directory: build
 
-#      - name: Build Snap
-#        run: |
-#          cp tlum_*.snap "$GITHUB_WORKSPACE/tlum_${{ matrix.target }}.snap"
+      - name: Search for APK file and copy to workspace
+        run: |
+          echo "Searching for APK files in build directory..."
+          APK_PATH=$(find build -name "*.apk" -type f | head -1)
+          if [ -n "$APK_PATH" ]; then
+            echo "Found APK at: $APK_PATH"
+            cp "$APK_PATH" "$GITHUB_WORKSPACE/tlum_Android.apk"
+          else
+            echo "ERROR: No APK file found in build directory!"
+            echo "Contents of build directory:"
+            ls -la build/
+            exit 1
+          fi
 
-#      - name: Add Artifact to Build
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: tlum_LinuxSnap
-#          path: tlum_LinuxSnap.snap
+      - name: Add Artifact to Build
+        uses: actions/upload-artifact@v4
+        with:
+          name: tlum_Android
+          path: tlum_Android.apk
