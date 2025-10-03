@@ -1,5 +1,4 @@
 kivy[full]==2.3.0
-kivy_examples
 sounddevice
 soundfile
 pyinstaller
