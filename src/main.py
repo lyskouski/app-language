@@ -44,8 +44,11 @@ from kivy.base import EventLoop
 EventLoop.ensure_window()
 
 if platform == "android":
-    from android.permissions import request_permissions, Permission
-    request_permissions([Permission.RECORD_AUDIO, Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE])
+    try:
+        from android_permissions import request_android_permissions
+        request_android_permissions()
+    except Exception as e:
+        print(f"Could not request Android permissions: {e}")
 
 class MainApp(App):
     kv_directory = StringProperty('template')

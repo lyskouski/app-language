@@ -41,7 +41,7 @@ version = 0.0.1
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3,kivy,requests,pyjnius
+requirements = python3,kivy,requests
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
@@ -319,16 +319,16 @@ android.allow_backup = True
 #
 
 # (str) python-for-android URL to use for checkout
-p4a.url = https://github.com/kivy/python-for-android.git
+#p4a.url =
 
 # (str) python-for-android fork to use in case if p4a.url is not specified, defaults to upstream (kivy)
-p4a.fork = kivy
+#p4a.fork = kivy
 
 # (str) python-for-android branch to use, defaults to master
-p4a.branch = develop
+#p4a.branch = master
 
 # (str) python-for-android specific commit to use, defaults to HEAD, must be within p4a.branch
-p4a.commit = 2024.01.21
+#p4a.commit = HEAD
 
 # (str) python-for-android git clone directory (if empty, it will be automatically cloned from github)
 #p4a.source_dir =
@@ -353,7 +353,7 @@ p4a.commit = 2024.01.21
 p4a.setup_py = false
 
 # (str) extra command line arguments to pass when invoking pythonforandroid.toolchain
-p4a.extra_args = --ignore-setup-py --debug
+p4a.extra_args = --ignore-setup-py
 
 # (str) Bootstrap to use for creating the application
 p4a.bootstrap = sdl2
