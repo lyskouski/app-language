@@ -1,3 +1,6 @@
+# Copyright 2025 The terCAD team. All rights reserved.
+# Use of this source code is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
+
 import os
 import numpy as np
 import time
@@ -30,12 +33,12 @@ class RecorderWidget(BoxLayout):
         self.recording = False
         self.selected_file = None
         self.audio_files = self.load_audio_files()
-        
+
         main_layout = BoxLayout(orientation='vertical')
 
         scroll_view = ScrollView()
         list_layout = GridLayout(cols=1, size_hint_y='1dp', minimum_height='0.8dp', spacing=5)
-        
+
         for file_name, sentence in self.audio_files.items():
             row = BoxLayout(orientation='horizontal', size_hint_min_y=30)
             row.add_widget(MultilineLabel(text=sentence))
@@ -44,7 +47,7 @@ class RecorderWidget(BoxLayout):
             choose_button.bind(on_release=self.choose_sentence)
             row.add_widget(choose_button)
             list_layout.add_widget(row)
-        
+
         scroll_view.add_widget(list_layout)
         main_layout.add_widget(scroll_view)
 
@@ -63,7 +66,7 @@ class RecorderWidget(BoxLayout):
         main_layout.add_widget(control_layout)
         self.clear_widgets()
         self.add_widget(main_layout)
-    
+
     def load_audio_files(self):
         app = App.get_running_app()
         media_controller = MediaController(app.locale_to, app.get_audio_dir())
@@ -75,12 +78,12 @@ class RecorderWidget(BoxLayout):
             if (self.loading_widget and hasattr(self.loading_widget, 'status')):
                 self.loading_widget.status += 1
         return audio_files
-    
+
     def choose_sentence(self, instance):
         self.listen_button.disabled = False
         self.listen_button.file_path = instance.file_path
         self.status_label.text = f"Selected: {self.audio_files.get(instance.file_path, '')}"
-    
+
     def toggle_recording(self, instance):
         app = App.get_running_app()
         if not self.recording:
@@ -96,7 +99,7 @@ class RecorderWidget(BoxLayout):
             self.status_label.text = app._('status_saving', app.locale)
             self.record_button.text = app._('button_processing', app.locale)
             self.record_button.disabled = True
-    
+
     def record_audio(self):
         app = App.get_running_app()
         fs = 44100

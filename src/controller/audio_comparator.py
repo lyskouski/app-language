@@ -1,5 +1,8 @@
-import numpy as np 
-import librosa 
+# Copyright 2025 The terCAD team. All rights reserved.
+# Use of this source code is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
+
+import numpy as np
+import librosa
 import os
 
 from pydub import AudioSegment
@@ -35,7 +38,7 @@ class AudioComparator:
             chunk.export(chunk_path, format="wav")
             chunks.append(chunk_path)
         return chunks
-    
+
 #    def convert_to_spectrogram(self, audio_path):
 #        audio = AudioSegment.from_file(audio_path)
 #        return audio.get_array_of_samples()
@@ -46,9 +49,9 @@ class AudioComparator:
         # Compute the Euclidean distance between the feature vectors
         return np.linalg.norm(features_original - features_recorded)
 
-    def extract_features(self, file_path): 
+    def extract_features(self, file_path):
         y, sr = librosa.load(file_path, sr=None)
-        # Extract MFCCs 
+        # Extract MFCCs
         mfccs = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=13)
         # Take the mean of the MFCCs across time
         return np.mean(mfccs.T, axis=0)

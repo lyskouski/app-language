@@ -1,3 +1,6 @@
+# Copyright 2025 The terCAD team. All rights reserved.
+# Use of this source code is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
+
 import json
 import os
 
@@ -29,7 +32,7 @@ class StructureUpdateScreen(Screen):
             self.locale_to = widget.locale_to
 
     def update_data(self):
-        app = App.get_running_app()  
+        app = App.get_running_app()
         if self.source != '':
             os.makedirs(os.path.join(app.get_home_dir(), os.path.dirname(self.source)), exist_ok=True)
         if self.store_path != '':

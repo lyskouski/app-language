@@ -1,3 +1,6 @@
+# Copyright 2025 The terCAD team. All rights reserved.
+# Use of this source code is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
+
 # Initialization:
 # > python -m venv kivy_venv
 # > source kivy_venv/Scripts/activate [OR] source kivy_venv/bin/activate
@@ -67,7 +70,7 @@ class MainApp(App):
 
     def _(self, key, locale):
         return labels.get(locale, labels.get('EN', {})).get(key, '['+key+']')
-    
+
     def update_locale(self, locale):
         self.locale = locale
 

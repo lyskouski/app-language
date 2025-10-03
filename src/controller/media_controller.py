@@ -1,3 +1,6 @@
+# Copyright 2025 The terCAD team. All rights reserved.
+# Use of this source code is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
+
 import os
 import re
 import requests
@@ -47,7 +50,7 @@ class MediaController:
         }
 
         response = requests.post('https://translate.google.com/_/TranslateWebserverUi/data/batchexecute', data=data)
-        
+
         if response.status_code == 200:
             match = re.search(r'//OE[^\\]+', response.text)
             if match:
@@ -69,7 +72,7 @@ class MediaController:
                 sound = MusicSDL2(source=path)
             else:
                 sound = SoundLoader.load(path)
-            
+
             if sound:
                 Clock.schedule_once(lambda dt: sound.play(), 0)
             else:

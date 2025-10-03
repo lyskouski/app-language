@@ -1,3 +1,6 @@
+# Copyright 2025 The terCAD team. All rights reserved.
+# Use of this source code is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
+
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.properties import BooleanProperty
@@ -28,7 +31,7 @@ class HarmonicaWidget(ScrollView):
 
         if self.loading_widget and hasattr(self.loading_widget, 'status'):
             self.loading_widget.status = 0
-        
+
         app = App.get_running_app()
         for origin, trans, _, __ in app.store:
             self.add_row(layout, origin, trans)
@@ -65,7 +68,7 @@ class HarmonicaWidget(ScrollView):
         for origin, trans, _ in app.store:
             if origin == key or trans == key:
                 return origin if is_origin else trans
-            
+
     def validate(self, instance, key, is_origin):
         text = instance.text.strip()
         pair = self.get_pair(key, is_origin)
