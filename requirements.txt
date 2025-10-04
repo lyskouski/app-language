@@ -3,6 +3,7 @@ sounddevice
 soundfile
 pyinstaller
 buildozer
+python-for-android
 cython
 pydub
 numpy
