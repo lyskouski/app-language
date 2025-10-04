@@ -6,7 +6,7 @@ on:
 jobs:
   build:
     name: Create Linux Build
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
@@ -14,7 +14,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: '3.12'
 
       - name: Install requirements
         run: |
@@ -22,6 +22,12 @@ jobs:
           pip install -r requirements.txt
 
 # To Be Checked ...
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y autoconf libtool libtool-bin automake m4 \
+              libffi-dev pkg-config libltdl-dev
+
       - name: Compile Android package
         run: buildozer android debug
 

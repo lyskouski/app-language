@@ -41,7 +41,7 @@ version = 0.0.1
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3,kivy
+requirements = kivy,requests,pyjinius,jinius
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
@@ -68,7 +68,7 @@ orientation = portrait
 author = © Viachaslau Lyskouski
 
 # change the major version of python used by the app
-osx.python_version = 3.11
+osx.python_version = 3.12
 
 # Kivy version to use
 osx.kivy_version = 2.3.0
@@ -334,7 +334,7 @@ android.allow_backup = True
 #p4a.source_dir =
 
 # (str) The directory in which python-for-android should look for your own build recipes (if any)
-#p4a.local_recipes =
+#p4a.local_recipes = ./android/pyjnius
 
 # (str) Filename to the hook for p4a
 #p4a.hook =
@@ -353,7 +353,7 @@ p4a.bootstrap = sdl2
 p4a.setup_py = false
 
 # (str) extra command line arguments to pass when invoking pythonforandroid.toolchain
-p4a.extra_args = --ignore-setup-py --blacklist=pyjnius --bootstrap=sdl2
+p4a.extra_args = --bootstrap=sdl2
 
 
 [buildozer]
@@ -368,7 +368,7 @@ warn_on_root = 1
 # build_dir = ./.buildozer
 
 # (str) Path to build output (i.e. .apk, .aab, .ipa) storage
-# bin_dir = ./bin
+bin_dir = ./build
 
 #    -----------------------------------------------------------------------------
 #    List as sections
