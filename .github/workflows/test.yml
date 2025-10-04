@@ -6,7 +6,7 @@ on:
 jobs:
   build:
     name: Create Linux Build
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
@@ -22,9 +22,35 @@ jobs:
           pip install -r requirements.txt
 
 # To Be Checked ...
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y autoconf automake libtool m4 \
+              libffi-dev pkg-config libltdl-dev openjdk-17-jdk unzip
 
-#      - name: Add Artifact to Build
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: tlum_LinuxSnap
-#          path: tlum_LinuxSnap.snap
+      - name: Compile Android package
+        run: buildozer android debug
+
+      - name: List build directory contents
+        run: ls -l
+        working-directory: build
+
+      - name: Search for APK file and copy to workspace
+        run: |
+          echo "Searching for APK files in build directory..."
+          APK_PATH=$(find build -name "*.apk" -type f | head -1)
+          if [ -n "$APK_PATH" ]; then
+            echo "Found APK at: $APK_PATH"
+            cp "$APK_PATH" "$GITHUB_WORKSPACE/tlum_Android.apk"
+          else
+            echo "ERROR: No APK file found in build directory!"
+            echo "Contents of build directory:"
+            ls -la build/
+            exit 1
+          fi
+
+      - name: Add Artifact to Build
+        uses: actions/upload-artifact@v4
+        with:
+          name: tlum_Android
+          path: tlum_Android.apk

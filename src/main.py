@@ -43,10 +43,6 @@ from kivy.utils import platform
 from kivy.base import EventLoop
 EventLoop.ensure_window()
 
-if platform == "android":
-    from android.permissions import request_permissions, Permission
-    request_permissions([Permission.RECORD_AUDIO, Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE])
-
 class MainApp(App):
     kv_directory = StringProperty('template')
     is_mobile = BooleanProperty(False)
