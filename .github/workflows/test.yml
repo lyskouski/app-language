@@ -25,8 +25,8 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y autoconf libtool libtool-bin automake m4 \
-              libffi-dev pkg-config libltdl-dev
+          sudo apt-get install -y autoconf automake libtool m4 \
+              libffi-dev pkg-config libltdl-dev openjdk-17-jdk unzip
 
       - name: Compile Android package
         run: buildozer android debug
