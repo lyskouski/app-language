@@ -22,6 +22,14 @@ jobs:
           pip install -r requirements.txt
 
 # To Be Checked ...
+      - name: Patch Kivy for Cython 3.1.x compatibility
+        run: |
+          KIVY_PATH=$(python -c "import kivy; import os; print(os.path.dirname(kivy.__file__))")
+          sed -i 's/cdef long i = long(h \* 6.0)/cdef long i = <long>(h * 6.0)/' "$KIVY_PATH/graphics/context_instructions.pyx"
+          sed -i 's/isinstance(indices, (long, int))/isinstance(indices, int)/' "$KIVY_PATH/graphics/opengl.pyx"
+          sed -i 's/isinstance(data, (long, int))/isinstance(data, int)/' "$KIVY_PATH/graphics/opengl.pyx"
+          sed -i '/def __long__(self):/,+1d' "$KIVY_PATH/weakproxy.pyx"
+
       - name: Install dependencies
         run: |
           sudo apt-get update
