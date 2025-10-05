@@ -16,20 +16,15 @@ jobs:
         with:
           python-version: '3.12'
 
+#      - name: Update Kivy version in requirements.txt to 2.3.1
+#        run: sed -i 's/kivy\[full\]==2.3.0/kivy[full]==2.3.1/' requirements.txt
+
       - name: Install requirements
         run: |
           pip install --upgrade pip
           pip install -r requirements.txt
 
 # To Be Checked ...
-      - name: Patch Kivy for Cython 3.1.x compatibility
-        run: |
-          KIVY_PATH=$(python -c "import kivy; import os; print(os.path.dirname(kivy.__file__))")
-          sed -i 's/cdef long i = long(h \* 6.0)/cdef long i = <long>(h * 6.0)/' "$KIVY_PATH/graphics/context_instructions.pyx"
-          sed -i 's/isinstance(indices, (long, int))/isinstance(indices, int)/' "$KIVY_PATH/graphics/opengl.pyx"
-          sed -i 's/isinstance(data, (long, int))/isinstance(data, int)/' "$KIVY_PATH/graphics/opengl.pyx"
-          sed -i '/def __long__(self):/,+1d' "$KIVY_PATH/weakproxy.pyx"
-
       - name: Install dependencies
         run: |
           sudo apt-get update
@@ -37,7 +32,20 @@ jobs:
               libffi-dev pkg-config libltdl-dev openjdk-17-jdk unzip
 
       - name: Compile Android package
-        run: buildozer android debug
+        run: |
+          buildozer android debug || true
+          # Fix long build issue
+          find .buildozer -name jnius_utils.pxi -exec sed -i 's/isinstance(arg, long) and //' {} +
+          find .buildozer -name jnius_utils.pxi -exec sed -i 's/or isinstance(arg, long)//' {} +
+          find .buildozer -name jnius_conversion.pxi -exec sed -i "s/isinstance(py_arg, (int, long))/isinstance(py_arg, int)/g" {} +
+          find .buildozer -name jnius_conversion.pxi -exec sed -i "s/isinstance(obj, (int, long))/isinstance(obj, int)/g" {} +
+          find .buildozer -name jnius_conversion.pxi -exec sed -i "/long: 'J',/d" {} +
+          find .buildozer -name weakproxy.pyx -exec sed -i '/def __long__(self):/,+1d' {} +
+          find .buildozer -name context_instructions.pyx -exec sed -i 's/long(h \* 6\.0)/int(h * 6.0)/g' {} +
+          find .buildozer -name opengl.pyx -exec sed -i 's/(long, int)/(int)/g' {} +
+          # find . -type f -name 'requirements.txt' -exec sed -i '/^jinius$/d' {} +
+          # Rebuild after fixes
+          buildozer android debug
 
       - name: List build directory contents
         run: ls -l
@@ -47,15 +55,7 @@ jobs:
         run: |
           echo "Searching for APK files in build directory..."
           APK_PATH=$(find build -name "*.apk" -type f | head -1)
-          if [ -n "$APK_PATH" ]; then
-            echo "Found APK at: $APK_PATH"
-            cp "$APK_PATH" "$GITHUB_WORKSPACE/tlum_Android.apk"
-          else
-            echo "ERROR: No APK file found in build directory!"
-            echo "Contents of build directory:"
-            ls -la build/
-            exit 1
-          fi
+          cp "$APK_PATH" "$GITHUB_WORKSPACE/tlum_Android.apk"
 
       - name: Add Artifact to Build
         uses: actions/upload-artifact@v4
