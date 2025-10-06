@@ -31,6 +31,15 @@ jobs:
           sudo apt-get install -y autoconf automake libtool m4 \
               libffi-dev pkg-config libltdl-dev openjdk-17-jdk unzip
 
+      - name: Apply Android Keychain
+        env:
+          ANDROID_JKS: ${{ secrets.ANDROID_JKS }}
+          ANDROID_KEY: ${{ secrets.ANDROID_KEY }}
+        run: |
+          mkdir -p ~/private_keys
+          echo -n "$ANDROID_JKS" | base64 -d > $GITHUB_WORKSPACE/android/app/key.jks
+          echo -n "$ANDROID_KEY" | base64 -d > $GITHUB_WORKSPACE/android/key.properties
+
       - name: Compile Android package
         run: |
           buildozer android debug || true
