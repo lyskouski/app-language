@@ -43,11 +43,6 @@ jobs:
           find .buildozer -name weakproxy.pyx -exec sed -i '/def __long__(self):/,+1d' {} +
           find .buildozer -name context_instructions.pyx -exec sed -i 's/long(h \* 6\.0)/int(h * 6.0)/g' {} +
           find .buildozer -name opengl.pyx -exec sed -i 's/(long, int)/(int)/g' {} +
-          # Mock jinius package
-          mkdir -p /tmp/jinius
-          echo "def __version__(): return '0.0.0'" > /tmp/jinius/__init__.py
-          echo "from setuptools import setup; setup(name='jinius', version='0.0.0', py_modules=['__init__'])" > /tmp/jinius/setup.py
-          python -m pip install /tmp/jinius
           # Rebuild after fixes
           buildozer android debug
 
