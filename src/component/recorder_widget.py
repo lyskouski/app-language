@@ -2,7 +2,13 @@
 # Use of this source code is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
 
 import os
-import numpy as np
+try:
+    import numpy as np
+    HAS_NUMPY = True
+except ImportError:
+    print("Warning: numpy not available, some features may be limited")
+    HAS_NUMPY = False
+    np = None
 import time
 
 from controller.audio_comparator import AudioComparator
