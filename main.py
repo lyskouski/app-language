@@ -31,5 +31,28 @@ import controller.media_controller
 import l18n.labels
 
 if __name__ == '__main__':
-    from main import MainApp
-    MainApp().run()
+    print("=== TLUM APP STARTING ===")
+    print(f"Python version: {sys.version}")
+    print(f"Current directory: {os.getcwd()}")
+    print(f"Python path: {sys.path[:3]}...")  # Show first 3 paths
+
+    try:
+        print("Importing MainApp...")
+        from main import MainApp
+        print("MainApp imported successfully")
+
+        print("Creating MainApp instance...")
+        app = MainApp()
+        print("MainApp instance created")
+
+        print("Starting app.run()...")
+        app.run()
+        print("App finished running")
+
+    except Exception as e:
+        print(f"ERROR: {e}")
+        import traceback
+        traceback.print_exc()
+        print("=== APP CRASHED ===")
+
+    print("=== TLUM APP ENDED ===")
