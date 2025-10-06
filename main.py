@@ -12,6 +12,24 @@ sys.path.insert(0, src_dir)
 
 os.chdir(src_dir)
 
+## Load everything (for distribution) to avoid errors on start:
+import component.card_screen
+import component.loading_screen
+import component.main_screen
+import component.dictionary_screen
+import component.phonetics_screen
+import component.articulation_screen
+import component.store_update_screen
+import component.structure_screen
+import component.structure_update_screen
+import component.harmonica_widget
+import component.phonetics_widget
+import component.recorder_widget
+import component.card_layout_widget
+import controller.audio_comparator
+import controller.media_controller
+import l18n.labels
+
 if __name__ == '__main__':
     from main import MainApp
     MainApp().run()

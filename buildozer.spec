@@ -26,7 +26,7 @@ source.include_patterns = assets/*,src/*,android/*
 source.exclude_exts = spec
 
 # (list) List of directory to exclude (let empty to not exclude anything)
-source.exclude_dirs = tests, bin, venv, .buildozer, .git, .github, .vscode, docs, kivy_venv, linux, mac, windows
+source.exclude_dirs = tests, bin, venv, .buildozer, .git, .github, .vscode, docs, kivy_venv, linux, linux-appimage, linux-flatpak, mac, windows
 
 # (list) List of exclusions using pattern matching
 # Do not prefix with './'
