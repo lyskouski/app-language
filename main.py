@@ -37,6 +37,7 @@ except Exception as e:
     print(f"Warning: Failed to import widget components: {e}")
 
 try:
+    import controller.android_audio
     import controller.audio_comparator
     import controller.media_controller
     print("Successfully imported controllers")
