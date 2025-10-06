@@ -23,7 +23,7 @@ source.include_exts =
 source.include_patterns = assets/*,src/*,android/*
 
 # (list) Source files to exclude (let empty to not exclude anything)
-source.exclude_exts = spec
+source.exclude_exts = spec,keystore
 
 # (list) List of directory to exclude (let empty to not exclude anything)
 source.exclude_dirs = tests, bin, venv, .buildozer, .git, .github, .vscode, docs, kivy_venv, linux, linux-appimage, linux-flatpak, mac, windows

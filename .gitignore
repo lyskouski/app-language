@@ -12,3 +12,4 @@ build
 /linux-appimage/*.zsync
 linux-flatpak/.flatpak-builder
 linux-flatpak/build-dir
+key.keystore

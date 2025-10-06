@@ -33,16 +33,18 @@ jobs:
 
       - name: Apply Android Keychain
         env:
-          ANDROID_JKS: ${{ secrets.ANDROID_JKS }}
-          ANDROID_KEY: ${{ secrets.ANDROID_KEY }}
+          ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
+          ANDROID_KEYSTORE_PSSW: ${{ secrets.ANDROID_KEYSTORE_PSSW }}
         run: |
-          mkdir -p ~/private_keys
-          echo -n "$ANDROID_JKS" | base64 -d > $GITHUB_WORKSPACE/android/app/key.jks
-          echo -n "$ANDROID_KEY" | base64 -d > $GITHUB_WORKSPACE/android/key.properties
+          echo -n "$ANDROID_KEYSTORE" | base64 -d > key.keystore
+          export P4A_RELEASE_KEYSTORE=key.keystore
+          export P4A_RELEASE_KEYSTORE_PASSWD="$ANDROID_KEYSTORE_PSSW"
+          export P4A_RELEASE_KEYALIAS_PASSWD="$ANDROID_KEYSTORE_PSSW"
+          export P4A_RELEASE_KEYALIAS=key
 
       - name: Compile Android package
         run: |
-          buildozer android debug || true
+          buildozer android release || true
           # Fix long build issue
           find .buildozer -name jnius_utils.pxi -exec sed -i 's/isinstance(arg, long) and //' {} +
           find .buildozer -name jnius_utils.pxi -exec sed -i 's/or isinstance(arg, long)//' {} +
@@ -53,7 +55,7 @@ jobs:
           find .buildozer -name context_instructions.pyx -exec sed -i 's/long(h \* 6\.0)/int(h * 6.0)/g' {} +
           find .buildozer -name opengl.pyx -exec sed -i 's/(long, int)/(int)/g' {} +
           # Rebuild after fixes
-          buildozer android debug
+          buildozer android release
 
       - name: List build directory contents
         run: ls -l
@@ -61,12 +63,12 @@ jobs:
 
       - name: Search for APK file and copy to workspace
         run: |
-          echo "Searching for APK files in build directory..."
-          APK_PATH=$(find build -name "*.apk" -type f | head -1)
-          cp "$APK_PATH" "$GITHUB_WORKSPACE/tlum_Android.apk"
+          echo "Searching for AAB files in build directory..."
+          APK_PATH=$(find build -name "*.aab" -type f | head -1)
+          cp "$APK_PATH" "$GITHUB_WORKSPACE/tlum_Android.aab"
 
       - name: Add Artifact to Build
         uses: actions/upload-artifact@v4
         with:
           name: tlum_Android
-          path: tlum_Android.apk
+          path: tlum_Android.aab
