@@ -14,7 +14,7 @@ package.name = tlum
 package.domain = com.tercad
 
 # (str) Source code where the main.py live
-source.dir = src
+source.dir = .
 
 # (list) Source files to include (let empty to include all the files)
 source.include_exts =
@@ -23,10 +23,10 @@ source.include_exts =
 source.include_patterns = assets/*,src/*,android/*
 
 # (list) Source files to exclude (let empty to not exclude anything)
-#source.exclude_exts = spec
+source.exclude_exts = spec
 
 # (list) List of directory to exclude (let empty to not exclude anything)
-#source.exclude_dirs = tests, bin, venv
+source.exclude_dirs = tests, bin, venv, .buildozer, .git, .github, .vscode, docs, kivy_venv, linux, mac, windows
 
 # (list) List of exclusions using pattern matching
 # Do not prefix with './'
@@ -38,6 +38,9 @@ version = 0.0.1
 # (str) Application versioning (method 2)
 # version.regex = __version__ = ['"](.*)['"]
 # version.filename = %(source.dir)s/main.py
+
+# (str) Main module to use
+main.py = src/main.py
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
