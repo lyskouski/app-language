@@ -37,10 +37,10 @@ jobs:
           ANDROID_KEYSTORE_PSSW: ${{ secrets.ANDROID_KEYSTORE_PSSW }}
         run: |
           echo -n "$ANDROID_KEYSTORE" | base64 -d > key.keystore
-          export P4A_RELEASE_KEYSTORE=key.keystore
-          export P4A_RELEASE_KEYSTORE_PASSWD="$ANDROID_KEYSTORE_PSSW"
-          export P4A_RELEASE_KEYALIAS_PASSWD="$ANDROID_KEYSTORE_PSSW"
-          export P4A_RELEASE_KEYALIAS=key
+          echo "P4A_RELEASE_KEYSTORE=$(pwd)/key.keystore" >> $GITHUB_ENV
+          echo "P4A_RELEASE_KEYSTORE_PASSWD=$ANDROID_KEYSTORE_PSSW" >> $GITHUB_ENV
+          echo "P4A_RELEASE_KEYALIAS_PASSWD=$ANDROID_KEYSTORE_PSSW" >> $GITHUB_ENV
+          echo "P4A_RELEASE_KEYALIAS=key" >> $GITHUB_ENV
 
       - name: Compile Android package
         run: |
