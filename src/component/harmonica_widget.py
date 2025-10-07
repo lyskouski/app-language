@@ -65,7 +65,7 @@ class HarmonicaWidget(ScrollView):
 
     def get_pair(self, key, is_origin):
         app = App.get_running_app()
-        for origin, trans, _ in app.store:
+        for origin, trans, _, __ in app.store:
             if origin == key or trans == key:
                 return origin if is_origin else trans
 

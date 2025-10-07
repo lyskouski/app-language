@@ -2,8 +2,8 @@
 __pycache__
 /windows/build
 /windows/dist
-/android/build
-/android/.buildozer
+build
+.buildozer
 /linux/build
 /linux/dist
 /linux-appimage/AppDir
@@ -12,3 +12,4 @@ __pycache__
 /linux-appimage/*.zsync
 linux-flatpak/.flatpak-builder
 linux-flatpak/build-dir
+key.keystore

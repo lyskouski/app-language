@@ -1,9 +1,9 @@
 kivy[full]==2.3.0
-kivy_examples
 sounddevice
 soundfile
 pyinstaller
 buildozer
+python-for-android
 cython
 pydub
 numpy

@@ -6,7 +6,7 @@ on:
 jobs:
   build:
     name: Create Linux Build
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
@@ -15,6 +15,9 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: '3.12'
+
+#      - name: Update Kivy version in requirements.txt to 2.3.1
+#        run: sed -i 's/kivy\[full\]==2.3.0/kivy[full]==2.3.1/' requirements.txt
 
       - name: Install requirements
         run: |
@@ -26,5 +29,5 @@ jobs:
 #      - name: Add Artifact to Build
 #        uses: actions/upload-artifact@v4
 #        with:
-#          name: tlum_LinuxSnap
-#          path: tlum_LinuxSnap.snap
+#          name: tlum_Android
+#          path: tlum_Android.aab

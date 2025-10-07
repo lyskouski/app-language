@@ -1,0 +1,14 @@
+NOTE: https://github.com/kivy/kivy/wiki/Creating-a-Release-APK
+
+$ keytool -importkeystore -srckeystore ./key.jks -destkeystore key.keystore -deststoretype pkcs12Importing keystore ./key.jks to key.keystore...
+Enter destination keystore password:
+Re-enter new password:
+Enter source keystore password:
+Entry for alias key successfully imported.
+Import command completed:  1 entries successfully imported, 0 entries failed or cancelled
+
+
+$ export P4A_RELEASE_KEYSTORE=~/keystores/<your-new-key>.keystore
+$ export P4A_RELEASE_KEYSTORE_PASSWD="<your-keystore-password>"
+$ export P4A_RELEASE_KEYALIAS_PASSWD="<your-key-alias-password>"
+$ export P4A_RELEASE_KEYALIAS=<your-key-alias>

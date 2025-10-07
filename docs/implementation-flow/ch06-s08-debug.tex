@@ -1,0 +1,65 @@
+# Android APK Debugging Guide
+
+## Method 1: Android Studio Logcat
+1. Open Android Studio
+2. Start your virtual device (AVD)
+3. Go to View > Tool Windows > Logcat
+4. Install your APK: `adb install tlum_Android.apk`
+5. Launch the app on the emulator
+6. Watch Logcat for error messages
+7. Filter by your package name: `com.tercad.tlum`
+
+## Method 2: ADB Command Line
+```bash
+# Connect to device
+adb devices
+
+# Install APK
+adb install tlum_Android.apk
+
+# Clear logs and start monitoring
+adb logcat -c
+adb logcat | grep -i "tlum\|python\|kivy\|error\|exception"
+
+# Launch app and watch logs
+adb shell am start -n com.tercad.tlum/.PythonActivity
+```
+
+## Method 3: Specific Python/Kivy Logs
+```bash
+# Monitor Python-specific logs
+adb logcat | grep -i "python"
+
+# Monitor Kivy-specific logs
+adb logcat | grep -i "kivy"
+
+# Monitor crash logs
+adb logcat | grep -i "crash\|fatal\|exception"
+```
+
+## Method 4: App-specific Debugging
+```bash
+# Get detailed app logs
+adb logcat -s "PythonActivity"
+
+# Monitor memory issues
+adb logcat | grep -i "memory\|oom"
+
+# Check permissions issues
+adb logcat | grep -i "permission"
+```
+
+## Common Issues to Look For:
+- Import errors (missing Python modules)
+- File path issues (assets not found)
+- Permission denials
+- Native library loading failures
+- Kivy initialization problems
+- Python version compatibility issues
+
+## Additional Debugging Steps:
+1. Check if app appears in Apps list
+2. Try launching from command line: `adb shell am start -n com.tercad.tlum/.PythonActivity`
+3. Check app installation: `adb shell pm list packages | grep tlum`
+4. Monitor system logs: `adb logcat -b system`
+5. Check for crashes: `adb logcat | grep -i "crash\|fatal\|exception"`

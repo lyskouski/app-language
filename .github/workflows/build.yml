@@ -47,6 +47,11 @@ jobs:
             build_path: linux-appimage
             asset_extension: .AppImage
             asset_content_type: application/gzip
+          - os: ubuntu-latest
+            target: Android
+            build_path: build
+            asset_extension: .aab
+            asset_content_type: application/gzip
 
     steps:
       - uses: actions/checkout@v4
@@ -207,6 +212,59 @@ jobs:
 #          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_CREDENTIALS }}
 #        run: |
 #          sudo --preserve-env=SNAPCRAFT_STORE_CREDENTIALS snapcraft upload tlum_${{ matrix.target }}.snap --release=latest/stable
+
+# Android
+      - name: Install dependencies
+        if: matrix.target == 'Android'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y autoconf automake libtool m4 \
+              libffi-dev pkg-config libltdl-dev openjdk-17-jdk unzip
+
+      - name: Apply Android Keychain
+        if: matrix.target == 'Android'
+        env:
+          ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
+          ANDROID_KEYSTORE_PSSW: ${{ secrets.ANDROID_KEYSTORE_PSSW }}
+        run: |
+          echo -n "$ANDROID_KEYSTORE" | base64 -d > key.keystore
+          echo "P4A_RELEASE_KEYSTORE=$(pwd)/key.keystore" >> $GITHUB_ENV
+          echo "P4A_RELEASE_KEYSTORE_PASSWD=$ANDROID_KEYSTORE_PSSW" >> $GITHUB_ENV
+          echo "P4A_RELEASE_KEYALIAS_PASSWD=$ANDROID_KEYSTORE_PSSW" >> $GITHUB_ENV
+          echo "P4A_RELEASE_KEYALIAS=key" >> $GITHUB_ENV
+
+      - name: Update version and build number
+        if: matrix.target == 'Android'
+        run: |
+          sed -i "s/^version = .*/version = ${{ needs.release.outputs.version }}/" buildozer.spec
+          sed -i "s/^android.numeric_version = .*/android.numeric_version = ${{ needs.release.outputs.build_number }}/" buildozer.spec
+
+          echo "Updated buildozer.spec:"
+          grep "^version = " buildozer.spec
+          grep "^android.numeric_version" buildozer.spec
+
+      - name: Compile Android package
+        if: matrix.target == 'Android'
+        run: |
+          buildozer android release || true
+          # Fix long build issue
+          find .buildozer -name jnius_utils.pxi -exec sed -i 's/isinstance(arg, long) and //' {} +
+          find .buildozer -name jnius_utils.pxi -exec sed -i 's/or isinstance(arg, long)//' {} +
+          find .buildozer -name jnius_conversion.pxi -exec sed -i "s/isinstance(py_arg, (int, long))/isinstance(py_arg, int)/g" {} +
+          find .buildozer -name jnius_conversion.pxi -exec sed -i "s/isinstance(obj, (int, long))/isinstance(obj, int)/g" {} +
+          find .buildozer -name jnius_conversion.pxi -exec sed -i "/long: 'J',/d" {} +
+          find .buildozer -name weakproxy.pyx -exec sed -i '/def __long__(self):/,+1d' {} +
+          find .buildozer -name context_instructions.pyx -exec sed -i 's/long(h \* 6\.0)/int(h * 6.0)/g' {} +
+          find .buildozer -name opengl.pyx -exec sed -i 's/(long, int)/(int)/g' {} +
+          # Rebuild after fixes
+          buildozer android release
+
+      - name: Search for AAB file and copy to workspace
+        if: matrix.target == 'Android'
+        run: |
+          echo "Searching for AAB files in build directory..."
+          APK_PATH=$(find build -name "*.aab" -type f | head -1)
+          cp "$APK_PATH" "$GITHUB_WORKSPACE/tlum_Android.aab"
 
 #
       - name: Upload ${{ matrix.target }} Artifact
