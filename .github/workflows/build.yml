@@ -236,9 +236,12 @@ jobs:
       - name: Update version and build number
         if: matrix.target == 'Android'
         run: |
-          ## TBD: Update version and build number
-          # android.numeric_version = 1
-          # version = 0.0.1
+          sed -i "s/^version = .*/version = ${{ needs.release.outputs.version }}/" buildozer.spec
+          sed -i "s/^android.numeric_version = .*/android.numeric_version = ${{ needs.release.outputs.build_number }}/" buildozer.spec
+
+          echo "Updated buildozer.spec:"
+          grep "^version = " buildozer.spec
+          grep "^android.numeric_version" buildozer.spec
 
       - name: Compile Android package
         if: matrix.target == 'Android'
