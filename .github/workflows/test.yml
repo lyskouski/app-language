@@ -42,6 +42,10 @@ jobs:
           echo "P4A_RELEASE_KEYALIAS_PASSWD=$ANDROID_KEYSTORE_PSSW" >> $GITHUB_ENV
           echo "P4A_RELEASE_KEYALIAS=key" >> $GITHUB_ENV
 
+## TBD: Update version and build number
+# android.numeric_version = 1
+# version = 0.0.1
+
       - name: Compile Android package
         run: |
           buildozer android release || true
