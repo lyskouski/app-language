@@ -27,6 +27,7 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run Ruff Linter
-        run: |
-          # ruff check . --fix --exit-zero
-          ruff check --output-format=github --exclude=main.py .
+        run: ruff check --output-format=github --exclude=main.py .
+
+      - name: Run Unit Tests
+        run: python -m pytest tests/unit
