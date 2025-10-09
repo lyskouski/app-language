@@ -32,7 +32,7 @@ def read_labels_file(file_path):
 
     # Extract key-value pairs
     labels_dict = {}
-    for line in dict_content.split('\n'):
+    for line in dict_content.split('\r\n'):
         line = line.strip()
         if not line or line.startswith('#'):
             continue
