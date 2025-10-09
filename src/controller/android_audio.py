@@ -17,7 +17,7 @@ class AndroidAudioRecorder(EventDispatcher):
         if platform == 'android':
             try:
                 from android.permissions import request_permissions, Permission, check_permission
-                from jnius import autoclass, PythonJavaClass, java_method
+                from jnius import autoclass
 
                 self.MediaRecorder = autoclass('android.media.MediaRecorder')
                 self.AudioSource = autoclass('android.media.MediaRecorder$AudioSource')

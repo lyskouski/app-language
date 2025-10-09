@@ -11,10 +11,9 @@ except ImportError:
     np = None
 import time
 
-from controller.audio_comparator import AudioComparator
+# from controller.audio_comparator import AudioComparator
 from controller.media_controller import MediaController
 from kivy.app import App
-from kivy.core.audio.audio_sdl2 import MusicSDL2
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.gridlayout import GridLayout
