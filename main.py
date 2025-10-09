@@ -58,7 +58,8 @@ if __name__ == '__main__':
 
     try:
         print("Importing MainApp...")
-        from main import MainApp
+        import main
+        MainApp = main.MainApp
         print("MainApp imported successfully")
 
         print("Creating MainApp instance...")
