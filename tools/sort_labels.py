@@ -32,7 +32,7 @@ def read_labels_file(file_path):
 
     # Extract key-value pairs
     labels_dict = {}
-    for line in dict_content.split('\r\n'):
+    for line in dict_content.split('\n'):
         line = line.strip()
         if not line or line.startswith('#'):
             continue
@@ -65,13 +65,13 @@ def write_labels_file(file_path, dict_name, labels_dict, original_content):
     # Replace the dictionary in the original content
     new_content = re.sub(
         r'(labels_\w+\s*=\s*\{)[^}]*(\})',
-        f'\\1\n{new_dict_content}\n\\2',
+        f'\\1\r\n{new_dict_content}\r\n\\2',
         original_content,
         flags=re.DOTALL
     )
 
-    # Write back to file
-    with open(file_path, 'w', encoding='utf-8') as file:
+    # Write back to file with consistent line endings
+    with open(file_path, 'w', encoding='utf-8', newline='') as file:
         file.write(new_content)
 
 def sort_labels_files():
