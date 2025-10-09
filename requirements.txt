@@ -10,3 +10,5 @@ numpy
 librosa
 ffpyplayer
 ruff
+pytest
+coverage
