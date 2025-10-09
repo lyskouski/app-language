@@ -17,7 +17,7 @@ package.domain = com.tercad
 source.dir = .
 
 # (list) Source files to include (let empty to include all the files)
-source.include_exts =
+source.include_exts = py,png,jpg,kv,atlas,json,txt,ttf,wav,mp3,csv
 
 # (list) List of inclusions using pattern matching
 source.include_patterns = assets/*,src/*,android/*
@@ -41,7 +41,7 @@ version = 0.0.1
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3,kivy,numpy,requests
+requirements = python3,kivy,numpy,requests,pydub,ffpyplayer,cython
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
@@ -108,16 +108,16 @@ android.permissions = android.permission.INTERNET, android.permission.RECORD_AUD
 android.api = 35
 
 # (int) Minimum API your APK / AAB will support.
-android.minapi = 21
+android.minapi = 24
 
 # (int) Android SDK version to use
 #android.sdk = 20
 
 # (str) Android NDK version to use
-android.ndk = 25b
+android.ndk = 28b
 
 # (int) Android NDK API to use. This is the minimum API your app will support, it should usually match android.minapi.
-android.ndk_api = 21
+android.ndk_api = 24
 
 # (bool) Use --private data storage (True) or --dir public storage (False)
 #android.private_storage = True
@@ -325,7 +325,7 @@ android.debug_artifact = apk
 #p4a.fork = kivy
 
 # (str) python-for-android branch to use, defaults to master
-#p4a.branch = master
+p4a.branch = develop
 
 # (str) python-for-android specific commit to use, defaults to HEAD, must be within p4a.branch
 #p4a.commit = HEAD
