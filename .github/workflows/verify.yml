@@ -1,0 +1,33 @@
+name: Quality Gates (Pull-Request, Branches)
+
+on:
+  push:
+    branches-ignore:
+      - main
+  pull_request:
+
+permissions: read-all
+
+jobs:
+  verify:
+    name: Create Linux Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install requirements
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Ruff Linter
+        run: ruff check --output-format=github --exclude=main.py .
+
+      - name: Run Unit Tests
+        run: python -m pytest tests/unit/ -p no:flaky -v

@@ -3,8 +3,6 @@
 
 import json
 import os
-import kivy
-import kivy.resources
 
 from kivy.app import App
 from kivy.clock import Clock

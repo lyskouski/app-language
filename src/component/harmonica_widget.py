@@ -2,7 +2,6 @@
 # Use of this source code is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
 
 from kivy.app import App
-from kivy.clock import Clock
 from kivy.properties import BooleanProperty
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.scrollview import ScrollView

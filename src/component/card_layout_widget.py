@@ -23,7 +23,6 @@ class CardLayoutWidget(StackLayout):
             button.text_flip = item[0 if self.flip else 1]
             path = app.get_image_dir()
             image = app.find_resource(f"{path}/{item[3]}" if item[3] else 'assets/images/error.png')
-            print(f"{path}/{item[3]}")
             button.background_normal = image if image else app.find_resource('assets/images/error.png')
             button.background_down = app.find_resource('assets/images/success.png')
             self.add_widget(button)

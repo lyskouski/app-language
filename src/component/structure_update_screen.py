@@ -5,7 +5,7 @@ import json
 import os
 
 from kivy.app import App
-from kivy.properties import NumericProperty, StringProperty
+from kivy.properties import StringProperty
 from kivy.uix.screenmanager import Screen
 
 class StructureUpdateScreen(Screen):

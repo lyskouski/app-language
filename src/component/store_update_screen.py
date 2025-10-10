@@ -2,7 +2,6 @@
 # Use of this source code is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
 
 import os
-import kivy
 
 from kivy.app import App
 from kivy.properties import StringProperty
