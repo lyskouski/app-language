@@ -2,14 +2,6 @@
 # Use of this source code is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
 
 import unittest
-import sys
-import os
-
-# Add src directory to Python path
-current_dir = os.path.dirname(os.path.abspath(__file__))
-project_root = os.path.join(current_dir, '..', '..', '..')
-src_dir = os.path.join(project_root, 'src')
-sys.path.insert(0, src_dir)
 
 from l18n.labels import labels
 

@@ -30,4 +30,4 @@ jobs:
         run: ruff check --output-format=github --exclude=main.py .
 
       - name: Run Unit Tests
-        run: python -m pytest tests/unit
+        run: python -m pytest tests/unit/ -p no:flaky -v
