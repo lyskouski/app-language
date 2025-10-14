@@ -9,6 +9,7 @@ pydub
 numpy
 librosa
 ffpyplayer
+pyobjus
 ruff
 pytest
 coverage
