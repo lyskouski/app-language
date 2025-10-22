@@ -115,7 +115,7 @@ class MainApp(App):
         self.root.current = screen_name
         self.refresh_widgets(widget)
 
-    def init_store(self, data_path):
+    def init_store(self, data_path = None):
         if not data_path:
             data_path = self.store_path
         self.store_path = data_path
