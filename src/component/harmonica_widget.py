@@ -32,8 +32,8 @@ class HarmonicaWidget(ScrollView):
             self.loading_widget.status = 0
 
         app = App.get_running_app()
-        for origin, trans, _, __ in app.store:
-            self.add_row(layout, origin, trans)
+        for item in app.store:
+            self.add_row(layout, item.origin, item.translation)
             # TODO: Update loading status (not reflecting, just a freeze)
             if self.loading_widget and hasattr(self.loading_widget, 'status'):
                 self.loading_widget.status += 1
@@ -64,9 +64,9 @@ class HarmonicaWidget(ScrollView):
 
     def get_pair(self, key, is_origin):
         app = App.get_running_app()
-        for origin, trans, _, __ in app.store:
-            if origin == key or trans == key:
-                return origin if is_origin else trans
+        for item in app.store:
+            if item.origin == key or item.translation == key:
+                return item.origin if is_origin else item.translation
 
     def validate(self, instance, key, is_origin):
         text = instance.text.strip()

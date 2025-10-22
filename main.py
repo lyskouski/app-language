@@ -40,6 +40,7 @@ try:
     import controller.audio_comparator
     import controller.media_controller
     import controller.recorder_controller
+    import controller.store_controller
     print("Successfully imported controllers")
 except Exception as e:
     print(f"Warning: Failed to import controllers: {e}")
