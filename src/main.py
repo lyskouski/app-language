@@ -47,7 +47,7 @@ class MainApp(App):
     kv_directory = StringProperty('template')
     is_mobile = BooleanProperty(False)
     store = ListProperty([])
-    store_path = StringProperty('')
+    store_controller = StoreController()
     locale = StringProperty('')
     locale_to = StringProperty('')
 
@@ -116,13 +116,10 @@ class MainApp(App):
         self.refresh_widgets(widget)
 
     def init_store(self, data_path = None):
-        if not data_path:
-            data_path = self.store_path
-        self.store_path = data_path
-        store_controller = StoreController()
-        store_controller.load_store(self, data_path)
-        store_controller.shuffle_store()
-        self.store = store_controller.get()
+        if data_path:
+            self.store_controller.load_store(self, data_path)
+        self.store_controller.shuffle_store()
+        self.store = self.store_controller.get()
 
     def refresh_widgets(self, item = None):
         if not self.root:

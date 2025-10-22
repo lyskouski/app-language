@@ -45,6 +45,14 @@ class StoreController:
                 parsed_data.append(StoreItem(origin, trans, sound, image))
         self.store = parsed_data
 
+    def mark_positive(self, item: StoreItem):
+        # Implementation for marking an item as known/positive
+        pass
+
+    def mark_negative(self, item: StoreItem):
+        # Implementation for marking an item as unknown/negative
+        pass
+
     def shuffle_store(self):
         random.shuffle(self.store)
 
