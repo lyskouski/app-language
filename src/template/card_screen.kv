@@ -3,6 +3,15 @@
 
 #:import CardLayoutWidget component.card_layout_widget
 
+<CardWidget@Button>:
+    text: root.text_init if self.state == 'down' else root.text_flip
+    size_hint: None, None
+    size: max(dp(150), min(self.parent.width * 0.24, self.parent.height * 0.24)) if self.parent else dp(150), max(dp(150), min(self.parent.width * 0.24, self.parent.height * 0.24)) if self.parent else dp(150)
+    color: 1, 1, 1, 1
+    bold: True
+    outline_color: 0, 0, 0, 1
+    outline_width: 2
+
 <CardScreen@Screen>:
     BoxLayout:
         orientation: 'vertical'
@@ -62,12 +71,3 @@
                     on_release:
                         app.init_store()
                         app.refresh_widgets()
-
-<CardWidget@Button>:
-    text: root.text_init if self.state == 'down' else root.text_flip
-    size_hint: None, None
-    size: max(dp(150), min(self.parent.width * 0.24, self.parent.height * 0.24)) if self.parent else dp(150), max(dp(150), min(self.parent.width * 0.24, self.parent.height * 0.24)) if self.parent else dp(150)
-    color: 1, 1, 1, 1
-    bold: True
-    outline_color: 0, 0, 0, 1
-    outline_width: 2
