@@ -28,13 +28,13 @@ class PhoneticsWidget(HarmonicaWidget):
         elif self.origin and not self.secondary:
             row.add_widget(listen_button)
             text_input = TextInput(text='', multiline=False)
-            text_input.bind(on_text_validate=lambda instance: self.validate(instance, origin, True))
+            text_input.bind(on_text_validate=lambda instance: self.validate(instance, origin, False))
             row.add_widget(text_input)
 
         elif not self.origin and self.secondary:
             row.add_widget(listen_button)
             text_input = TextInput(text='', multiline=False)
-            text_input.bind(on_text_validate=lambda instance: self.validate(instance, origin, False))
+            text_input.bind(on_text_validate=lambda instance: self.validate(instance, trans, True))
             row.add_widget(text_input)
 
         row.add_widget(Widget(size_hint_x=None, width=10))
