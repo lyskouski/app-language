@@ -2,25 +2,24 @@
 # Use of this source code is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
 
 import random
-from typing import List
-
-class StoreItem:
-    origin = ''
-    translation = ''
-    sound = None
-    image = None
-
-    def __init__(self, origin, translation, sound=None, image=None):
-        self.origin = origin
-        self.translation = translation
-        self.sound = sound
-        self.image = image
+from typing import List, Optional
+from model.store_item import StoreItem
+from controller.vocabulary_profiler import VocabularyProfiler
 
 class StoreController:
-    store = []
+    store: List[StoreItem] = []
+    limit: int = 25
+    profiler: Optional[VocabularyProfiler] = None
 
     def load_store(self, app, data_path):
         path = app.find_resource(data_path)
+        try:
+            self.profiler = VocabularyProfiler(
+                app.get_with_home_dir(f"{data_path}.json"),
+                app.get_with_home_dir(f"{data_path}.pkl")
+            )
+        except Exception as e:
+            print(f"⚠️  ML profiling disabled due to error: {e}")
         lines = []
         try:
             with open(path, "r", encoding="utf-8") as f:
@@ -46,15 +45,23 @@ class StoreController:
         self.store = parsed_data
 
     def mark_positive(self, item: StoreItem):
-        # Implementation for marking an item as known/positive
-        pass
+        if self.profiler:
+            self.profiler.mark_positive(item)
 
     def mark_negative(self, item: StoreItem):
-        # Implementation for marking an item as unknown/negative
-        pass
+        if self.profiler:
+            self.profiler.mark_negative(item)
+
+    def set_limit(self, limit:int):
+        self.limit = limit
 
     def shuffle_store(self):
-        random.shuffle(self.store)
+        if self.profiler:
+            self.store = self.profiler.get_prioritized_items(self.store, self.limit)
+            random.shuffle(self.store)
+        else:
+            random.shuffle(self.store)
+            self.store = self.store[:self.limit]
 
-    def get(self, size: int = 25) -> List[StoreItem]:
-        return self.store[:size]
+    def get(self) -> List[StoreItem]:
+        return self.store

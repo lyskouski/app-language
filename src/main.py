@@ -79,6 +79,12 @@ class MainApp(App):
     def get_home_dir(self):
         return os.path.join(App.get_running_app().user_data_dir, ".terCAD", "app-language")
 
+    def get_with_home_dir(self, file_path):
+        path = os.path.join(self.get_home_dir(), file_path)
+        dir_path = os.path.dirname(path) if os.path.splitext(file_path)[1] else path
+        os.makedirs(dir_path, exist_ok=True)
+        return path
+
     def get_audio_dir(self):
         path = os.path.join(self.get_home_dir(), "assets", "data", self.locale_to, "audio")
         os.makedirs(path, exist_ok=True)
