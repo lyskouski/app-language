@@ -1,7 +1,6 @@
 # Copyright 2025 The terCAD team. All rights reserved.
 # Use of this source code is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
 
-import os
 import time
 
 from android import activity
@@ -47,7 +46,7 @@ class RecorderControllerAndroid():
             status_label.text = "[!] Audio recording is not available"
             return False
         app = App.get_running_app()
-        recorded_file = os.path.join(app.get_home_dir(), f'tmp_{int(time.time())}.3gp')
+        recorded_file = app.get_with_home_dir(f'tmp_{int(time.time())}.3gp')
         try:
             self.media_recorder = self.MediaRecorder()
             self.media_recorder.setAudioSource(self.AudioSource.MIC)
