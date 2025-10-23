@@ -69,9 +69,9 @@ class RecorderWidget(BoxLayout):
         app = App.get_running_app()
         media_controller = MediaController(app.locale_to, app.get_audio_dir())
         audio_files = {}
-        for line in app.store:
-            key = line[2] if line[2] != '' else line[0] + '.mp3'
-            audio_files[media_controller.get(line[0], key)] = line[0]
+        for item in app.store:
+            key = item.sound if item.sound else item.origin + '.mp3'
+            audio_files[media_controller.get(item.origin, key)] = item.origin
             # TODO: Update loading status (not reflecting, just a freeze)
             if (self.loading_widget and hasattr(self.loading_widget, 'status')):
                 self.loading_widget.status += 1

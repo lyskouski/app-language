@@ -32,8 +32,8 @@ class HarmonicaWidget(ScrollView):
             self.loading_widget.status = 0
 
         app = App.get_running_app()
-        for origin, trans, _, __ in app.store:
-            self.add_row(layout, origin, trans)
+        for item in app.store:
+            self.add_row(layout, item.origin, item.translation)
             # TODO: Update loading status (not reflecting, just a freeze)
             if self.loading_widget and hasattr(self.loading_widget, 'status'):
                 self.loading_widget.status += 1
@@ -62,22 +62,22 @@ class HarmonicaWidget(ScrollView):
         row.add_widget(Widget(size_hint_x=None, width=10))
         layout.add_widget(row)
 
-    def get_pair(self, key, is_origin):
-        app = App.get_running_app()
-        for origin, trans, _, __ in app.store:
-            if origin == key or trans == key:
-                return origin if is_origin else trans
-
     def validate(self, instance, key, is_origin):
+        app = App.get_running_app()
+        for item in app.store:
+            if item.origin == key and not is_origin or is_origin and item.translation == key:
+                break
         text = instance.text.strip()
-        pair = self.get_pair(key, is_origin)
+        answer = item.origin if is_origin else item.translation
         parent = instance.parent
         parent.remove_widget(instance)
-        if (pair == text):
+        if (answer == text):
             icon = Image(source='assets/images/success.png', size_hint=(None, None), size=(30, 30))
             parent.add_widget(icon)
-            parent.add_widget(Label(text=pair))
+            parent.add_widget(Label(text=answer))
+            app.store_controller.mark_positive(item)
         else:
             icon = Image(source='assets/images/error.png', size_hint=(None, None), size=(30, 30))
             parent.add_widget(icon)
-            parent.add_widget(Label(text=f'[s]{text}[/s] {pair}', markup=True))
+            parent.add_widget(Label(text=f'[s]{text}[/s] {answer}', markup=True))
+            app.store_controller.mark_negative(item)

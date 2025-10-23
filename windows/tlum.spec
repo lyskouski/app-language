@@ -30,6 +30,7 @@ a = Analysis(
         ("..\\src\\component\\*.py","component"),
         ("..\\src\\controller\\*.py","controller"),
         ("..\\src\\l18n\\*.py","l18n"),
+        ("..\\src\\model\\*.py","model"),
         ("..\\src\\template\\*.kv","template"),
     ],
     hiddenimports=['kivy.core.audio.audio_gstplayer'],

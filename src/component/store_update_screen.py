@@ -1,8 +1,6 @@
 # Copyright 2025 The terCAD team. All rights reserved.
 # Use of this source code is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
 
-import os
-
 from kivy.app import App
 from kivy.properties import StringProperty
 from kivy.uix.screenmanager import Screen
@@ -22,7 +20,6 @@ class StoreUpdateScreen(Screen):
 
     def save_data(self):
         app = App.get_running_app()
-        path = os.path.join(app.get_home_dir(), self.store_path)
-        os.makedirs(os.path.dirname(path), exist_ok=True)
+        path = app.get_with_home_dir(self.store_path)
         with open(path, 'w', encoding='utf-8') as f:
             f.write(self.data)

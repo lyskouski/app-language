@@ -13,7 +13,6 @@
 import os
 import kivy
 import kivy.resources
-import random
 import sys
 
 from component.card_screen import CardScreen
@@ -25,6 +24,7 @@ from component.articulation_screen import ArticulationScreen
 from component.store_update_screen import StoreUpdateScreen
 from component.structure_screen import StructureScreen
 from component.structure_update_screen import StructureUpdateScreen
+from controller.store_controller import StoreController
 from l18n.labels import labels
 
 ## Load all widgets (for distribution) to avoid:
@@ -47,7 +47,7 @@ class MainApp(App):
     kv_directory = StringProperty('template')
     is_mobile = BooleanProperty(False)
     store = ListProperty([])
-    store_path = StringProperty('')
+    store_controller = StoreController()
     locale = StringProperty('')
     locale_to = StringProperty('')
 
@@ -78,6 +78,12 @@ class MainApp(App):
 
     def get_home_dir(self):
         return os.path.join(App.get_running_app().user_data_dir, ".terCAD", "app-language")
+
+    def get_with_home_dir(self, file_path):
+        path = os.path.join(self.get_home_dir(), file_path)
+        dir_path = os.path.dirname(path) if os.path.splitext(file_path)[1] else path
+        os.makedirs(dir_path, exist_ok=True)
+        return path
 
     def get_audio_dir(self):
         path = os.path.join(self.get_home_dir(), "assets", "data", self.locale_to, "audio")
@@ -115,37 +121,11 @@ class MainApp(App):
         self.root.current = screen_name
         self.refresh_widgets(widget)
 
-    def init_store(self, data_path):
-        if not data_path:
-            data_path = self.store_path
-        try:
-            self.store_path = data_path
-            path = self.find_resource(data_path)
-            lines = []
-            with open(path, "r", encoding="utf-8") as f:
-                lines = f.readlines()
-            parsed_data = []
-            for line in lines:
-                if ";" in line:
-                    parts = [p.strip() for p in line.strip().split(";")]
-                    if len(parts) == 4:
-                        origin, trans, sound, image = parts
-                    elif len(parts) == 3:
-                        origin, trans, sound = parts
-                        image = None
-                    elif len(parts) == 2:
-                        origin, trans = parts
-                        sound = None
-                        image = None
-                    else:
-                        continue
-                    parsed_data.append((origin, trans, sound, image))
-
-            random.shuffle(parsed_data)
-            self.store = parsed_data[:25]
-
-        except FileNotFoundError:
-            self.store = []
+    def init_store(self, data_path = None):
+        if data_path:
+            self.store_controller.load_store(self, data_path)
+        self.store_controller.shuffle_store()
+        self.store = self.store_controller.get()
 
     def refresh_widgets(self, item = None):
         if not self.root:

@@ -1,7 +1,6 @@
 # Copyright 2025 The terCAD team. All rights reserved.
 # Use of this source code is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
 
-import os
 import time
 
 try:
@@ -86,7 +85,7 @@ class RecorderControllerIos:
         try:
             app = App.get_running_app()
             # Use M4A format for iOS (better compatibility)
-            recorded_file = os.path.join(app.get_home_dir(), f'tmp_{int(time.time())}.m4a')
+            recorded_file = app.get_with_home_dir(f'tmp_{int(time.time())}.m4a')
             # Create file URL
             file_url = self.NSURL.fileURLWithPath_(objc_str(recorded_file))
             # Recording settings
