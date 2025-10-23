@@ -23,7 +23,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [Windows]
+        target: [Windows, Linux, LinuxSnap, LinuxAppImage, Android]
         include:
           - os: windows-latest
             target: Windows
@@ -65,10 +65,16 @@ jobs:
         run: |
           pip install --upgrade pip
           pip install -r requirements.txt
-          if [[ "${{ matrix.target }}" == "iOS" ]]; then
-            pip install pyobjus
-          fi
-        shell: bash
+
+# iOS / macOS - unified steps
+      - name: Install Apple requirements
+        if: matrix.target == 'iOS' || matrix.target == 'macOS'
+        run: |
+          pip install pyobjus
+
+# iOS [TBD]
+
+# macOS [TBD]
 
 # Windows
       # Generate EXE
