@@ -11,7 +11,8 @@
         id: breadcrumb_view
         viewclass: "BreadcrumbWidget"
         data: []
-        size_hint_y: dp(0.17)
+        height: dp(30)
+        size_hint_y: None
         RecycleBoxLayout:
             orientation: "horizontal"
             height: self.minimum_height
@@ -22,6 +23,7 @@
     RecycleView:
         id: recycle_view
         viewclass: "RootItemWidget"
+        size_hint_y: 1
         RecycleBoxLayout:
             default_size: None, dp(48)
             default_size_hint: 1, None
@@ -32,6 +34,8 @@
         size_hint_y: dp(0.04)
     BoxLayout:
         orientation: "horizontal"
+        height: dp(40)
+        size_hint_y: None
         Widget:
             size_hint_x: dp(0.02)
         Button:
