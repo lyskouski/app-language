@@ -5,8 +5,8 @@ on:
 
 jobs:
   build:
-    name: Create Linux Build
-    runs-on: ubuntu-latest
+    name: Create Windows Build
+    runs-on: windows-latest
 
     steps:
       - uses: actions/checkout@v4
