@@ -8,6 +8,7 @@ from controller.vocabulary_profiler import VocabularyProfiler
 
 class StoreController:
     store: List[StoreItem] = []
+    response: List[StoreItem] = []
     limit: int = 25
     profiler: Optional[VocabularyProfiler] = None
 
@@ -57,11 +58,11 @@ class StoreController:
 
     def shuffle_store(self):
         if self.profiler:
-            self.store = self.profiler.get_prioritized_items(self.store, self.limit)
-            random.shuffle(self.store)
+            self.response = self.profiler.get_prioritized_items(self.store, self.limit)
+            random.shuffle(self.response)
         else:
             random.shuffle(self.store)
-            self.store = self.store[:self.limit]
+            self.response = self.store[:self.limit]
 
     def get(self) -> List[StoreItem]:
-        return self.store
+        return self.response
