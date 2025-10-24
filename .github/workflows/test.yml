@@ -25,9 +25,71 @@ jobs:
           pip install -r requirements.txt
 
 # To Be Checked ...
+      # Generate EXE
+      - name: Build executable
+        shell: powershell
+        run: |
+          cd windows
+          python -m PyInstaller tlum.spec
+          New-Item -ItemType Directory -Force -Path dist/assets
+          Copy-Item -Path "..\assets\*" -Destination ".\dist\assets\" -Recurse
+          Copy-Item -Path "AppxManifest.xml" -Destination "dist"
 
-#      - name: Add Artifact to Build
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: tlum_Android
-#          path: tlum_Android.aab
+      - name: Update Version
+        shell: powershell
+        run: |
+          $manifestPath = "windows\dist\AppxManifest.xml"
+          (Get-Content $manifestPath -Raw) -replace '(<Identity[^>]*\sVersion=")[^"]+(")', "`${1}0.0.10.0`${2}" | Set-Content $manifestPath -Encoding utf8
+
+        # Generate ZIP for Artifacts
+      - name: Compress Windows Package
+        run: compress-archive -Path * -DestinationPath ${env:GITHUB_WORKSPACE}/tlum_Windows.zip
+        working-directory: ${{ matrix.build_path }}
+
+      # Generate MSIX
+      - name: Install Chocolatey
+        shell: powershell
+        run: |
+          Set-ExecutionPolicy Bypass -Scope Process -Force
+          [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
+          iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+
+      - name: Verify Chocolatey
+        shell: powershell
+        run: choco -v
+
+      - name: Install Windows 10 SDK
+        shell: powershell
+        run: choco install windows-sdk-10.0 -y --ignore-checksums
+
+      - name: Locate Make Appx
+        id: find_makeappx
+        shell: powershell
+        run: |
+          $makeappx = Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\bin" -Recurse -Filter makeappx.exe |
+                      Where-Object { $_.FullName -match '\\x64\\' } |
+                      Select-Object -First 1 -ExpandProperty FullName
+          if (-not $makeappx) { throw "makeappx.exe (x64) not found!" }
+          echo "Found makeappx.exe at $makeappx"
+          echo "MAKEAPPX=$makeappx" >> $env:GITHUB_ENV
+
+      - name: Package Application
+        shell: powershell
+        run: |
+          & "${{ env.MAKEAPPX }}" pack /d "windows/dist" /p "windows/dist/tlum.msix"
+
+      # Publish to Microsoft Store
+      - name: Setup MS Store CLI
+        uses: microsoft/setup-msstore-cli@ec39acd1144351ab7a9d8d25e12bf6fd1ba03150
+
+      - name: Publish MSIX to the Microsoft Store
+        run: |
+          msstore reconfigure --tenantId ${{ secrets.WINDOWS_TENANT_ID }} --clientId ${{ secrets.WINDOWS_CLIENT_ID }} --clientSecret ${{ secrets.WINDOWS_SECRET }} --sellerId ${{ secrets.WINDOWS_SELLER_ID }}
+          msstore publish "${{ github.workspace }}/windows/dist/tlum.msix" -v -id 9NMKX9HVSVBP
+        working-directory: windows/dist
+
+      - name: Add Artifact to Build
+        uses: actions/upload-artifact@v4
+        with:
+          name: tlum_Windows.zip
+          path: tlum_Windows.zip
