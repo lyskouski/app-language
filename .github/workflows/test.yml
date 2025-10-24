@@ -84,7 +84,7 @@ jobs:
 
       - name: Publish MSIX to the Microsoft Store
         run: |
-          msstore reconfigure --tenantId ${{ secrets.WINDOWS_TENANT_ID }} --clientId ${{ secrets.WINDOWS_CLIENT_ID }} --clientSecret ${{ secrets.WINDOWS_SECRET }} --sellerId ${{ secrets.WINDOWS_SELLER_ID }}
+          msstore reconfigure --verbose --tenantId ${{ secrets.WINDOWS_TENANT_ID }} --clientId ${{ secrets.WINDOWS_CLIENT_ID }} --clientSecret ${{ secrets.WINDOWS_SECRET }} --sellerId ${{ secrets.WINDOWS_SELLER_ID }}
           msstore publish "${{ github.workspace }}/windows/dist/tlum.msix" -v -id 9NMKX9HVSVBP
         working-directory: windows/dist
 
