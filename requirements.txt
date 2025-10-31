@@ -6,7 +6,7 @@ buildozer
 python-for-android
 cython
 pydub
-numpy
+numpy==1.24.4
 librosa
 ruff
 pytest
