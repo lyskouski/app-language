@@ -14,7 +14,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: '3.12'
 
 #      - name: Update Kivy version in requirements.txt to 2.3.1
 #        run: sed -i 's/kivy\[full\]==2.3.0/kivy[full]==2.3.1/' requirements.txt
@@ -59,7 +59,7 @@ jobs:
           # buildozer android debug || true
 
           # Rebuild after fixes
-          buildozer android debug
+          buildozer android debug --verbose
 
       - name: Search for APK file and copy to workspace
         run: |
