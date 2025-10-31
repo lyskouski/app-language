@@ -41,7 +41,7 @@ version = 0.0.1
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3,kivy==2.3.0,numpy,requests,pydub,cython==3.0.10
+requirements = python3==3.11.7,kivy==2.3.0,numpy,requests,pydub,cython==3.0.10
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
@@ -331,7 +331,7 @@ android.debug_artifact = apk
 p4a.branch = develop
 
 # (str) python-for-android specific commit to use, defaults to HEAD, must be within p4a.branch
-p4a.commit = HEAD
+#p4a.commit = HEAD
 
 # (str) python-for-android git clone directory (if empty, it will be automatically cloned from github)
 #p4a.source_dir =
