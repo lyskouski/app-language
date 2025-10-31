@@ -66,11 +66,15 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt
 
-# iOS / macOS - unified steps
       - name: Install Apple requirements
         if: matrix.target == 'iOS' || matrix.target == 'macOS'
         run: |
           pip install pyobjus
+
+      - name: Install Linux requirements
+        if: startsWith(matrix.target, 'Linux')
+        run: |
+          pip install ffpyplayer
 
 # iOS [TBD]
 

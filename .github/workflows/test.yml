@@ -25,9 +25,51 @@ jobs:
           pip install -r requirements.txt
 
 # To Be Checked ...
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y autoconf automake libtool m4 \
+              libffi-dev pkg-config libltdl-dev openjdk-17-jdk unzip
+          # Error: App must support 16 KB memory page sizes
+          pip install --upgrade git+https://github.com/kivy/python-for-android.git@develop
+          pip install --upgrade git+https://github.com/kivy/buildozer.git@master
 
-#      - name: Add Artifact to Build
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: tlum_Android
-#          path: tlum_Android.aab
+      - name: Apply Android Keychain
+        env:
+          ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
+          ANDROID_KEYSTORE_PSSW: ${{ secrets.ANDROID_KEYSTORE_PSSW }}
+        run: |
+          echo -n "$ANDROID_KEYSTORE" | base64 -d > key.keystore
+          echo "P4A_RELEASE_KEYSTORE=$(pwd)/key.keystore" >> $GITHUB_ENV
+          echo "P4A_RELEASE_KEYSTORE_PASSWD=$ANDROID_KEYSTORE_PSSW" >> $GITHUB_ENV
+          echo "P4A_RELEASE_KEYALIAS_PASSWD=$ANDROID_KEYSTORE_PSSW" >> $GITHUB_ENV
+          echo "P4A_RELEASE_KEYALIAS=key" >> $GITHUB_ENV
+
+      - name: Update version and build number
+        run: |
+          sed -i "s/^version = .*/version = 0.0.10/" buildozer.spec
+          sed -i "s/^android.numeric_version = .*/android.numeric_version = 10/" buildozer.spec
+
+          echo "Updated buildozer.spec:"
+          grep "^version = " buildozer.spec
+          grep "^android.numeric_version" buildozer.spec
+
+      - name: Compile Android package
+        run: |
+          # buildozer android debug || true
+
+          # Rebuild after fixes
+          buildozer android debug --verbose
+
+      - name: Search for APK file and copy to workspace
+        run: |
+          echo "Searching for APK files in build directory..."
+          APK_PATH=$(find build -name "*.apk" -type f | head -1)
+          cp "$APK_PATH" "$GITHUB_WORKSPACE/tlum_Android.apk"
+
+
+      - name: Add Artifact to Build
+        uses: actions/upload-artifact@v4
+        with:
+          name: tlum_Android
+          path: tlum_Android.apk
