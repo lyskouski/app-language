@@ -41,7 +41,7 @@ version = 0.0.1
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3==3.11.14,kivy==2.3.0,numpy==1.24.4,requests,pydub,cython
+requirements = python3==3.11.14,kivy==2.3.0,numpy,requests,pydub,cython
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
@@ -68,7 +68,7 @@ orientation = landscape
 author = © Viachaslau Lyskouski
 
 # change the major version of python used by the app
-osx.python_version = 3.12
+osx.python_version = 3.11
 
 # Kivy version to use
 osx.kivy_version = 2.3.0
@@ -78,7 +78,7 @@ osx.kivy_version = 2.3.0
 #
 
 # (str) Android Python version to use (avoid compatibility issues)
-android.python_version = 3.12
+android.python_version = 3.11
 
 # (bool) Indicate if the application should be fullscreen or not
 fullscreen = 1
