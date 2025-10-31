@@ -4,7 +4,7 @@ soundfile
 pyinstaller
 buildozer
 python-for-android
-cython
+cython>=3.0.10
 pydub
 numpy
 librosa
