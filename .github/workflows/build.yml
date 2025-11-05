@@ -59,18 +59,22 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.12'
+          python-version: '3.11'
 
       - name: Install requirements
         run: |
           pip install --upgrade pip
           pip install -r requirements.txt
 
-# iOS / macOS - unified steps
       - name: Install Apple requirements
         if: matrix.target == 'iOS' || matrix.target == 'macOS'
         run: |
           pip install pyobjus
+
+      - name: Install Linux requirements
+        if: startsWith(matrix.target, 'Linux')
+        run: |
+          pip install ffpyplayer
 
 # iOS [TBD]
 
@@ -230,8 +234,8 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y autoconf automake libtool m4 \
               libffi-dev pkg-config libltdl-dev openjdk-17-jdk unzip
-          # Error: App must support 16 KB memory page sizes
-          pip install --upgrade git+https://github.com/kivy/python-for-android.git@develop
+          # Pin to a commit that supports Python 3.11 properly
+          pip install --upgrade git+https://github.com/kivy/python-for-android.git@9720dbd5489ebf0e8490a9fb930828f4426b8a20
           pip install --upgrade git+https://github.com/kivy/buildozer.git@master
 
       - name: Apply Android Keychain
@@ -258,17 +262,29 @@ jobs:
 
       - name: Compile Android package
         if: matrix.target == 'Android'
+        env:
+          # Force Python version consistency
+          PYTHONHOME: ""
+          PYTHONPATH: ""
+          # Ensure p4a uses system Python
+          P4A_PYTHON_VERSION: "3.11"
+          # Skip problematic Kivy features
+          KIVY_DEPS_ROOT: ""
+          USE_SDL2: "1"
         run: |
           buildozer android release || true
-          # Fix long build issue
-          find .buildozer -name jnius_utils.pxi -exec sed -i 's/isinstance(arg, long) and //' {} +
-          find .buildozer -name jnius_utils.pxi -exec sed -i 's/or isinstance(arg, long)//' {} +
-          find .buildozer -name jnius_conversion.pxi -exec sed -i "s/isinstance(py_arg, (int, long))/isinstance(py_arg, int)/g" {} +
-          find .buildozer -name jnius_conversion.pxi -exec sed -i "s/isinstance(obj, (int, long))/isinstance(obj, int)/g" {} +
-          find .buildozer -name jnius_conversion.pxi -exec sed -i "/long: 'J',/d" {} +
-          find .buildozer -name weakproxy.pyx -exec sed -i '/def __long__(self):/,+1d' {} +
-          find .buildozer -name context_instructions.pyx -exec sed -i 's/long(h \* 6\.0)/int(h * 6.0)/g' {} +
-          find .buildozer -name opengl.pyx -exec sed -i 's/(long, int)/(int)/g' {} +
+
+          PATCH_FILE=".buildozer/android/platform/python-for-android/pythonforandroid/recipes/python3/__init__.py"
+          if [ -f "$PATCH_FILE" ]; then
+            sed -i "s/patches\.append('patches\/3\.14_armv7l_fix\.patch')/pass/" "$PATCH_FILE"
+          fi
+
+          # Patch Kivy to skip SVG module which causes cross-compilation issues
+          KIVY_SETUP_FILE=".buildozer/android/platform/build-arm64-v8a/build/other_builds/kivy-sdl2/arm64-v8a__ndk_target_24/kivy/setup.py"
+          if [ -f "$KIVY_SETUP_FILE" ]; then
+            sed -i "/svg\.pyx/d" "$KIVY_SETUP_FILE"
+          fi
+
           # Rebuild after fixes
           buildozer android release
 
