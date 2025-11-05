@@ -85,6 +85,13 @@ jobs:
             sed -i "/svg\.pyx/d" "$KIVY_SETUP_FILE"
           fi
 
+          # Patch NumPy to fix unordered_map issue
+          NUMPY_UNIQUE_FILE=".buildozer/android/platform/build-arm64-v8a/build/other_builds/numpy/arm64-v8a__ndk_target_24/numpy/numpy/_core/src/multiarray/unique.cpp"
+          if [ -f "$NUMPY_UNIQUE_FILE" ]; then
+            echo "🔧 Patching NumPy unique.cpp to fix unordered_map issue"
+            sed -i '1i#include <unordered_map>' "$NUMPY_UNIQUE_FILE"
+          fi
+
           # Rebuild after fixes
           buildozer android debug --verbose
 
