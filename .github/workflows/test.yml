@@ -78,11 +78,15 @@ jobs:
             echo "⚠️  Python3 patch file not found yet — skipping."
           fi
 
-          # Patch Kivy to skip SVG module which causes cross-compilation issues
+          # Patch to handle SVG module compilation issues
           KIVY_SETUP_FILE=".buildozer/android/platform/build-arm64-v8a/build/other_builds/kivy-sdl2/arm64-v8a__ndk_target_24/kivy/setup.py"
           if [ -f "$KIVY_SETUP_FILE" ]; then
-            echo "🔧 Patching Kivy setup.py to skip SVG module"
-            sed -i "/svg\.pyx/d" "$KIVY_SETUP_FILE"
+            echo "🔧 Patching Kivy setup.py to fix SVG compilation issues"
+            # Replace SVG-related lines with comments to maintain syntax
+            sed -i "s/'svg\.pyx'/#'svg.pyx' - disabled for Android/g" "$KIVY_SETUP_FILE"
+            sed -i "s/'svg\.pxd'/#'svg.pxd' - disabled for Android/g" "$KIVY_SETUP_FILE"
+            # Also handle any include patterns for SVG
+            sed -i "s/include_path.*svg/#include_path svg - disabled for Android/g" "$KIVY_SETUP_FILE"
           fi
 
           # Patch NumPy to fix unordered_map issue
