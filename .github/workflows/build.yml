@@ -272,6 +272,14 @@ jobs:
           # Skip problematic Kivy features
           KIVY_DEPS_ROOT: ""
           USE_SDL2: "1"
+          # C++ compilation fixes for NumPy (these will be used during target compilation)
+          CPPFLAGS: "-std=c++17 -D_LIBCPP_DISABLE_AVAILABILITY"
+          CXXFLAGS: "-std=c++17 -D_LIBCPP_DISABLE_AVAILABILITY"
+          # NumPy-specific compilation flags for Android
+          NPY_NUM_BUILD_JOBS: "2"
+          ATLAS: "None"
+          LAPACK: "None"
+          BLAS: "None"
         run: |
           buildozer android release || true
 
@@ -280,10 +288,27 @@ jobs:
             sed -i "s/patches\.append('patches\/3\.14_armv7l_fix\.patch')/pass/" "$PATCH_FILE"
           fi
 
-          # Patch Kivy to skip SVG module which causes cross-compilation issues
+          # Patch to handle SVG module compilation issues
           KIVY_SETUP_FILE=".buildozer/android/platform/build-arm64-v8a/build/other_builds/kivy-sdl2/arm64-v8a__ndk_target_24/kivy/setup.py"
           if [ -f "$KIVY_SETUP_FILE" ]; then
-            sed -i "/svg\.pyx/d" "$KIVY_SETUP_FILE"
+            # Use more precise sed commands to handle SVG removal properly
+            # Remove svg.pyx and svg.pxd while handling commas correctly
+            sed -i "s/,\s*'svg\.pyx'//" "$KIVY_SETUP_FILE"
+            sed -i "s/,\s*'svg\.pxd'//" "$KIVY_SETUP_FILE"
+            sed -i "s/'svg\.pyx',\s*//" "$KIVY_SETUP_FILE"
+            sed -i "s/'svg\.pxd',\s*//" "$KIVY_SETUP_FILE"
+            # Clean up any double commas
+            sed -i "s/,,/,/g" "$KIVY_SETUP_FILE"
+            # Clean up trailing commas before closing brackets
+            sed -i "s/,\s*\]/]/g" "$KIVY_SETUP_FILE"
+            sed -i "s/,\s*}/}/g" "$KIVY_SETUP_FILE"
+          fi
+
+          # Patch NumPy to fix unordered_map issue
+          NUMPY_UNIQUE_FILE=".buildozer/android/platform/build-arm64-v8a/build/other_builds/numpy/arm64-v8a__ndk_target_24/numpy/numpy/_core/src/multiarray/unique.cpp"
+          if [ -f "$NUMPY_UNIQUE_FILE" ]; then
+            echo "🔧 Patching NumPy unique.cpp to fix unordered_map issue"
+            sed -i '1i#include <unordered_map>' "$NUMPY_UNIQUE_FILE"
           fi
 
           # Rebuild after fixes
@@ -292,7 +317,6 @@ jobs:
       - name: Search for AAB file and copy to workspace
         if: matrix.target == 'Android'
         run: |
-          echo "Searching for AAB files in build directory..."
           APK_PATH=$(find build -name "*.aab" -type f | head -1)
           cp "$APK_PATH" "$GITHUB_WORKSPACE/tlum_Android.aab"
 

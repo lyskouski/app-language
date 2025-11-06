@@ -25,100 +25,10 @@ jobs:
           pip install -r requirements.txt
 
 # To Be Checked ...
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y autoconf automake libtool m4 \
-              libffi-dev pkg-config libltdl-dev openjdk-17-jdk unzip \
-              build-essential gcc g++
-          # Pin to a commit that supports Python 3.12 properly
-          pip install --upgrade git+https://github.com/kivy/python-for-android.git@9720dbd5489ebf0e8490a9fb930828f4426b8a20
-          pip install --upgrade git+https://github.com/kivy/buildozer.git@master
-
-      - name: Apply Android Keychain
-        env:
-          ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
-          ANDROID_KEYSTORE_PSSW: ${{ secrets.ANDROID_KEYSTORE_PSSW }}
-        run: |
-          echo -n "$ANDROID_KEYSTORE" | base64 -d > key.keystore
-          echo "P4A_RELEASE_KEYSTORE=$(pwd)/key.keystore" >> $GITHUB_ENV
-          echo "P4A_RELEASE_KEYSTORE_PASSWD=$ANDROID_KEYSTORE_PSSW" >> $GITHUB_ENV
-          echo "P4A_RELEASE_KEYALIAS_PASSWD=$ANDROID_KEYSTORE_PSSW" >> $GITHUB_ENV
-          echo "P4A_RELEASE_KEYALIAS=key" >> $GITHUB_ENV
-
-      - name: Update version and build number
-        run: |
-          sed -i "s/^version = .*/version = 0.0.10/" buildozer.spec
-          sed -i "s/^android.numeric_version = .*/android.numeric_version = 10/" buildozer.spec
-
-          echo "Updated buildozer.spec:"
-          grep "^version = " buildozer.spec
-          grep "^android.numeric_version" buildozer.spec
-
-      - name: Compile Android package
-        env:
-          # Force Python version consistency
-          PYTHONHOME: ""
-          PYTHONPATH: ""
-          # Ensure p4a uses system Python
-          P4A_PYTHON_VERSION: "3.11"
-          # Skip problematic Kivy features
-          KIVY_DEPS_ROOT: ""
-          USE_SDL2: "1"
-          # C++ compilation fixes for NumPy (these will be used during target compilation)
-          CPPFLAGS: "-std=c++17 -D_LIBCPP_DISABLE_AVAILABILITY"
-          CXXFLAGS: "-std=c++17 -D_LIBCPP_DISABLE_AVAILABILITY"
-          # NumPy-specific compilation flags for Android
-          NPY_NUM_BUILD_JOBS: "2"
-          ATLAS: "None"
-          LAPACK: "None"
-          BLAS: "None"
-        run: |
-          buildozer android debug || true
-
-          PATCH_FILE=".buildozer/android/platform/python-for-android/pythonforandroid/recipes/python3/__init__.py"
-          if [ -f "$PATCH_FILE" ]; then
-            echo "🔧 Disabling problematic patch: 3.14_armv7l_fix.patch"
-            sed -i "s/patches\.append('patches\/3\.14_armv7l_fix\.patch')/pass/" "$PATCH_FILE"
-          else
-            echo "⚠️  Python3 patch file not found yet — skipping."
-          fi
-
-          # Patch to handle SVG module compilation issues
-          KIVY_SETUP_FILE=".buildozer/android/platform/build-arm64-v8a/build/other_builds/kivy-sdl2/arm64-v8a__ndk_target_24/kivy/setup.py"
-          if [ -f "$KIVY_SETUP_FILE" ]; then
-            # Use more precise sed commands to handle SVG removal properly
-            # Remove svg.pyx and svg.pxd while handling commas correctly
-            sed -i "s/,\s*'svg\.pyx'//" "$KIVY_SETUP_FILE"
-            sed -i "s/,\s*'svg\.pxd'//" "$KIVY_SETUP_FILE"
-            sed -i "s/'svg\.pyx',\s*//" "$KIVY_SETUP_FILE"
-            sed -i "s/'svg\.pxd',\s*//" "$KIVY_SETUP_FILE"
-            # Clean up any double commas
-            sed -i "s/,,/,/g" "$KIVY_SETUP_FILE"
-            # Clean up trailing commas before closing brackets
-            sed -i "s/,\s*\]/]/g" "$KIVY_SETUP_FILE"
-            sed -i "s/,\s*}/}/g" "$KIVY_SETUP_FILE"
-          fi
-
-          # Patch NumPy to fix unordered_map issue
-          NUMPY_UNIQUE_FILE=".buildozer/android/platform/build-arm64-v8a/build/other_builds/numpy/arm64-v8a__ndk_target_24/numpy/numpy/_core/src/multiarray/unique.cpp"
-          if [ -f "$NUMPY_UNIQUE_FILE" ]; then
-            echo "🔧 Patching NumPy unique.cpp to fix unordered_map issue"
-            sed -i '1i#include <unordered_map>' "$NUMPY_UNIQUE_FILE"
-          fi
-
-          # Rebuild after fixes
-          buildozer android debug --verbose
-
-      - name: Search for APK file and copy to workspace
-        run: |
-          echo "Searching for APK files in build directory..."
-          APK_PATH=$(find build -name "*.apk" -type f | head -1)
-          cp "$APK_PATH" "$GITHUB_WORKSPACE/tlum_Android.apk"
 
 
-      - name: Add Artifact to Build
-        uses: actions/upload-artifact@v4
-        with:
-          name: tlum_Android
-          path: tlum_Android.apk
+#      - name: Add Artifact to Build
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: tlum_Android
+#          path: tlum_Android.apk
