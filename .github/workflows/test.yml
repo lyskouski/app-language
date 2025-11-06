@@ -68,6 +68,11 @@ jobs:
           # C++ compilation fixes for NumPy (these will be used during target compilation)
           CPPFLAGS: "-std=c++17 -D_LIBCPP_DISABLE_AVAILABILITY"
           CXXFLAGS: "-std=c++17 -D_LIBCPP_DISABLE_AVAILABILITY"
+          # NumPy-specific compilation flags for Android
+          NPY_NUM_BUILD_JOBS: "2"
+          ATLAS: "None"
+          LAPACK: "None"
+          BLAS: "None"
         run: |
           buildozer android debug || true
 

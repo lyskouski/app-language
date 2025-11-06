@@ -286,7 +286,7 @@ android.enable_androidx = True
 #android.adb_args = -H host.docker.internal
 
 # (bool) Copy library instead of making a libpymodules.so
-#android.copy_libs = 1
+android.copy_libs = 1
 
 # (list) The Android archs to build for, choices: armeabi-v7a, arm64-v8a, x86, x86_64
 # In past, was `android.arch` as we weren't supporting builds for multiple archs at the same time.
@@ -356,7 +356,7 @@ p4a.bootstrap = sdl2
 p4a.setup_py = false
 
 # (str) extra command line arguments to pass when invoking pythonforandroid.toolchain
-p4a.extra_args = --bootstrap=sdl2
+p4a.extra_args = --bootstrap=sdl2 --arch=arm64-v8a
 
 
 [buildozer]
