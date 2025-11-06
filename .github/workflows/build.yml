@@ -23,7 +23,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [Windows, Linux, LinuxSnap, LinuxAppImage, Android]
+        target: [Windows, Linux, LinuxSnap, LinuxAppImage, Android, AndroidDebug]
         include:
           - os: windows-latest
             target: Windows
@@ -51,6 +51,11 @@ jobs:
             target: Android
             build_path: build
             asset_extension: .aab
+            asset_content_type: application/gzip
+          - os: ubuntu-latest
+            target: AndroidDebug
+            build_path: build
+            asset_extension: .apk
             asset_content_type: application/gzip
 
     steps:
@@ -229,7 +234,7 @@ jobs:
 
 # Android
       - name: Install dependencies
-        if: matrix.target == 'Android'
+        if: startsWith(matrix.target, 'Android')
         run: |
           sudo apt-get update
           sudo apt-get install -y autoconf automake libtool m4 \
@@ -240,7 +245,7 @@ jobs:
           pip install --upgrade git+https://github.com/kivy/buildozer.git@master
 
       - name: Apply Android Keychain
-        if: matrix.target == 'Android'
+        if: startsWith(matrix.target, 'Android')
         env:
           ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
           ANDROID_KEYSTORE_PSSW: ${{ secrets.ANDROID_KEYSTORE_PSSW }}
@@ -252,7 +257,7 @@ jobs:
           echo "P4A_RELEASE_KEYALIAS=key" >> $GITHUB_ENV
 
       - name: Update version and build number
-        if: matrix.target == 'Android'
+        if: startsWith(matrix.target, 'Android')
         run: |
           sed -i "s/^version = .*/version = ${{ needs.release.outputs.version }}/" buildozer.spec
           sed -i "s/^android.numeric_version = .*/android.numeric_version = ${{ needs.release.outputs.build_number }}/" buildozer.spec
@@ -262,7 +267,7 @@ jobs:
           grep "^android.numeric_version" buildozer.spec
 
       - name: Compile Android package
-        if: matrix.target == 'Android'
+        if: startsWith(matrix.target, 'Android')
         env:
           # Force Python version consistency
           PYTHONHOME: ""
@@ -314,11 +319,16 @@ jobs:
           # Rebuild after fixes
           buildozer android release
 
-      - name: Search for AAB file and copy to workspace
-        if: matrix.target == 'Android'
+      - name: Compile Android Debug package
+        if: matrix.target == 'AndroidDebug'
         run: |
-          APK_PATH=$(find build -name "*.aab" -type f | head -1)
-          cp "$APK_PATH" "$GITHUB_WORKSPACE/tlum_Android.aab"
+          buildozer android debug
+
+      - name: Search for a package and copy to workspace
+        if: startsWith(matrix.target, 'Android')
+        run: |
+          APK_PATH=$(find build -name "*${{ matrix.asset_extension }}" -type f | head -1)
+          cp "$APK_PATH" "$GITHUB_WORKSPACE/tlum_${{ matrix.target }}${{ matrix.asset_extension }}"
 
 #
       - name: Upload ${{ matrix.target }} Artifact
