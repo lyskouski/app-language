@@ -29,7 +29,8 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y autoconf automake libtool m4 \
-              libffi-dev pkg-config libltdl-dev openjdk-17-jdk unzip
+              libffi-dev pkg-config libltdl-dev openjdk-17-jdk unzip \
+              build-essential gcc g++
           # Pin to a commit that supports Python 3.12 properly
           pip install --upgrade git+https://github.com/kivy/python-for-android.git@9720dbd5489ebf0e8490a9fb930828f4426b8a20
           pip install --upgrade git+https://github.com/kivy/buildozer.git@master
@@ -64,13 +65,9 @@ jobs:
           # Skip problematic Kivy features
           KIVY_DEPS_ROOT: ""
           USE_SDL2: "1"
-          # Fix C++ compilation for NumPy through environment variables
+          # C++ compilation fixes for NumPy (these will be used during target compilation)
           CPPFLAGS: "-std=c++17 -D_LIBCPP_DISABLE_AVAILABILITY"
           CXXFLAGS: "-std=c++17 -D_LIBCPP_DISABLE_AVAILABILITY"
-          # Additional compilation environment
-          CC: "clang"
-          CXX: "clang++"
-          LDFLAGS: "-lc++abi"
         run: |
           buildozer android debug || true
 

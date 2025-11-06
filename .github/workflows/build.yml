@@ -233,7 +233,8 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y autoconf automake libtool m4 \
-              libffi-dev pkg-config libltdl-dev openjdk-17-jdk unzip
+              libffi-dev pkg-config libltdl-dev openjdk-17-jdk unzip \
+              build-essential gcc g++
           # Pin to a commit that supports Python 3.11 properly
           pip install --upgrade git+https://github.com/kivy/python-for-android.git@9720dbd5489ebf0e8490a9fb930828f4426b8a20
           pip install --upgrade git+https://github.com/kivy/buildozer.git@master
