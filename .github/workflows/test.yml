@@ -81,12 +81,17 @@ jobs:
           # Patch to handle SVG module compilation issues
           KIVY_SETUP_FILE=".buildozer/android/platform/build-arm64-v8a/build/other_builds/kivy-sdl2/arm64-v8a__ndk_target_24/kivy/setup.py"
           if [ -f "$KIVY_SETUP_FILE" ]; then
-            echo "🔧 Patching Kivy setup.py to fix SVG compilation issues"
-            # Replace SVG-related lines with comments to maintain syntax
-            sed -i "s/'svg\.pyx'/#'svg.pyx' - disabled for Android/g" "$KIVY_SETUP_FILE"
-            sed -i "s/'svg\.pxd'/#'svg.pxd' - disabled for Android/g" "$KIVY_SETUP_FILE"
-            # Also handle any include patterns for SVG
-            sed -i "s/include_path.*svg/#include_path svg - disabled for Android/g" "$KIVY_SETUP_FILE"
+            # Use more precise sed commands to handle SVG removal properly
+            # Remove svg.pyx and svg.pxd while handling commas correctly
+            sed -i "s/,\s*'svg\.pyx'//" "$KIVY_SETUP_FILE"
+            sed -i "s/,\s*'svg\.pxd'//" "$KIVY_SETUP_FILE"
+            sed -i "s/'svg\.pyx',\s*//" "$KIVY_SETUP_FILE"
+            sed -i "s/'svg\.pxd',\s*//" "$KIVY_SETUP_FILE"
+            # Clean up any double commas
+            sed -i "s/,,/,/g" "$KIVY_SETUP_FILE"
+            # Clean up trailing commas before closing brackets
+            sed -i "s/,\s*\]/]/g" "$KIVY_SETUP_FILE"
+            sed -i "s/,\s*}/}/g" "$KIVY_SETUP_FILE"
           fi
 
           # Patch NumPy to fix unordered_map issue
