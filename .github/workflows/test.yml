@@ -64,9 +64,13 @@ jobs:
           # Skip problematic Kivy features
           KIVY_DEPS_ROOT: ""
           USE_SDL2: "1"
-          # Fix C++ compilation for NumPy
+          # Fix C++ compilation for NumPy through environment variables
           CPPFLAGS: "-std=c++17 -D_LIBCPP_DISABLE_AVAILABILITY"
           CXXFLAGS: "-std=c++17 -D_LIBCPP_DISABLE_AVAILABILITY"
+          # Additional compilation environment
+          CC: "clang"
+          CXX: "clang++"
+          LDFLAGS: "-lc++abi"
         run: |
           buildozer android debug || true
 

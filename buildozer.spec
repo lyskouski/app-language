@@ -356,7 +356,7 @@ p4a.bootstrap = sdl2
 p4a.setup_py = false
 
 # (str) extra command line arguments to pass when invoking pythonforandroid.toolchain
-p4a.extra_args = --bootstrap=sdl2 --add-cppflags=-std=c++17 --add-cppflags=-D_LIBCPP_DISABLE_AVAILABILITY
+p4a.extra_args = --bootstrap=sdl2
 
 
 [buildozer]
