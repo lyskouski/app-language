@@ -41,7 +41,7 @@ version = 0.0.1
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3,kivy,numpy,requests,pydub,ffpyplayer,cython
+requirements = python3==3.11.14,kivy==2.3.0,requests,pydub,numpy
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
@@ -68,7 +68,7 @@ orientation = landscape
 author = © Viachaslau Lyskouski
 
 # change the major version of python used by the app
-osx.python_version = 3.12
+osx.python_version = 3.11
 
 # Kivy version to use
 osx.kivy_version = 2.3.0
@@ -76,6 +76,9 @@ osx.kivy_version = 2.3.0
 #
 # Android specific
 #
+
+# (str) Android Python version to use (avoid compatibility issues)
+android.python_version = 3.11
 
 # (bool) Indicate if the application should be fullscreen or not
 fullscreen = 1
@@ -114,7 +117,7 @@ android.minapi = 24
 #android.sdk = 20
 
 # (str) Android NDK version to use
-android.ndk = 28b
+android.ndk = 25b
 
 # (int) Android NDK API to use. This is the minimum API your app will support, it should usually match android.minapi.
 android.ndk_api = 24
@@ -283,7 +286,7 @@ android.enable_androidx = True
 #android.adb_args = -H host.docker.internal
 
 # (bool) Copy library instead of making a libpymodules.so
-#android.copy_libs = 1
+android.copy_libs = 1
 
 # (list) The Android archs to build for, choices: armeabi-v7a, arm64-v8a, x86, x86_64
 # In past, was `android.arch` as we weren't supporting builds for multiple archs at the same time.
@@ -328,7 +331,7 @@ android.debug_artifact = apk
 p4a.branch = develop
 
 # (str) python-for-android specific commit to use, defaults to HEAD, must be within p4a.branch
-#p4a.commit = HEAD
+p4a.commit = 9720dbd5489ebf0e8490a9fb930828f4426b8a20
 
 # (str) python-for-android git clone directory (if empty, it will be automatically cloned from github)
 #p4a.source_dir =
@@ -353,7 +356,7 @@ p4a.bootstrap = sdl2
 p4a.setup_py = false
 
 # (str) extra command line arguments to pass when invoking pythonforandroid.toolchain
-p4a.extra_args = --bootstrap=sdl2
+p4a.extra_args = --bootstrap=sdl2 --arch=arm64-v8a
 
 
 [buildozer]
