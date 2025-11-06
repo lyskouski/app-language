@@ -23,7 +23,7 @@ class RecorderControllerAndroid():
             print(f"Android audio not available: {e}")
             self.is_available = False
 
-    def _on_permission_result(self, request_code, permissions, grant_results):
+    def _on_permission_result(self, request_code = 200, permissions = None, grant_results = None):
         try:
             if check_permission(Permission.RECORD_AUDIO):
                 self.is_available = True
@@ -59,7 +59,6 @@ class RecorderControllerAndroid():
             status_label.text = f"[!] Recording failed: {e}"
             return None
         return recorded_file
-
 
     def stop_recording(self, status_label):
         try:
