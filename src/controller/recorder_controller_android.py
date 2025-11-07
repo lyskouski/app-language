@@ -62,10 +62,14 @@ class RecorderControllerAndroid():
 
     def stop_recording(self, status_label):
         try:
-            self.media_recorder.stop()
-            self.media_recorder.release()
-            self.media_recorder = None
+            if hasattr(self, 'media_recorder') and self.media_recorder is not None:
+                self.media_recorder.stop()
+                self.media_recorder.release()
+                self.media_recorder = None
+                return True
+            else:
+                status_label.text = "[!] No active recording to stop"
+                return False
         except Exception as e:
             status_label.text = f"[!] Error stopping Android recording: {e}"
             return False
-        return True
