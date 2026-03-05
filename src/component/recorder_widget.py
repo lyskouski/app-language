@@ -103,7 +103,7 @@ class RecorderWidget(BoxLayout):
 
     def record_audio(self):
         path = self.recorder.start_recording(self.status_label)
-        if path is not None:
+        if path:
             self.play_button.file_path = path
             max_duration = 15
             Clock.schedule_once(lambda dt: self.stop_audio(), max_duration)
@@ -111,6 +111,7 @@ class RecorderWidget(BoxLayout):
             app = App.get_running_app()
             self.record_button.text = app._('button_record', app.locale)
             self.recording = False
+            self.play_button.disabled = True
 
     def stop_audio(self):
         app = App.get_running_app()
@@ -118,10 +119,14 @@ class RecorderWidget(BoxLayout):
         self.recorder.stop_recording(self.status_label)
         self.record_button.text = app._('button_record', app.locale)
         self.record_button.disabled = False
-        self.play_button.disabled = False
+        self.play_button.disabled = not bool(getattr(self.play_button, 'file_path', None))
         # print("Comparing:", self.listen_button.file_path, recorded_file_mp3)
         # result = AudioComparator().compare_audio(self.listen_button.file_path, recorded_file_mp3)
         # print("Comparison result:", result)
 
     def play_audio(self, instance):
+        if not getattr(instance, 'file_path', None):
+            app = App.get_running_app()
+            self.status_label.text = app._('status_select_sentence', app.locale)
+            return
         MediaController.play_sound(instance.file_path)
