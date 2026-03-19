@@ -49,8 +49,8 @@ class RootWidget(BoxLayout):
         app = App.get_running_app()
         if (info.store_path != ''):
             app.init_store(info.store_path)
-        if (info.locale != ''):
-            app.update_locale(info.locale)
+        #if (info.locale != ''):
+        #    app.update_locale(info.locale)
         if (info.locale_to != ''):
             app.locale_to = info.locale_to
         if not self.ids.breadcrumb_view.data:
