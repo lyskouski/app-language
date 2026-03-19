@@ -25,7 +25,7 @@ class StructureScreen(Screen):
             'logo': '',
             'store_path': '',
             'route_path': '',
-            'locale': '',
+            'locale_from': '',
             'locale_to': '',
         }]
 

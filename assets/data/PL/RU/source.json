@@ -4,7 +4,7 @@
     "store_path": "assets/data/PL/RU/data/verbs.csv",
     "logo": "assets/data/PL/RU/verbs.png",
     "route_path": "",
-    "locale": "",
+    "locale_from": "",
     "locale_to": ""
 }, {
     "text": "Скороговорки",
@@ -12,7 +12,7 @@
     "store_path": "assets/data/PL/RU/data/articulation.csv",
     "logo": "assets/data/PL/RU/articulation.png",
     "route_path": "",
-    "locale": "",
+    "locale_from": "",
     "locale_to": ""
 }, {
     "text": "Частотный словарь",
@@ -20,7 +20,7 @@
     "store_path": "assets/data/PL/RU/data/dictionary.csv",
     "logo": "assets/data/PL/RU/dictionary.png",
     "route_path": "",
-    "locale": "",
+    "locale_from": "",
     "locale_to": ""
 }, {
     "text": "Числительные",
@@ -28,6 +28,6 @@
     "store_path": "assets/data/PL/RU/data/numbers.csv",
     "logo": "assets/data/PL/RU/numbers.png",
     "route_path": "",
-    "locale": "",
+    "locale_from": "",
     "locale_to": ""
 }]

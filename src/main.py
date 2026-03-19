@@ -57,11 +57,13 @@ class MainApp(App):
     store = ListProperty([])
     store_controller = StoreController()
     locale = StringProperty('')
+    locale_from = StringProperty('')
     locale_to = StringProperty('')
 
     def __init__(self, **kwargs):
         super(MainApp, self).__init__(**kwargs)
         home_dir = self.get_home_dir()
+        print(home_dir)
         os.makedirs(home_dir, exist_ok=True)
         self.settings_config = IniConfigParser(home_dir)
         self.locale = self.settings_config.get(IniConfigParser.INTERFACE_LOCALE, '')

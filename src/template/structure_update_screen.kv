@@ -93,8 +93,8 @@
                     height: dp(40)
                     size_hint_y: None
                 TextInput:
-                    text: root.locale
-                    on_text: root.locale = self.text
+                    text: root.locale_from
+                    on_text: root.locale_from = self.text
                     hint_text: app._('field_locale__hint', app.locale)
                     multiline: False
                     size_hint_y: None

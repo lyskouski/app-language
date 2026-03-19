@@ -4,7 +4,7 @@
     "route_path": "dictionary_screen",
     "logo": "assets/images/game/dictionary.png",
     "store_path": "",
-    "locale": "",
+    "locale_from": "",
     "locale_to": ""
 },{
     "text": "Гукавы гармонік",
@@ -12,7 +12,7 @@
     "route_path": "phonetics_screen",
     "logo": "assets/images/game/phonetics.png",
     "store_path": "",
-    "locale": "",
+    "locale_from": "",
     "locale_to": ""
 },{
     "text": "Карткі",
@@ -20,7 +20,7 @@
     "route_path": "card_screen",
     "logo": "assets/images/game/card.png",
     "store_path": "",
-    "locale": "",
+    "locale_from": "",
     "locale_to": ""
 },{
     "text": "Гаворка",
@@ -28,6 +28,6 @@
     "route_path": "articulation_screen",
     "logo": "assets/images/game/articulation.png",
     "store_path": "",
-    "locale": "",
+    "locale_from": "",
     "locale_to": ""
 }]
