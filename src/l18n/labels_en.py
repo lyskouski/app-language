@@ -29,6 +29,7 @@ labels_en = {
     "button_stop_recording": "Stop Recording",
     "button_shuffle": "Shuffle",
     "button_select": "Select",
+    "button_settings": "Settings",
     "button_save": "Save",
     "button_record": "Record",
     "button_processing": "Processing",

@@ -29,6 +29,7 @@ labels_uk = {
     "button_stop_recording": "Зупинити запис",
     "button_shuffle": "Перемішати",
     "button_select": "Вибрати",
+    "button_settings": "Налаштування",
     "button_save": "Зберегти",
     "button_record": "Записати",
     "button_processing": "Обробка",

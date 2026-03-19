@@ -30,6 +30,7 @@ labels_ru = {
     "button_shuffle": "Перемешать",
     "button_select": "Выбрать",
     "button_save": "Сохранить",
+    "button_settings": "Настройки",
     "button_record": "Записать",
     "button_processing": "Обработка...",
     "button_play": "Играть",

@@ -48,6 +48,13 @@
                 app.next_screen('structure_screen')
         Widget:
             size_hint_x: dp(0.02)
+        Button:
+            text: app._("button_settings", app.locale)
+            size_hint_x: 0.3
+            on_release:
+                app.next_screen('language_screen')
+        Widget:
+            size_hint_x: dp(0.02)
     Widget:
         size_hint_y: dp(0.08)
 
