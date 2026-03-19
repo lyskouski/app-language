@@ -6,7 +6,7 @@ import os
 
 from kivy.app import App
 from kivy.clock import Clock
-from kivy.properties import ObjectProperty, StringProperty
+from kivy.properties import ObjectProperty
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.screenmanager import Screen
 
@@ -36,7 +36,7 @@ class LanguageWidget(BoxLayout):
             'locale': item.get('locale', '')
         } for item in self.data]
 
-    def select_language(self, item):
+    def select_language(self, locale):
         app = App.get_running_app()
-        app.update_locale(item['locale'])
+        app.update_locale(locale)
         app.next_screen('main_screen')

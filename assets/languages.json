@@ -1,17 +1,17 @@
 [{
     "text": "Беларуская",
     "logo": "assets/images/language/by.png",
-    "locale_from": "BE"
+    "locale": "BE"
 },{
     "text": "English",
     "logo": "assets/images/language/en.png",
-    "locale_from": "EN"
+    "locale": "EN"
 },{
     "text": "Русский",
     "logo": "assets/images/language/ru.png",
-    "locale_from": "RU"
+    "locale": "RU"
 },{
     "text": "Українська",
     "logo": "assets/images/language/uk.png",
-    "locale_from": "UK"
+    "locale": "UK"
 }]

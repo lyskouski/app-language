@@ -7,7 +7,7 @@ from kivy.config import ConfigParser
 
 class IniConfigParser():
     INTERFACE_LOCALE = 'interface_locale'
-    
+
     def __init__(self, dir: str, section: str = 'settings'):
         self.parser = ConfigParser()
         self.config_path = os.path.join(dir, 'tlum.ini')
@@ -21,7 +21,7 @@ class IniConfigParser():
     def get(self, key: str, default: str = '') -> str:
         try:
             value = self.parser.get(self.section, key)
-        except Exception as e:
+        except Exception:
             value = default
         return value
 

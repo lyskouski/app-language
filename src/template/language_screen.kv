@@ -38,9 +38,7 @@
     spacing: dp(15)
     text: ""
     logo: ""
-    locale_from: ""
-    locale_to: ""
-    source: ""
+    locale: ""
     canvas.before:
         Color:
             rgba: 0.9, 0.9, 0.9, 0.1
@@ -69,4 +67,4 @@
         width: dp(140)
         background_color: 0.2, 0.7, 0.2, 1
         on_release:
-            app.root.get_screen('language_screen').ids.language_widget.select_language({'text': root.text, 'logo': root.logo, 'locale_from': root.locale_from, 'locale_to': root.locale_to, 'source': root.source})
+            app.root.get_screen('language_screen').ids.language_widget.select_language(root.locale)
