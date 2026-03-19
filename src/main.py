@@ -7,6 +7,12 @@
 # > pip install -r requirements.txt
 # > python ./src/main.py
 
+# Initialization for Android/iOS (with Buildozer):
+# NOTE: Android target is not available on Windows-native Buildozer.
+#       Use Linux (recommended: WSL2 on Windows) to build Android APK/AAB.
+# > python3 -m pip install --user -U buildozer
+# > buildozer -v android debug
+
 # Dependencies:
 # > choco install ffmpeg
 
