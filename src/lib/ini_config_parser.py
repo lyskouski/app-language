@@ -6,6 +6,8 @@ import os
 from kivy.config import ConfigParser
 
 class IniConfigParser():
+    INTERFACE_LOCALE = 'interface_locale'
+    
     def __init__(self, dir: str, section: str = 'settings'):
         self.parser = ConfigParser()
         self.config_path = os.path.join(dir, 'tlum.ini')
@@ -13,8 +15,8 @@ class IniConfigParser():
         self.parser.read(self.config_path)
         if not self.parser.has_section(self.section):
             self.parser.add_section(self.section)
-        if not self.parser.has_option(self.section, 'interface_locale'):
-            self.parser.set(self.section, 'interface_locale', '')
+        if not self.parser.has_option(self.section, self.INTERFACE_LOCALE):
+            self.parser.set(self.section, self.INTERFACE_LOCALE, '')
 
     def get(self, key: str, default: str = '') -> str:
         try:

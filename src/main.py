@@ -64,7 +64,7 @@ class MainApp(App):
         home_dir = self.get_home_dir()
         os.makedirs(home_dir, exist_ok=True)
         self.settings_config = IniConfigParser(home_dir)
-        self.locale = self.settings_config.get('interface_locale', '')
+        self.locale = self.settings_config.get(IniConfigParser.INTERFACE_LOCALE, '')
         # FIXME: Priorities are not working for additional DIR...
         kivy.resources.resource_paths.insert(0, home_dir)
         kivy.resources.resource_add_path(os.getcwd())
@@ -78,9 +78,8 @@ class MainApp(App):
         return labels.get(locale, labels.get('EN', {})).get(key, '['+key+']')
 
     def update_locale(self, locale):
-        """Update locale and save to storage."""
         self.locale = locale
-        self.settings_config.save('interface_locale', locale)
+        self.settings_config.save(IniConfigParser.INTERFACE_LOCALE, locale)
 
     def find_resource(self, path):
         user_path = os.path.join(self.get_home_dir(), path)
