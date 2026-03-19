@@ -32,6 +32,7 @@ from component.structure_screen import StructureScreen
 from component.structure_update_screen import StructureUpdateScreen
 from component.language_screen import LanguageScreen
 from controller.store_controller import StoreController
+from lib.ini_config_parser import IniConfigParser
 from l18n.labels import labels
 
 ## Load all widgets (for distribution) to avoid:
@@ -62,6 +63,8 @@ class MainApp(App):
         super(MainApp, self).__init__(**kwargs)
         home_dir = self.get_home_dir()
         os.makedirs(home_dir, exist_ok=True)
+        self.settings_config = IniConfigParser(home_dir)
+        self.locale = self.settings_config.get('interface_locale', '')
         # FIXME: Priorities are not working for additional DIR...
         kivy.resources.resource_paths.insert(0, home_dir)
         kivy.resources.resource_add_path(os.getcwd())
@@ -75,7 +78,9 @@ class MainApp(App):
         return labels.get(locale, labels.get('EN', {})).get(key, '['+key+']')
 
     def update_locale(self, locale):
+        """Update locale and save to storage."""
         self.locale = locale
+        self.settings_config.save('interface_locale', locale)
 
     def find_resource(self, path):
         user_path = os.path.join(self.get_home_dir(), path)
@@ -122,7 +127,7 @@ class MainApp(App):
             path = kivy.resources.resource_find(f'template/{name}.kv')
             Builder.load_file(path)
             sm.add_widget(cls(name=name))
-        sm.current = 'language_screen'
+        sm.current = 'language_screen' if not self.locale else 'main_screen'
         return sm
 
     def next_screen(self, screen_name, widget = None):
