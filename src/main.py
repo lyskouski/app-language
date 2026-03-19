@@ -30,6 +30,7 @@ from component.articulation_screen import ArticulationScreen
 from component.store_update_screen import StoreUpdateScreen
 from component.structure_screen import StructureScreen
 from component.structure_update_screen import StructureUpdateScreen
+from component.language_screen import LanguageScreen
 from controller.store_controller import StoreController
 from l18n.labels import labels
 
@@ -114,13 +115,14 @@ class MainApp(App):
             (StructureUpdateScreen, 'structure_update_screen'),
             (StoreUpdateScreen, 'store_update_screen'),
             (LoadingScreen, 'loading_screen'),
-            (CardScreen, 'card_screen')
+            (CardScreen, 'card_screen'),
+            (LanguageScreen, 'language_screen')
         ]
         for cls, name in screens:
             path = kivy.resources.resource_find(f'template/{name}.kv')
             Builder.load_file(path)
             sm.add_widget(cls(name=name))
-        sm.current = 'main_screen'
+        sm.current = 'language_screen'
         return sm
 
     def next_screen(self, screen_name, widget = None):

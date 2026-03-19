@@ -1,0 +1,72 @@
+# Copyright 2026 The terCAD team. All rights reserved.
+# Use of this source code is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
+
+<LanguageScreen@Screen>:
+    LanguageWidget:
+        id: language_widget
+
+<LanguageWidget@BoxLayout>:
+    orientation: "vertical"
+    padding: dp(20)
+    spacing: dp(20)
+
+    Label:
+        text: "Select Language / Wybierz język"
+        font_size: sp(24)
+        size_hint_y: None
+        height: dp(60)
+        text_size: self.width, None
+        halign: "center"
+
+    RecycleView:
+        id: language_view
+        viewclass: "LanguageItemWidget"
+        size_hint_y: 1
+        RecycleBoxLayout:
+            default_size: None, dp(80)
+            default_size_hint: 1, None
+            size_hint_y: None
+            height: self.minimum_height
+            orientation: "vertical"
+            spacing: dp(10)
+
+<LanguageItemWidget@BoxLayout>:
+    orientation: "horizontal"
+    size_hint_y: None
+    height: dp(80)
+    padding: dp(10)
+    spacing: dp(15)
+    text: ""
+    logo: ""
+    locale: ""
+    locale_to: ""
+    source: ""
+    canvas.before:
+        Color:
+            rgba: 0.9, 0.9, 0.9, 0.1
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [dp(10)]
+
+    Image:
+        source: root.logo
+        size_hint_x: None
+        width: dp(60)
+        allow_stretch: True
+        keep_ratio: True
+
+    Label:
+        text: root.text
+        text_size: self.width, None
+        halign: "left"
+        valign: "middle"
+        font_size: sp(16)
+
+    Button:
+        text: "Select / Wybierz"
+        size_hint_x: None
+        width: dp(140)
+        background_color: 0.2, 0.7, 0.2, 1
+        on_release:
+            app.root.get_screen('language_screen').ids.language_widget.select_language({'text': root.text, 'logo': root.logo, 'locale': root.locale, 'locale_to': root.locale_to, 'source': root.source})
