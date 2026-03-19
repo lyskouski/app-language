@@ -58,7 +58,7 @@ class StructureWidget(BoxLayout):
     logo = StringProperty('')
     store_path = StringProperty('')
     route_path = StringProperty('')
-    locale = StringProperty('')
+    locale_from = StringProperty('')
     locale_to = StringProperty('')
     is_expanded = BooleanProperty(False)
 
