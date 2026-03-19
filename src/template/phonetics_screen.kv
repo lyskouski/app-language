@@ -29,7 +29,7 @@
 
         Accordion:
             AccordionItem:
-                title: "%s & %s" % (app.locale_to, app.locale)
+                title: "%s & %s" % (app.locale_to, app.locale_from)
                 collapse: False
                 BoxLayout:
                     PhoneticsWidget:
@@ -43,7 +43,7 @@
                         origin: True
                         secondary: False
             AccordionItem:
-                title: "%s -> %s" % (app.locale_to, app.locale)
+                title: "%s -> %s" % (app.locale_to, app.locale_from)
                 collapse: True
                 BoxLayout:
                     PhoneticsWidget:

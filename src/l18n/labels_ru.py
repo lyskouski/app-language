@@ -28,6 +28,7 @@ labels_ru = {
     "button_update": "Обновить",
     "button_stop_recording": "Остановить запись",
     "button_shuffle": "Перемешать",
+    "button_settings": "Настройки",
     "button_select": "Выбрать",
     "button_save": "Сохранить",
     "button_record": "Записать",

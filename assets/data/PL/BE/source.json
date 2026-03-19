@@ -4,7 +4,7 @@
     "store_path": "assets/data/PL/BE/data/verbs.csv",
     "logo": "assets/data/PL/BE/verbs.png",
     "route_path": "",
-    "locale": "",
+    "locale_from": "",
     "locale_to": ""
 }, {
     "text": "Хуткамоўкі",
@@ -12,7 +12,7 @@
     "store_path": "assets/data/PL/BE/data/articulation.csv",
     "logo": "assets/data/PL/BE/articulation.png",
     "route_path": "",
-    "locale": "",
+    "locale_from": "",
     "locale_to": ""
 }, {
     "text": "Частотны слоўнік",
@@ -20,7 +20,7 @@
     "store_path": "assets/data/PL/BE/data/dictionary.csv",
     "logo": "assets/data/PL/BE/dictionary.png",
     "route_path": "",
-    "locale": "",
+    "locale_from": "",
     "locale_to": ""
 }, {
     "text": "Лічэбнікі",
@@ -28,6 +28,6 @@
     "store_path": "assets/data/PL/BE/data/numbers.csv",
     "logo": "assets/data/PL/BE/numbers.png",
     "route_path": "",
-    "locale": "",
+    "locale_from": "",
     "locale_to": ""
 }]

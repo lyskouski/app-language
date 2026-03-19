@@ -16,7 +16,7 @@ class StructureUpdateScreen(Screen):
     logo = StringProperty('')
     store_path = StringProperty('')
     route_path = StringProperty('')
-    locale = StringProperty('')
+    locale_from = StringProperty('')
     locale_to = StringProperty('')
 
     def init_data(self, widget = None):
@@ -28,7 +28,7 @@ class StructureUpdateScreen(Screen):
             self.logo = widget.logo
             self.store_path = widget.store_path
             self.route_path = widget.route_path
-            self.locale = widget.locale
+            self.locale_from = widget.locale_from
             self.locale_to = widget.locale_to
 
     def update_data(self):
@@ -54,7 +54,7 @@ class StructureUpdateScreen(Screen):
             'logo': self.logo,
             'store_path': self.store_path,
             'route_path': self.route_path,
-            'locale': self.locale,
+            'locale_from': self.locale_from,
             'locale_to': self.locale_to,
         }]
         for idx, item in enumerate(data):

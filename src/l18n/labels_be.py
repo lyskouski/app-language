@@ -28,6 +28,7 @@ labels_be = {
     "button_update": "Абнавіць",
     "button_stop_recording": "Спыніць запіс",
     "button_shuffle": "Перамяшаць",
+    "button_settings": "Налады",
     "button_select": "Выбраць",
     "button_save": "Захаваць",
     "button_record": "Запісаць",

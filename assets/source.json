@@ -4,7 +4,7 @@
     "store_path": "",
     "route_path": "",
     "logo": "assets/images/language/by-pl.png",
-    "locale": "BE",
+    "locale_from": "BE",
     "locale_to": "PL"
 },{
     "text": "EN-PL (English - Polish)",
@@ -12,7 +12,7 @@
     "store_path": "",
     "route_path": "",
     "logo": "assets/images/language/en-pl.png",
-    "locale": "EN",
+    "locale_from": "EN",
     "locale_to": "PL"
 },{
     "text": "RU-PL (Русский - Польский)",
@@ -20,7 +20,7 @@
     "store_path": "",
     "route_path": "",
     "logo": "assets/images/language/ru-pl.png",
-    "locale": "RU",
+    "locale_from": "RU",
     "locale_to": "PL"
 },{
     "text": "UA-PL (Українська - Польська)",
@@ -28,6 +28,6 @@
     "store_path": "",
     "route_path": "",
     "logo": "assets/images/language/uk-pl.png",
-    "locale": "UK",
+    "locale_from": "UK",
     "locale_to": "PL"
 }]

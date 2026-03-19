@@ -4,7 +4,7 @@
     "store_path": "assets/data/PL/EN/data/verbs.csv",
     "logo": "assets/data/PL/EN/verbs.png",
     "route_path": "",
-    "locale": "",
+    "locale_from": "",
     "locale_to": ""
 }, {
     "text": "Tongue twisters",
@@ -12,7 +12,7 @@
     "store_path": "assets/data/PL/EN/data/articulation.csv",
     "logo": "assets/data/PL/EN/articulation.png",
     "route_path": "",
-    "locale": "",
+    "locale_from": "",
     "locale_to": ""
 }, {
     "text": "Frequency dictionary",
@@ -20,7 +20,7 @@
     "store_path": "assets/data/PL/EN/data/dictionary.csv",
     "logo": "assets/data/PL/EN/dictionary.png",
     "route_path": "",
-    "locale": "",
+    "locale_from": "",
     "locale_to": ""
 }, {
     "text": "Numerals",
@@ -28,6 +28,6 @@
     "store_path": "assets/data/PL/EN/data/numbers.csv",
     "logo": "assets/data/PL/EN/numbers.png",
     "route_path": "",
-    "locale": "",
+    "locale_from": "",
     "locale_to": ""
 }]
