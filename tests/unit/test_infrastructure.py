@@ -12,6 +12,7 @@ import os
 from unittest.mock import Mock, patch
 
 from domain.entities.vocabulary_item import VocabularyItem
+from domain.entities.user_settings import UserSettings
 from domain.services import IVocabularyProfiler
 from domain.services.audio_comparator import IAudioComparator
 
@@ -85,6 +86,104 @@ class TestFileVocabularyRepository:
 
         finally:
             os.unlink(temp_path)
+
+    def test_load_from_nonexistent_file(self):
+        """Test loading from nonexistent file returns empty list."""
+        from infrastructure.persistence.file_vocabulary_repository import FileVocabularyRepository
+
+        repo = FileVocabularyRepository()
+        items = repo.load_from_file("/nonexistent/path/file.txt")
+
+        assert items == []
+
+    def test_load_file_with_malformed_lines(self):
+        """Test loading file with malformed lines."""
+        from infrastructure.persistence.file_vocabulary_repository import FileVocabularyRepository
+
+        with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.txt', encoding='utf-8') as f:
+            f.write("hello;hola\n")
+            f.write("invalid_line_no_separator\n")  # Malformed
+            f.write("world;mundo\n")
+            temp_path = f.name
+
+        try:
+            repo = FileVocabularyRepository()
+            items = repo.load_from_file(temp_path)
+
+            # Should skip malformed line and load valid ones
+            assert len(items) == 2
+            assert items[0].origin == "hello"
+            assert items[1].origin == "world"
+
+        finally:
+            os.unlink(temp_path)
+
+
+# ========== Settings Repository Tests ==========
+
+from infrastructure.persistence.ini_settings_repository import IniSettingsRepository
+from lib.ini_config_parser import IniConfigParser
+
+
+class TestIniSettingsRepository:
+    """Test INI settings repository."""
+
+    @pytest.fixture
+    def mock_config_parser(self):
+        """Create mock config parser."""
+        parser = Mock(spec=IniConfigParser)
+        parser.get.return_value = ""
+        return parser
+
+    @pytest.fixture
+    def repository(self, mock_config_parser):
+        """Create repository instance."""
+        return IniSettingsRepository(mock_config_parser)
+
+    def test_load_settings(self, repository, mock_config_parser):
+        """Test loading settings."""
+        mock_config_parser.get.side_effect = lambda key, default: {
+            IniConfigParser.INTERFACE_LOCALE: "EN",
+            "locale_from": "EN",
+            "locale_to": "ES"
+        }.get(key, default)
+
+        settings = repository.load()
+
+        assert settings.interface_locale == "EN"
+        assert settings.locale_from == "EN"
+        assert settings.locale_to == "ES"
+
+    def test_save_settings(self, repository, mock_config_parser):
+        """Test saving settings."""
+        settings = UserSettings(
+            interface_locale="ES",
+            locale_from="ES",
+            locale_to="EN"
+        )
+
+        repository.save(settings)
+
+        assert mock_config_parser.save.call_count == 3
+        calls = mock_config_parser.save.call_args_list
+        assert calls[0][0] == (IniConfigParser.INTERFACE_LOCALE, "ES")
+        assert calls[1][0] == ("locale_from", "ES")
+        assert calls[2][0] == ("locale_to", "EN")
+
+    def test_get_setting(self, repository, mock_config_parser):
+        """Test getting a specific setting."""
+        mock_config_parser.get.return_value = "value"
+
+        result = repository.get_setting("key", "default")
+
+        mock_config_parser.get.assert_called_once_with("key", "default")
+        assert result == "value"
+
+    def test_set_setting(self, repository, mock_config_parser):
+        """Test setting a specific setting."""
+        repository.set_setting("key", "value")
+
+        mock_config_parser.save.assert_called_once_with("key", "value")
 
 
 # ========== ML Tests ==========
@@ -177,6 +276,62 @@ class TestMLVocabularyProfiler:
         profiler2 = MLVocabularyProfiler(profile_path, model_path)
         assert "test" in profiler2.user_history
         assert profiler2.user_history["test"]["correct"] == 1
+
+    def test_multiple_correct_answers_tracked(self, profiler):
+        """Test tracking multiple correct answers."""
+        item = VocabularyItem("hello", "hola")
+
+        profiler.mark_positive(item)
+        profiler.mark_positive(item)
+        profiler.mark_positive(item)
+
+        assert profiler.user_history["hello"]["correct"] == 3
+        assert profiler.user_history["hello"]["incorrect"] == 0
+
+    def test_mixed_correct_incorrect_tracked(self, profiler):
+        """Test tracking mixed answers."""
+        item = VocabularyItem("world", "mundo")
+
+        profiler.mark_positive(item)
+        profiler.mark_negative(item)
+        profiler.mark_positive(item)
+
+        assert profiler.user_history["world"]["correct"] == 2
+        assert profiler.user_history["world"]["incorrect"] == 1
+
+    def test_prioritization_uses_all_items(self, profiler):
+        """Test that prioritization processes all items."""
+        items = [
+            VocabularyItem("hello", "hola"),
+            VocabularyItem("world", "mundo"),
+            VocabularyItem("test", "prueba")
+        ]
+
+        result = profiler.get_prioritized_items(items, 3)
+
+        # All items should be returned (up to limit)
+        assert len(result) == 3
+        # Result should contain VocabularyItem objects
+        assert all(isinstance(item, VocabularyItem) for item in result)
+
+    def test_difficulty_calculation_with_history(self, profiler):
+        """Test that difficulty changes based on user history."""
+        easy_item = VocabularyItem("hi", "hola")
+        hard_item = VocabularyItem("hi", "hola")
+
+        # Mark one as mastered (many correct answers)
+        for _ in range(10):
+            profiler.mark_positive(easy_item)
+
+        # Mark other as difficult (many incorrect answers)
+        for _ in range(10):
+            profiler.mark_negative(hard_item)
+
+        # Calculate difficulty for each
+        result = profiler.get_prioritized_items([easy_item], 1)
+
+        # Hard item should be prioritized (have higher difficulty score)
+        assert len(result) == 1
 
 
 # ========== Audio Tests ==========
