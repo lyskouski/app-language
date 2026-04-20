@@ -148,10 +148,14 @@ class MainApp(App):
         self.root.current = screen_name
         self.refresh_widgets(widget)
 
-    def init_store(self, data_path = None):
+    def init_store(self, data_path = None, force_shuffle: bool = False):
         """
         Initialize the vocabulary store.
         Uses dependency injection to create vocabulary service.
+
+        Args:
+            data_path: Path to vocabulary file. If None, reshuffles current vocabulary.
+            force_shuffle: If True, uses random shuffle instead of ML prioritization.
         """
         if data_path:
             # Create vocabulary service with profiler support
@@ -163,11 +167,11 @@ class MainApp(App):
                 self._vocabulary_service.load_vocabulary(file_path)
 
             # Prepare and get study set
-            self._vocabulary_service.prepare_study_set(25)
+            self._vocabulary_service.prepare_study_set(25, force_shuffle)
             self.store = self._vocabulary_service.get_current_study_set()
         elif self._vocabulary_service:
             # Just shuffle if already loaded
-            self._vocabulary_service.prepare_study_set(25)
+            self._vocabulary_service.prepare_study_set(25, force_shuffle)
             self.store = self._vocabulary_service.get_current_study_set()
 
     def refresh_widgets(self, item = None):

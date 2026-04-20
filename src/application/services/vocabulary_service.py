@@ -29,13 +29,20 @@ class VocabularyService:
         """Load vocabulary from a file."""
         self._current_items = self._load_use_case.execute(file_path)
 
-    def prepare_study_set(self, limit: int = 25) -> List[VocabularyItem]:
-        """Prepare a shuffled study set with the specified limit."""
-        if self._profiler:
+    def prepare_study_set(self, limit: int = 25, force_shuffle: bool = False) -> List[VocabularyItem]:
+        """Prepare a shuffled study set with the specified limit.
+
+        Args:
+            limit: Maximum number of items to return
+            force_shuffle: If True, always use random shuffle even when profiler exists
+        """
+        if self._profiler and not force_shuffle:
             # Use ML-based prioritization if available
-            self._shuffled_items = self._profiler.get_prioritized_items(
+            prioritized_items = self._profiler.get_prioritized_items(
                 self._current_items, limit
             )
+            # Shuffle the prioritized items to add variety
+            self._shuffled_items = self._shuffle_use_case.execute(prioritized_items, limit)
         else:
             self._shuffled_items = self._shuffle_use_case.execute(self._current_items, limit)
         return self._shuffled_items
