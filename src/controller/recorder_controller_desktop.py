@@ -9,15 +9,16 @@ try:
     import soundfile as sf
     import numpy as np
     HAS_DESKTOP_AUDIO = True
-    
+
     # Check if PortAudio is actually available (not just imported)
     try:
         sd.query_devices()
     except (OSError, RuntimeError) as e:
-        if "PortAudio" in str(e) or "library" in str(e).lower():
-            print(f"Warning: PortAudio library not found: {e}")
-            HAS_DESKTOP_AUDIO = False
-except ImportError as e:
+        print(f"Warning: PortAudio library not found: {e}")
+        HAS_DESKTOP_AUDIO = False
+except (ImportError, OSError) as e:
+    # ImportError: library not installed
+    # OSError: library installed but PortAudio not found
     print(f"Warning: Desktop audio libraries not available: {e}")
     HAS_DESKTOP_AUDIO = False
     AudioSegment = None
@@ -48,7 +49,7 @@ class RecorderControllerDesktop(IRecorderController):
         if not HAS_DESKTOP_AUDIO:
             status_label.text = "[!] Audio recording not available - PortAudio library required"
             return None
-            
+
         self.recording = True
         app = App.get_running_app()
         fs = 44100
