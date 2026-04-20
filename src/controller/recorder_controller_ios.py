@@ -13,11 +13,17 @@ except ImportError:
     objc_str = None
 
 from kivy.app import App
+from application.services.recorder_service import IRecorderController
 
-class RecorderControllerIos:
-    is_available = False
+
+class RecorderControllerIos(IRecorderController):
+    """
+    iOS implementation of IRecorderController.
+    Uses AVFoundation framework for audio recording.
+    """
 
     def __init__(self):
+        self.is_available = False
         try:
             if HAS_IOS_AUDIO:
                 # iOS AVFoundation classes

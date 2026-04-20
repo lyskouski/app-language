@@ -18,8 +18,18 @@ except ImportError:
     np = None
 
 from kivy.app import App
+from application.services.recorder_service import IRecorderController
 
-class RecorderControllerDesktop:
+
+class RecorderControllerDesktop(IRecorderController):
+    """
+    Desktop implementation of IRecorderController.
+    Uses sounddevice and soundfile for audio recording.
+    """
+
+    def __init__(self):
+        self.recording = False
+        self.audio_data = None
     def get_initial_status(self, status_label):
         if not HAS_DESKTOP_AUDIO:
             status_label.text = "[!] Desktop audio recording libraries are not available"

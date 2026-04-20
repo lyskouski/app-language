@@ -8,13 +8,19 @@ from android import activity
 from android.permissions import request_permissions, Permission, check_permission
 from jnius import autoclass
 from kivy.app import App
+from application.services.recorder_service import IRecorderController
 
-class RecorderControllerAndroid():
-    is_available = False
+
+class RecorderControllerAndroid(IRecorderController):
+    """
+    Android implementation of IRecorderController.
+    Uses Android MediaRecorder API for audio recording.
+    """
 
     def __init__(self):
         self._lock = threading.Lock()
         self.media_recorder = None
+        self.is_available = False
         try:
             self.MediaRecorder = autoclass('android.media.MediaRecorder')
             self.AudioSource = autoclass('android.media.MediaRecorder$AudioSource')

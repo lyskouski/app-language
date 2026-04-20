@@ -9,17 +9,23 @@ class StoreUpdateScreen(Screen):
     data = StringProperty('original ; translation ; sound path')
     store_path = StringProperty('')
 
-    def init_data(self, widget):
+    def __init__(self, **kwargs):
+        super(StoreUpdateScreen, self).__init__(**kwargs)
+        # Get services from DI container
         app = App.get_running_app()
+        self._resource_service = app._container.resource_service()
+
+    def init_data(self, widget):
+        """Initialize data using resource service."""
         self.store_path = widget.store_path
-        path = app.find_resource(self.store_path)
+        path = self._resource_service.find_resource(self.store_path)
         lines = []
         with open(path, 'r', encoding='utf-8') as f:
             lines = f.readlines()
         self.data = ''.join(lines)
 
     def save_data(self):
-        app = App.get_running_app()
-        path = app.get_with_home_dir(self.store_path)
+        """Save data using resource service."""
+        path = self._resource_service.get_path_with_home(self.store_path)
         with open(path, 'w', encoding='utf-8') as f:
             f.write(self.data)
