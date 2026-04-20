@@ -2,7 +2,6 @@
 # Use of this source code is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
 
 from abc import ABC, abstractmethod
-from typing import Optional
 
 
 class IRecorderController(ABC):
