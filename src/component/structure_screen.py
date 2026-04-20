@@ -13,13 +13,18 @@ from kivy.uix.screenmanager import Screen
 class StructureScreen(Screen):
     def __init__(self, **kwargs):
         super(StructureScreen, self).__init__(**kwargs)
+        # Get services from DI container
+        app = App.get_running_app()
+        self._resource_service = app._container.resource_service()
+        self._localization_service = app._container.localization_service()
+
         self.load_data()
         Clock.schedule_once(lambda dt: self.populate_rv())
 
     def get_new_item(self):
         app = App.get_running_app()
         return [{
-            'text': app._('item_new', app.locale),
+            'text': self._localization_service.translate('item_new', app.locale),
             'source': '',
             'indent': None,
             'logo': '',
@@ -30,8 +35,8 @@ class StructureScreen(Screen):
         }]
 
     def get_data(self, path):
-        app = App.get_running_app()
-        source_path = app.find_resource(path)
+        """Load data using resource service."""
+        source_path = self._resource_service.find_resource(path)
         data = []
         if source_path and os.path.exists(source_path):
             with open(source_path, 'r', encoding='utf-8') as f:

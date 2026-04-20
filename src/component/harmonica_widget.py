@@ -16,6 +16,11 @@ class HarmonicaWidget(ScrollView):
     secondary = BooleanProperty(False)
     loading_widget = None
 
+    def __init__(self, **kwargs):
+        super(HarmonicaWidget, self).__init__(**kwargs)
+        # Cache vocabulary items for validation
+        self._vocabulary_items = []
+
     def init_data(self, item):
         self.loading_widget = item
 
@@ -23,6 +28,7 @@ class HarmonicaWidget(ScrollView):
         self.load_data()
 
     def load_data(self):
+        """Load vocabulary items using vocabulary service."""
         self.clear_widgets()
 
         layout = GridLayout(cols=1, size_hint_y='2dp', spacing=5)
@@ -32,7 +38,16 @@ class HarmonicaWidget(ScrollView):
             self.loading_widget.status = 0
 
         app = App.get_running_app()
-        for item in app.store:
+
+        # Use app's vocabulary service instance (has loaded data)
+        # Fall back to app.store if service not available
+        if app._vocabulary_service:
+            self._vocabulary_items = app._vocabulary_service.get_current_study_set()
+        else:
+            # Use app.store as fallback (contains VocabularyItem objects)
+            self._vocabulary_items = app.store
+
+        for item in self._vocabulary_items:
             self.add_row(layout, item.origin, item.translation)
             # TODO: Update loading status (not reflecting, just a freeze)
             if self.loading_widget and hasattr(self.loading_widget, 'status'):
@@ -63,21 +78,35 @@ class HarmonicaWidget(ScrollView):
         layout.add_widget(row)
 
     def validate(self, instance, key, is_origin):
+        """Validate user input and mark item as correct/incorrect."""
         app = App.get_running_app()
-        for item in app.store:
-            if item.origin == key and not is_origin or is_origin and item.translation == key:
+
+        # Use app's vocabulary service instance
+        if not app._vocabulary_service:
+            return
+
+        # Find the matching vocabulary item
+        item = None
+        for vocab_item in self._vocabulary_items:
+            if vocab_item.origin == key and not is_origin or is_origin and vocab_item.translation == key:
+                item = vocab_item
                 break
+
+        if not item:
+            return
+
         text = instance.text.strip()
         answer = item.origin if is_origin else item.translation
         parent = instance.parent
         parent.remove_widget(instance)
+
         if (answer == text):
             icon = Image(source='assets/images/success.png', size_hint=(None, None), size=(30, 30))
             parent.add_widget(icon)
             parent.add_widget(Label(text=answer))
-            app.store_controller.mark_positive(item)
+            app._vocabulary_service.mark_item_correct(item)
         else:
             icon = Image(source='assets/images/error.png', size_hint=(None, None), size=(30, 30))
             parent.add_widget(icon)
             parent.add_widget(Label(text=f'[s]{text}[/s] {answer}', markup=True))
-            app.store_controller.mark_negative(item)
+            app._vocabulary_service.mark_item_incorrect(item)

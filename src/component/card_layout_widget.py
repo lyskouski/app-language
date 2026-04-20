@@ -14,15 +14,26 @@ class CardWidget(Button):
 class CardLayoutWidget(StackLayout):
     flip = BooleanProperty(False)
 
-    def load_data(self):
+    def __init__(self, **kwargs):
+        super(CardLayoutWidget, self).__init__(**kwargs)
+        # Get services from DI container
         app = App.get_running_app()
+        self._resource_service = app._container.resource_service()
+
+    def load_data(self):
+        """Load vocabulary items using vocabulary service."""
+        app = App.get_running_app()
+
         self.clear_widgets()
-        for item in app.store:
+        # Use app's vocabulary service or fall back to app.store
+        vocabulary_items = app._vocabulary_service.get_current_study_set() if app._vocabulary_service else app.store
+
+        for item in vocabulary_items:
             button = CardWidget()
             button.text_init = item.translation if self.flip else item.origin
             button.text_flip = item.origin if self.flip else item.translation
             path = app.get_image_dir()
-            image = app.find_resource(f"{path}/{item.image}" if item.image else 'assets/images/error.png')
-            button.background_normal = image if image else app.find_resource('assets/images/error.png')
-            button.background_down = app.find_resource('assets/images/success.png')
+            image = self._resource_service.find_resource(f"{path}/{item.image}" if item.image else 'assets/images/error.png')
+            button.background_normal = image if image else self._resource_service.find_resource('assets/images/error.png')
+            button.background_down = self._resource_service.find_resource('assets/images/success.png')
             self.add_widget(button)

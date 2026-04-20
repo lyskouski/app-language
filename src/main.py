@@ -31,9 +31,9 @@ from component.store_update_screen import StoreUpdateScreen
 from component.structure_screen import StructureScreen
 from component.structure_update_screen import StructureUpdateScreen
 from component.language_screen import LanguageScreen
-from controller.store_controller import StoreController
-from lib.ini_config_parser import IniConfigParser
-from l18n.labels import labels
+
+# Clean Architecture imports
+from infrastructure.di.container import DependencyContainer
 
 ## Load all widgets (for distribution) to avoid:
 # AttributeError: module 'component' has no attribute 'recorder_widget'
@@ -52,61 +52,74 @@ from kivy.base import EventLoop
 EventLoop.ensure_window()
 
 class MainApp(App):
+    """
+    Main Application class following SOLID principles.
+
+    Responsibilities (following Single Responsibility Principle):
+    - App lifecycle management
+    - Screen management
+    - Coordination between services and UI
+
+    Dependencies are injected through the DependencyContainer (Dependency Inversion Principle).
+    """
     kv_directory = StringProperty('template')
     is_mobile = BooleanProperty(False)
     store = ListProperty([])
-    store_controller = StoreController()
     locale = StringProperty('')
     locale_from = StringProperty('')
     locale_to = StringProperty('')
 
     def __init__(self, **kwargs):
         super(MainApp, self).__init__(**kwargs)
-        home_dir = self.get_home_dir()
-        print(home_dir)
-        os.makedirs(home_dir, exist_ok=True)
-        self.settings_config = IniConfigParser(home_dir)
-        self.locale = self.settings_config.get(IniConfigParser.INTERFACE_LOCALE, '')
-        # FIXME: Priorities are not working for additional DIR...
-        kivy.resources.resource_paths.insert(0, home_dir)
-        kivy.resources.resource_add_path(os.getcwd())
-        current_dir = os.path.dirname(os.path.abspath(__file__))
-        kivy.resources.resource_add_path(current_dir)
-        kivy.resources.resource_add_path(os.path.dirname(current_dir))
-        if getattr(sys, 'frozen', False):
-            kivy.resources.resource_add_path(sys._MEIPASS)
+
+        # Initialize dependency injection container (Composition Root)
+        self._container = DependencyContainer(self.user_data_dir)
+        self._container.setup_kivy_resources()
+
+        # Get services through dependency injection
+        self._settings_service = self._container.settings_service()
+        self._resource_service = self._container.resource_service()
+        self._localization_service = self._container.localization_service()
+
+        # Initialize vocabulary service (will be created when needed)
+        self._vocabulary_service = None
+
+        # Load settings
+        settings = self._settings_service.load_settings()
+        self.locale = settings.interface_locale
+        self.locale_from = settings.locale_from
+        self.locale_to = settings.locale_to
+
+        print(f"Home directory: {self._resource_service.get_path_with_home('')}")
 
     def _(self, key, locale):
-        return labels.get(locale, labels.get('EN', {})).get(key, '['+key+']')
+        """Translate a key to the specified locale."""
+        return self._localization_service.translate(key, locale)
 
     def update_locale(self, locale):
+        """Update the interface locale."""
         self.locale = locale
-        self.settings_config.save(IniConfigParser.INTERFACE_LOCALE, locale)
+        self._settings_service.update_interface_locale(locale)
 
     def find_resource(self, path):
-        user_path = os.path.join(self.get_home_dir(), path)
-        if os.path.exists(user_path):
-            return user_path
-        return kivy.resources.resource_find(path)
+        """Find a resource by path."""
+        return self._resource_service.find_resource(path)
 
     def get_home_dir(self):
-        return os.path.join(App.get_running_app().user_data_dir, ".terCAD", "app-language")
+        """Get the application home directory."""
+        return self._resource_service._repository.get_home_dir()
 
     def get_with_home_dir(self, file_path):
-        path = os.path.join(self.get_home_dir(), file_path)
-        dir_path = os.path.dirname(path) if os.path.splitext(file_path)[1] else path
-        os.makedirs(dir_path, exist_ok=True)
-        return path
+        """Get a path relative to home directory."""
+        return self._resource_service.get_path_with_home(file_path)
 
     def get_audio_dir(self):
-        path = os.path.join(self.get_home_dir(), "assets", "data", self.locale_to, "audio")
-        os.makedirs(path, exist_ok=True)
-        return path
+        """Get the audio directory for current locale."""
+        return self._resource_service.get_audio_directory(self.locale_to)
 
     def get_image_dir(self):
-        path = os.path.join(self.get_home_dir(), "assets", "data", self.locale_to, "images")
-        os.makedirs(path, exist_ok=True)
-        return f'assets/data/{self.locale_to}/images'
+        """Get the image directory for current locale."""
+        return self._resource_service.get_image_directory(self.locale_to)
 
     def build(self):
         if platform in ['android', 'ios']:
@@ -135,11 +148,31 @@ class MainApp(App):
         self.root.current = screen_name
         self.refresh_widgets(widget)
 
-    def init_store(self, data_path = None):
+    def init_store(self, data_path = None, force_shuffle: bool = False):
+        """
+        Initialize the vocabulary store.
+        Uses dependency injection to create vocabulary service.
+
+        Args:
+            data_path: Path to vocabulary file. If None, reshuffles current vocabulary.
+            force_shuffle: If True, uses random shuffle instead of ML prioritization.
+        """
         if data_path:
-            self.store_controller.load_store(self, data_path)
-        self.store_controller.shuffle_store()
-        self.store = self.store_controller.get()
+            # Create vocabulary service with profiler support
+            self._vocabulary_service = self._container.vocabulary_service(data_path)
+
+            # Find the actual file path and load vocabulary
+            file_path = self._resource_service.find_resource(data_path)
+            if file_path:
+                self._vocabulary_service.load_vocabulary(file_path)
+
+            # Prepare and get study set
+            self._vocabulary_service.prepare_study_set(25, force_shuffle)
+            self.store = self._vocabulary_service.get_current_study_set()
+        elif self._vocabulary_service:
+            # Just shuffle if already loaded
+            self._vocabulary_service.prepare_study_set(25, force_shuffle)
+            self.store = self._vocabulary_service.get_current_study_set()
 
     def refresh_widgets(self, item = None):
         if not self.root:

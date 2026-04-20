@@ -9,8 +9,17 @@ try:
     import soundfile as sf
     import numpy as np
     HAS_DESKTOP_AUDIO = True
-except ImportError:
-    print("Warning: Desktop audio libraries not available")
+
+    # Check if PortAudio is actually available (not just imported)
+    try:
+        sd.query_devices()
+    except (OSError, RuntimeError) as e:
+        print(f"Warning: PortAudio library not found: {e}")
+        HAS_DESKTOP_AUDIO = False
+except (ImportError, OSError) as e:
+    # ImportError: library not installed
+    # OSError: library installed but PortAudio not found
+    print(f"Warning: Desktop audio libraries not available: {e}")
     HAS_DESKTOP_AUDIO = False
     AudioSegment = None
     sd = None
@@ -18,8 +27,18 @@ except ImportError:
     np = None
 
 from kivy.app import App
+from application.services.recorder_service import IRecorderController
 
-class RecorderControllerDesktop:
+
+class RecorderControllerDesktop(IRecorderController):
+    """
+    Desktop implementation of IRecorderController.
+    Uses sounddevice and soundfile for audio recording.
+    """
+
+    def __init__(self):
+        self.recording = False
+        self.audio_data = None
     def get_initial_status(self, status_label):
         if not HAS_DESKTOP_AUDIO:
             status_label.text = "[!] Desktop audio recording libraries are not available"
@@ -27,6 +46,10 @@ class RecorderControllerDesktop:
         return True
 
     def start_recording(self, status_label):
+        if not HAS_DESKTOP_AUDIO:
+            status_label.text = "[!] Audio recording not available - PortAudio library required"
+            return None
+
         self.recording = True
         app = App.get_running_app()
         fs = 44100
@@ -35,12 +58,16 @@ class RecorderControllerDesktop:
         max_duration = 15  # seconds
         buffer = []
 
-        with sd.InputStream(samplerate=fs, channels=1, dtype='int16') as stream:
-            for _ in range(int(fs * max_duration / 1024)):
-                if not self.recording:
-                    break
-                data, __ = stream.read(1024)
-                buffer.append(data)
+        try:
+            with sd.InputStream(samplerate=fs, channels=1, dtype='int16') as stream:
+                for _ in range(int(fs * max_duration / 1024)):
+                    if not self.recording:
+                        break
+                    data, __ = stream.read(1024)
+                    buffer.append(data)
+        except (OSError, RuntimeError) as e:
+            status_label.text = f"[!] Recording error: {e}"
+            return None
 
         if buffer:
             self.audio_data = np.concatenate(buffer, axis=0)

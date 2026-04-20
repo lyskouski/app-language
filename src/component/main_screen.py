@@ -19,6 +19,10 @@ class RootWidget(BoxLayout):
 
     def __init__(self, **kwargs):
         super(RootWidget, self).__init__(**kwargs)
+        # Get services from DI container
+        app = App.get_running_app()
+        self._resource_service = app._container.resource_service()
+
         self.load_data()
         Clock.schedule_once(lambda dt: self.populate_rv())
 
@@ -36,11 +40,13 @@ class RootWidget(BoxLayout):
         self.populate_rv()
 
     def load_data(self, path = None):
+        """Load data using resource service."""
         self.data = []
         if not path:
             path = self.path
-        app = App.get_running_app()
-        source_path = app.find_resource(path)
+
+        # Use resource service to find file
+        source_path = self._resource_service.find_resource(path)
         if source_path and os.path.exists(source_path):
             with open(source_path, 'r', encoding='utf-8') as f:
                 self.data = json.load(f)

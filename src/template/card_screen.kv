@@ -35,7 +35,7 @@
                 ActionButton:
                     text: app._('button_shuffle', app.locale)
                     on_release:
-                        app.init_store()
+                        app.init_store(force_shuffle=True)
                         app.refresh_widgets()
 
         ScrollView:
@@ -69,5 +69,5 @@
                 ActionButton:
                     text: app._('button_shuffle', app.locale)
                     on_release:
-                        app.init_store()
+                        app.init_store(force_shuffle=True)
                         app.refresh_widgets()
