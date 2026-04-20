@@ -2,20 +2,92 @@
 # Use of this source code is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
 
 """
-Unit tests for migrated services and infrastructure components.
-Tests the Clean Architecture implementation for audio and ML components.
+Unit tests for Infrastructure Layer.
+Tests infrastructure implementations (persistence, ML, audio, DI).
 """
 
 import pytest
 import tempfile
 import os
-from unittest.mock import Mock, MagicMock, patch
-from pathlib import Path
+from unittest.mock import Mock, patch
 
 from domain.entities.vocabulary_item import VocabularyItem
 from domain.services import IVocabularyProfiler
 from domain.services.audio_comparator import IAudioComparator
 
+
+# ========== Persistence Tests ==========
+
+class TestFileVocabularyRepository:
+    """Test file-based vocabulary repository."""
+
+    def test_load_from_file(self):
+        """Test loading vocabulary from file."""
+        from infrastructure.persistence.file_vocabulary_repository import FileVocabularyRepository
+
+        # Arrange
+        with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.txt', encoding='utf-8') as f:
+            f.write("hello;hola;hello.mp3;hello.jpg\n")
+            f.write("world;mundo\n")
+            f.write("good;bueno;good.mp3\n")
+            temp_path = f.name
+
+        try:
+            repo = FileVocabularyRepository()
+
+            # Act
+            items = repo.load_from_file(temp_path)
+
+            # Assert
+            assert len(items) == 3
+
+            assert items[0].origin == "hello"
+            assert items[0].translation == "hola"
+            assert items[0].sound == "hello.mp3"
+            assert items[0].image == "hello.jpg"
+
+            assert items[1].origin == "world"
+            assert items[1].translation == "mundo"
+            assert items[1].sound is None
+            assert items[1].image is None
+
+            assert items[2].origin == "good"
+            assert items[2].translation == "bueno"
+            assert items[2].sound == "good.mp3"
+            assert items[2].image is None
+
+        finally:
+            os.unlink(temp_path)
+
+    def test_save_to_file(self):
+        """Test saving vocabulary to file."""
+        from infrastructure.persistence.file_vocabulary_repository import FileVocabularyRepository
+
+        with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.txt', encoding='utf-8') as f:
+            temp_path = f.name
+
+        try:
+            repo = FileVocabularyRepository()
+            items = [
+                VocabularyItem("hello", "hola", "hello.mp3", "hello.jpg"),
+                VocabularyItem("world", "mundo"),
+                VocabularyItem("good", "bueno", "good.mp3")
+            ]
+
+            # Act
+            repo.save_to_file(temp_path, items)
+
+            # Assert - read back and verify
+            loaded_items = repo.load_from_file(temp_path)
+            assert len(loaded_items) == 3
+            assert loaded_items[0].origin == "hello"
+            assert loaded_items[0].sound == "hello.mp3"
+
+        finally:
+            os.unlink(temp_path)
+
+
+# ========== ML Tests ==========
 
 class TestMLVocabularyProfiler:
     """Test ML vocabulary profiler implementation."""
@@ -107,6 +179,8 @@ class TestMLVocabularyProfiler:
         assert profiler2.user_history["test"]["correct"] == 1
 
 
+# ========== Audio Tests ==========
+
 class TestLibrosaAudioComparator:
     """Test audio comparator implementation."""
 
@@ -137,87 +211,7 @@ class TestLibrosaAudioComparator:
             assert "feedback" in result[0]
 
 
-class TestMediaService:
-    """Test media service."""
-
-    @pytest.fixture
-    def media_service(self, tmp_path):
-        """Create a media service instance for testing."""
-        from application.services.media_service import MediaService
-        audio_dir = str(tmp_path / "audio")
-        os.makedirs(audio_dir, exist_ok=True)
-        return MediaService('en', audio_dir)
-
-    def test_set_language(self, media_service):
-        """Test setting language."""
-        media_service.set_language('es')
-        assert media_service._lang == 'es'
-
-    def test_set_audio_directory(self, media_service, tmp_path):
-        """Test setting audio directory."""
-        new_dir = str(tmp_path / "new_audio")
-        media_service.set_audio_directory(new_dir)
-        assert media_service._audio_dir == new_dir
-
-    @patch('application.services.media_service.requests.post')
-    def test_get_audio_file_generates_tts(self, mock_post, media_service):
-        """Test that TTS is generated when file doesn't exist."""
-        # Mock successful TTS response
-        mock_response = Mock()
-        mock_response.status_code = 200
-        mock_response.text = "//OEtlc3Q="  # Base64 encoded "test"
-        mock_post.return_value = mock_response
-
-        result = media_service.get_audio_file("hello")
-
-        # Should call TTS generation
-        assert mock_post.called
-        # Result should be a path
-        assert result is not None
-
-
-class TestRecorderService:
-    """Test recorder service."""
-
-    @pytest.fixture
-    def mock_controller(self):
-        """Create a mock recorder controller."""
-        controller = Mock()
-        controller.get_initial_status.return_value = "Ready"
-        controller.start_recording.return_value = "Recording..."
-        controller.stop_recording.return_value = "/path/to/recording.mp3"
-        return controller
-
-    @pytest.fixture
-    def recorder_service(self, mock_controller):
-        """Create a recorder service instance for testing."""
-        from application.services.recorder_service import RecorderService
-        return RecorderService(mock_controller)
-
-    def test_get_initial_status(self, recorder_service, mock_controller):
-        """Test getting initial status."""
-        result = recorder_service.get_initial_status()
-
-        assert result == "Ready"
-        mock_controller.get_initial_status.assert_called_once()
-
-    def test_start_recording(self, recorder_service, mock_controller):
-        """Test starting recording."""
-        result = recorder_service.start_recording()
-
-        assert result == "Recording..."
-        assert recorder_service.is_recording() is True
-        mock_controller.start_recording.assert_called_once()
-
-    def test_stop_recording(self, recorder_service, mock_controller):
-        """Test stopping recording."""
-        recorder_service.start_recording()
-        result = recorder_service.stop_recording()
-
-        assert result == "/path/to/recording.mp3"
-        assert recorder_service.is_recording() is False
-        mock_controller.stop_recording.assert_called_once()
-
+# ========== Dependency Injection Tests ==========
 
 class TestDependencyInjection:
     """Test dependency injection container."""
