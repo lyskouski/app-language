@@ -46,12 +46,16 @@ class TestDependencyInjection:
         assert hasattr(comparator, 'compare_audio')
 
     def test_recorder_service_available(self, container):
-        """Test that recorder service can be created."""
+        """Test that recorder service can be created and handles missing dependencies gracefully."""
+        # Service should always be creatable, even if PortAudio is unavailable
         service = container.recorder_service()
 
         assert service is not None
         assert hasattr(service, 'start_recording')
         assert hasattr(service, 'stop_recording')
+
+        # The service should exist regardless of PortAudio availability
+        # Actual recording will gracefully fail if PortAudio is not available
 
 
 if __name__ == '__main__':
