@@ -22,6 +22,9 @@ class TestDependencyInjection:
         repo2 = container.vocabulary_repository()
 
         assert repo1 is repo2
+        # Verify it's the SQLite implementation
+        from infrastructure.persistence.sqlite_vocabulary_repository import SQLiteVocabularyRepository
+        assert isinstance(repo1, SQLiteVocabularyRepository)
 
     def test_settings_service_singleton(self, container):
         """Test that settings service is a singleton."""

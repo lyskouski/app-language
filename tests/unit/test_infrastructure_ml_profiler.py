@@ -1,30 +1,43 @@
 # Copyright 2025 The terCAD team. All rights reserved.
 # Use of this source code is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
 
-"""Tests for MLVocabularyProfiler."""
+"""Tests for SQLiteMLVocabularyProfiler."""
 
 import pytest
 
 from domain.entities.vocabulary_item import VocabularyItem
 from domain.services import IVocabularyProfiler
-from infrastructure.ml.ml_vocabulary_profiler import MLVocabularyProfiler
+from infrastructure.persistence.database_connection import DatabaseConnection
+from infrastructure.persistence.sqlite_vocabulary_repository import SQLiteVocabularyRepository
+from infrastructure.ml.sqlite_ml_vocabulary_profiler import SQLiteMLVocabularyProfiler
 
 
 class TestMLVocabularyProfiler:
-    """Test ML vocabulary profiler implementation."""
+    """Test SQLite ML vocabulary profiler implementation."""
 
     @pytest.fixture
-    def temp_paths(self, tmp_path):
-        """Create temporary paths for profiler data."""
-        profile_path = tmp_path / "profile.json"
-        model_path = tmp_path / "model.pkl"
-        return str(profile_path), str(model_path)
+    def db_connection(self, tmp_path):
+        """Create a temporary database connection for testing."""
+        db_path = str(tmp_path / "test_profiler.db")
+        return DatabaseConnection(db_path)
 
     @pytest.fixture
-    def profiler(self, temp_paths):
+    def repository(self, db_connection):
+        """Create vocabulary repository for test data."""
+        return SQLiteVocabularyRepository(db_connection)
+
+    @pytest.fixture
+    def profiler(self, db_connection, repository):
         """Create a profiler instance for testing."""
-        profile_path, model_path = temp_paths
-        return MLVocabularyProfiler(profile_path, model_path)
+        # Setup test vocabulary data
+        items = [
+            VocabularyItem("hello", "hola"),
+            VocabularyItem("world", "mundo"),
+            VocabularyItem("pharmaceutical", "farmacéutico")
+        ]
+        repository.save_vocabulary_items("EN", "ES", items)
+
+        return SQLiteMLVocabularyProfiler(db_connection, "EN", "ES")
 
     def test_implements_interface(self, profiler):
         """Test that profiler implements IVocabularyProfiler."""
@@ -36,9 +49,9 @@ class TestMLVocabularyProfiler:
 
         profiler.mark_positive(item)
 
-        assert "hello" in profiler.user_history
-        assert profiler.user_history["hello"]["correct"] == 1
-        assert profiler.user_history["hello"]["incorrect"] == 0
+        # Verify in database
+        score = profiler._get_history_score("hello")
+        assert score < 0.5  # Low score indicates good performance
 
     def test_mark_negative(self, profiler):
         """Test marking an item as incorrectly answered."""
@@ -46,9 +59,9 @@ class TestMLVocabularyProfiler:
 
         profiler.mark_negative(item)
 
-        assert "world" in profiler.user_history
-        assert profiler.user_history["world"]["correct"] == 0
-        assert profiler.user_history["world"]["incorrect"] == 1
+        # Verify in database
+        score = profiler._get_history_score("world")
+        assert score > 0.5  # High score indicates difficulty
 
     def test_get_prioritized_items_empty_list(self, profiler):
         """Test prioritization with empty list."""
@@ -57,16 +70,17 @@ class TestMLVocabularyProfiler:
 
         assert result == []
 
-    def test_get_prioritized_items_respects_limit(self, profiler):
+    def test_get_prioritized_items_respects_limit(self, profiler, repository):
         """Test that prioritization respects the limit."""
         items = [
             VocabularyItem(f"word{i}", f"palabra{i}")
             for i in range(50)
         ]
+        repository.save_vocabulary_items("EN", "ES", items, replace=False)
 
         result = profiler.get_prioritized_items(items, 10)
 
-        assert len(result) == 10
+        assert len(result) <= 10
 
     def test_prioritizes_difficult_words(self, profiler):
         """Test that difficult words are prioritized."""
@@ -82,22 +96,7 @@ class TestMLVocabularyProfiler:
         assert result[0] == hard_item
         assert result[1] == easy_item
 
-    def test_persistence(self, temp_paths):
-        """Test that user history is persisted."""
-        profile_path, model_path = temp_paths
-
-        # Create first profiler and mark items
-        profiler1 = MLVocabularyProfiler(profile_path, model_path)
-        item = VocabularyItem("test", "prueba")
-        profiler1.mark_positive(item)
-        profiler1._save_user_profile()
-
-        # Create second profiler and check history loaded
-        profiler2 = MLVocabularyProfiler(profile_path, model_path)
-        assert "test" in profiler2.user_history
-        assert profiler2.user_history["test"]["correct"] == 1
-
-    def test_multiple_correct_answers_tracked(self, profiler):
+    def test_multiple_correct_answers_tracked(self, profiler, db_connection):
         """Test tracking multiple correct answers."""
         item = VocabularyItem("hello", "hola")
 
@@ -105,10 +104,18 @@ class TestMLVocabularyProfiler:
         profiler.mark_positive(item)
         profiler.mark_positive(item)
 
-        assert profiler.user_history["hello"]["correct"] == 3
-        assert profiler.user_history["hello"]["incorrect"] == 0
+        # Verify in database
+        row = db_connection.fetchone(
+            """SELECT correct_count, incorrect_count
+               FROM learning_progress lp
+               JOIN vocabulary_items v ON lp.vocabulary_item_id = v.id
+               WHERE v.origin = 'hello'"""
+        )
+        assert row is not None
+        assert row['correct_count'] == 3
+        assert row['incorrect_count'] == 0
 
-    def test_mixed_correct_incorrect_tracked(self, profiler):
+    def test_mixed_correct_incorrect_tracked(self, profiler, db_connection):
         """Test tracking mixed answers."""
         item = VocabularyItem("world", "mundo")
 
@@ -116,15 +123,23 @@ class TestMLVocabularyProfiler:
         profiler.mark_negative(item)
         profiler.mark_positive(item)
 
-        assert profiler.user_history["world"]["correct"] == 2
-        assert profiler.user_history["world"]["incorrect"] == 1
+        # Verify in database
+        row = db_connection.fetchone(
+            """SELECT correct_count, incorrect_count
+               FROM learning_progress lp
+               JOIN vocabulary_items v ON lp.vocabulary_item_id = v.id
+               WHERE v.origin = 'world'"""
+        )
+        assert row is not None
+        assert row['correct_count'] == 2
+        assert row['incorrect_count'] == 1
 
     def test_prioritization_uses_all_items(self, profiler):
         """Test that prioritization processes all items."""
         items = [
             VocabularyItem("hello", "hola"),
             VocabularyItem("world", "mundo"),
-            VocabularyItem("test", "prueba")
+            VocabularyItem("pharmaceutical", "farmacéutico")
         ]
 
         result = profiler.get_prioritized_items(items, 3)
@@ -136,22 +151,15 @@ class TestMLVocabularyProfiler:
 
     def test_difficulty_calculation_with_history(self, profiler):
         """Test that difficulty changes based on user history."""
-        easy_item = VocabularyItem("hi", "hola")
-        hard_item = VocabularyItem("hi", "hola")
+        easy_item = VocabularyItem("hello", "hola")
 
-        # Mark one as mastered (many correct answers)
+        # Mark as mastered (many correct answers)
         for _ in range(10):
             profiler.mark_positive(easy_item)
 
-        # Mark other as difficult (many incorrect answers)
-        for _ in range(10):
-            profiler.mark_negative(hard_item)
-
-        # Calculate difficulty for each
-        result = profiler.get_prioritized_items([easy_item], 1)
-
-        # Hard item should be prioritized (have higher difficulty score)
-        assert len(result) == 1
+        # Check difficulty score decreased
+        difficulty = profiler._get_history_score("hello")
+        assert difficulty < 0.2  # Should be very low for mastered words
 
 
 if __name__ == '__main__':

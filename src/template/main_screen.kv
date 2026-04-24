@@ -73,15 +73,14 @@
         size_hint_x: None
         source: root.logo
     Label:
-        text: root.text
+        text: app._(root.text, app.locale) if root.text.startswith('game_') else root.text
     Button:
         text: app._('button_play', app.locale) if root.route_path else ""
         disabled: False if root.route_path else True
         opacity: 1.0 if root.route_path else 0
         size_hint_x: dp(0.5) if root.route_path else dp(0.01)
         on_release:
-            app.next_screen('loading_screen')
-            kivy.clock.Clock.schedule_once(lambda dt: app.next_screen(root.route_path, app.root.get_screen('loading_screen')), 1)
+            app.root.get_screen('main_screen').ids.root_widget.play_game(root)
     Button:
         text: app._('button_select', app.locale)
         opacity: 1.0 if not root.route_path else 0
