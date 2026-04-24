@@ -43,6 +43,7 @@ labels_uk = {
     "button_collapse": "Згорнути",
     "button_clear": "Очистити",
     "button_choose": "Вибрати",
+    "button_cancel": "Скасувати",
     "button_back": "Назад",
     "button_add": "Додати",
     "_": "Фатальна помилка"

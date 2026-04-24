@@ -43,6 +43,7 @@ labels_en = {
     "button_collapse": "Collapse",
     "button_clear": "Clear",
     "button_choose": "Choose",
+    "button_cancel": "Cancel",
     "button_back": "Back",
     "button_add": "Add",
     "_": "Fatal Error"

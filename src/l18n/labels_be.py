@@ -43,6 +43,7 @@ labels_be = {
     "button_collapse": "Згарнуць",
     "button_clear": "Ачысціць",
     "button_choose": "Выбраць",
+    "button_cancel": "Адмена",
     "button_back": "Вярнуцца",
     "button_add": "Дадаць",
     "_": "Фатальная памылка"

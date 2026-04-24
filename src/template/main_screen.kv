@@ -49,6 +49,13 @@
         Widget:
             size_hint_x: dp(0.02)
         Button:
+            text: app._("button_add", app.locale)
+            size_hint_x: 0.25
+            on_release:
+                app.next_screen('vocabulary_add_screen')
+        Widget:
+            size_hint_x: dp(0.02)
+        Button:
             text: app._("button_settings", app.locale)
             size_hint_x: 0.3
             on_release:
