@@ -154,15 +154,20 @@ class MainApp(App):
         Uses dependency injection to create vocabulary service.
 
         Args:
-            data_path: Path to vocabulary file or 'db' to load from database. If None, reshuffles current vocabulary.
+            data_path: Path to vocabulary file, 'db'/'all' to load from database, or category filter. If None, reshuffles current vocabulary.
             force_shuffle: If True, uses random shuffle instead of ML prioritization.
         """
         if data_path:
             # Check if we should load from database
-            if data_path == 'db' or data_path == 'all':
+            # If data_path is not a file path (no extension or assets/ prefix), treat it as database request
+            is_file_path = (data_path.startswith('assets/') or '.' in data_path.split('/')[-1])
+
+            if not is_file_path or data_path == 'db' or data_path == 'all':
                 # Load vocabulary directly from database using current locale settings
                 if self.locale_from and self.locale_to:
                     print(f"DEBUG: Loading vocabulary from database for {self.locale_from}-{self.locale_to}")
+                    if data_path not in ('db', 'all'):
+                        print(f"DEBUG: Vocabulary filter: {data_path} (not yet implemented, loading all)")
 
                     # Get repository directly from container
                     vocab_repo = self._container.vocabulary_repository()
@@ -185,12 +190,17 @@ class MainApp(App):
                     print("ERROR: locale_from and locale_to must be set to load from database")
             else:
                 # Legacy file-based loading
+                print(f"DEBUG: Attempting legacy file-based loading for: {data_path}")
                 self._vocabulary_service = self._container.vocabulary_service(data_path)
 
                 # Find the actual file path and load vocabulary
                 file_path = self._resource_service.find_resource(data_path)
                 if file_path:
+                    print(f"DEBUG: Found file: {file_path}")
                     self._vocabulary_service.load_vocabulary(file_path)
+                else:
+                    print(f"ERROR: File not found: {data_path}")
+                    return
 
                 # Prepare and get study set
                 self._vocabulary_service.prepare_study_set(25, force_shuffle)
@@ -198,6 +208,7 @@ class MainApp(App):
         elif self._vocabulary_service:
             # Just shuffle if already loaded
             self._vocabulary_service.prepare_study_set(25, force_shuffle)
+            self.store = self._vocabulary_service.get_current_study_set()
             self.store = self._vocabulary_service.get_current_study_set()
 
     def refresh_widgets(self, item = None):

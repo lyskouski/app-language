@@ -155,6 +155,35 @@ class RootWidget(BoxLayout):
             import traceback
             traceback.print_exc()
 
+    def play_game(self, info):
+        """Load vocabulary and navigate to a game screen."""
+        try:
+            print(f"DEBUG: play_game called")
+            print(f"DEBUG: info.text = {info.text}")
+            print(f"DEBUG: info.store_path = {info.store_path}")
+            print(f"DEBUG: info.route_path = {info.route_path}")
+
+            app = App.get_running_app()
+
+            # Load vocabulary for the game
+            if info.store_path and info.store_path != '':
+                print(f"DEBUG: Loading vocabulary with filter: {info.store_path}")
+                app.init_store(info.store_path)
+            else:
+                print("DEBUG: Loading all vocabulary")
+                app.init_store('all')
+
+            # Navigate to the loading screen, then to the game screen
+            app.next_screen('loading_screen')
+            Clock.schedule_once(
+                lambda dt: app.next_screen(info.route_path, app.root.get_screen('loading_screen')),
+                1
+            )
+        except Exception as e:
+            print(f"ERROR in play_game: {e}")
+            import traceback
+            traceback.print_exc()
+
     def populate_rv(self):
         """Populate the RecycleView with data."""
         try:
