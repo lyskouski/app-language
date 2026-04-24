@@ -67,14 +67,12 @@ class RootWidget(BoxLayout):
         # Root level: show language pairs
         if path == 'root':
             self.data = self._config_repo.get_all_language_pairs()
-            print(f"DEBUG: MainScreen loaded {len(self.data)} language pairs")
 
         # Level 2: Language pair selected → show dictionaries/categories
         elif path.startswith('assets/data/'):
             # This is a language pair path like "assets/data/PL/EN/source.json"
             if app.locale_from and app.locale_to:
                 dictionaries = self._config_repo.get_dictionaries_for_language_pair(app.locale_from, app.locale_to)
-                print(f"DEBUG: MainScreen loaded {len(dictionaries)} dictionaries for {app.locale_from}-{app.locale_to}")
                 self.data = dictionaries
             else:
                 print("ERROR: locale_from or locale_to not set!")
@@ -86,7 +84,6 @@ class RootWidget(BoxLayout):
             try:
                 category_id = int(path.split('_')[1])
                 games = self._config_repo.get_games_for_category(category_id)
-                print(f"DEBUG: MainScreen loaded {len(games)} games for category {category_id}")
 
                 # Add locale info to each game
                 for game in games:
@@ -99,37 +96,26 @@ class RootWidget(BoxLayout):
                 self.data = []
 
         else:
-            print(f"DEBUG: Unknown path: {path}")
             self.data = []
 
     def update_data(self, info):
         """Handle navigation when a language pair, dictionary, or game is clicked."""
         try:
-            print("DEBUG: update_data called")
-            print(f"DEBUG: info.text = {info.text}")
-            print(f"DEBUG: info.store_path = {info.store_path}")
-            print(f"DEBUG: info.route_path = {info.route_path}")
-            print(f"DEBUG: info.source = {info.source}")
 
             app = App.get_running_app()
 
             # Update locale settings
             if (info.locale_from != ''):
                 app.locale_from = info.locale_from
-                print(f"DEBUG: Set app.locale_from = {app.locale_from}")
             if (info.locale_to != ''):
                 app.locale_to = info.locale_to
-                print(f"DEBUG: Set app.locale_to = {app.locale_to}")
 
             # Check if this is a game (has route_path) - Level 3 → Game screen
             if (info.route_path != ''):
-                print(f"DEBUG: Navigating to game screen: {info.route_path}")
                 # Load vocabulary for the game
                 if info.store_path and info.store_path != '':
-                    print(f"DEBUG: Loading vocabulary with filter: {info.store_path}")
                     app.init_store(info.store_path)
                 else:
-                    print("DEBUG: Loading all vocabulary")
                     app.init_store('all')
 
                 # Navigate to the specific game screen
@@ -141,13 +127,11 @@ class RootWidget(BoxLayout):
                 return
 
             # Otherwise, navigate to next level
-            print("DEBUG: Navigating to next level")
             if not self.ids.breadcrumb_view.data:
                 self.ids.breadcrumb_view.data = []
                 self.path = 'root'
             self.ids.breadcrumb_view.data.append({'text': info.text, 'source': self.path})
             self.path = info.source
-            print(f"DEBUG: New path = {self.path}")
             self.load_data()
             self.populate_rv()
         except Exception as e:
@@ -158,19 +142,12 @@ class RootWidget(BoxLayout):
     def play_game(self, info):
         """Load vocabulary and navigate to a game screen."""
         try:
-            print("DEBUG: play_game called")
-            print(f"DEBUG: info.text = {info.text}")
-            print(f"DEBUG: info.store_path = {info.store_path}")
-            print(f"DEBUG: info.route_path = {info.route_path}")
-
             app = App.get_running_app()
 
             # Load vocabulary for the game
             if info.store_path and info.store_path != '':
-                print(f"DEBUG: Loading vocabulary with filter: {info.store_path}")
                 app.init_store(info.store_path)
             else:
-                print("DEBUG: Loading all vocabulary")
                 app.init_store('all')
 
             # Navigate to the loading screen, then to the game screen
@@ -192,9 +169,7 @@ class RootWidget(BoxLayout):
                 Clock.schedule_once(lambda dt: self.populate_rv(), 0.2)
                 return
 
-            print(f"DEBUG: MainScreen populating RecycleView with {len(self.data)} items")
             self.ids.recycle_view.data = self.data
-            print("DEBUG: MainScreen RecycleView data set successfully")
         except Exception as e:
             print(f"ERROR in populate_rv: {e}")
             import traceback

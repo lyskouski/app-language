@@ -44,7 +44,6 @@ class LanguageWidget(BoxLayout):
     def load_languages(self):
         """Load available languages from SQLite database."""
         self.data = self._config_repo.get_all_languages()
-        print(f"DEBUG: Loaded {len(self.data)} languages")
 
     def populate_languages(self):
         """Populate the RecycleView with language data."""
@@ -59,9 +58,7 @@ class LanguageWidget(BoxLayout):
                 'logo': item.get('logo', ''),
                 'locale': item.get('locale', '')
             } for item in self.data]
-            print(f"DEBUG: Populating RecycleView with {len(data_for_rv)} items")
             self.ids.language_view.data = data_for_rv
-            print("DEBUG: RecycleView data set successfully")
         except Exception as e:
             print(f"ERROR in populate_languages: {e}")
             import traceback

@@ -169,15 +169,10 @@ class MainApp(App):
                     category_filter = None
                     if data_path not in ('db', 'all'):
                         category_filter = data_path
-                        print(f"DEBUG: Loading vocabulary from database for {self.locale_from}-{self.locale_to}, category: {category_filter}")
-                    else:
-                        print(f"DEBUG: Loading vocabulary from database for {self.locale_from}-{self.locale_to}")
 
                     # Get repository directly from container
                     vocab_repo = self._container.vocabulary_repository()
                     items = vocab_repo.load_by_language_pair(self.locale_from, self.locale_to, category_filter)
-
-                    print(f"DEBUG: Loaded {len(items)} vocabulary items from database")
 
                     # Create vocabulary service for this language pair
                     self._vocabulary_service = self._container.vocabulary_service(f"db_{self.locale_from}_{self.locale_to}")
@@ -188,19 +183,15 @@ class MainApp(App):
                     # Prepare and get study set
                     self._vocabulary_service.prepare_study_set(25, force_shuffle)
                     self.store = self._vocabulary_service.get_current_study_set()
-
-                    print(f"DEBUG: Prepared study set with {len(self.store)} items")
                 else:
                     print("ERROR: locale_from and locale_to must be set to load from database")
             else:
                 # Legacy file-based loading
-                print(f"DEBUG: Attempting legacy file-based loading for: {data_path}")
                 self._vocabulary_service = self._container.vocabulary_service(data_path)
 
                 # Find the actual file path and load vocabulary
                 file_path = self._resource_service.find_resource(data_path)
                 if file_path:
-                    print(f"DEBUG: Found file: {file_path}")
                     self._vocabulary_service.load_vocabulary(file_path)
                 else:
                     print(f"ERROR: File not found: {data_path}")
