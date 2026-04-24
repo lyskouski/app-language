@@ -57,7 +57,8 @@ class VocabularyAddScreen(Screen):
                 origin=self.origin_text.strip(),
                 translation=self.translation_text.strip(),
                 sound=self.sound_path_text.strip() if self.sound_path_text else None,
-                image=self.image_path_text.strip() if self.image_path_text else None
+                image=self.image_path_text.strip() if self.image_path_text else None,
+                category=self.category_text.strip() if self.category_text else None
             )
 
             # Save to database

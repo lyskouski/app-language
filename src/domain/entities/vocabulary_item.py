@@ -15,6 +15,7 @@ class VocabularyItem:
     translation: str
     sound: Optional[str] = None
     image: Optional[str] = None
+    category: Optional[str] = None
 
     def __post_init__(self):
         if not self.origin or not self.translation:
