@@ -31,7 +31,7 @@
                 BoxLayout:
                     orientation: 'vertical'
                     size_hint_y: None
-                    height: 120
+                    height: 150
                     spacing: 5
                     Label:
                         text: app._("language_pair_from_label", app.locale)
@@ -40,46 +40,25 @@
                         text_size: self.size
                         halign: 'left'
                         valign: 'middle'
-                    # Language selection buttons
-                    GridLayout:
-                        cols: 4
+                    # Language selection tiles (dynamic)
+                    RecycleView:
+                        id: from_view
+                        viewclass: 'LanguageTileWidget'
                         size_hint_y: None
-                        height: 80
-                        spacing: 5
-                        # BE
-                        Button:
-                            text: "BE\nБеларускі"
-                            on_release:
-                                root.locale_from_text = "BE"
-                                root.update_name_automatically()
-                            background_color: (0.3, 0.7, 0.3, 1) if root.locale_from_text == "BE" else (0.5, 0.5, 0.5, 1)
-                        # EN
-                        Button:
-                            text: "EN\nEnglish"
-                            on_release:
-                                root.locale_from_text = "EN"
-                                root.update_name_automatically()
-                            background_color: (0.3, 0.7, 0.3, 1) if root.locale_from_text == "EN" else (0.5, 0.5, 0.5, 1)
-                        # RU
-                        Button:
-                            text: "RU\nРусский"
-                            on_release:
-                                root.locale_from_text = "RU"
-                                root.update_name_automatically()
-                            background_color: (0.3, 0.7, 0.3, 1) if root.locale_from_text == "RU" else (0.5, 0.5, 0.5, 1)
-                        # UK
-                        Button:
-                            text: "UK\nУкраїнська"
-                            on_release:
-                                root.locale_from_text = "UK"
-                                root.update_name_automatically()
-                            background_color: (0.3, 0.7, 0.3, 1) if root.locale_from_text == "UK" else (0.5, 0.5, 0.5, 1)
+                        height: 110
+                        RecycleGridLayout:
+                            cols: 4
+                            default_size: None, dp(50)
+                            default_size_hint: 1, None
+                            size_hint_y: None
+                            height: self.minimum_height
+                            spacing: dp(5)
 
                 # Target Language - REQUIRED
                 BoxLayout:
                     orientation: 'vertical'
                     size_hint_y: None
-                    height: 120
+                    height: 150
                     spacing: 5
                     Label:
                         text: app._("language_pair_to_label", app.locale)
@@ -88,40 +67,19 @@
                         text_size: self.size
                         halign: 'left'
                         valign: 'middle'
-                    # Language selection buttons
-                    GridLayout:
-                        cols: 4
+                    # Language selection tiles (dynamic)
+                    RecycleView:
+                        id: to_view
+                        viewclass: 'LanguageTileWidget'
                         size_hint_y: None
-                        height: 80
-                        spacing: 5
-                        # BE
-                        Button:
-                            text: "BE\nБеларускі"
-                            on_release:
-                                root.locale_to_text = "BE"
-                                root.update_name_automatically()
-                            background_color: (0.3, 0.7, 0.3, 1) if root.locale_to_text == "BE" else (0.5, 0.5, 0.5, 1)
-                        # EN
-                        Button:
-                            text: "EN\nEnglish"
-                            on_release:
-                                root.locale_to_text = "EN"
-                                root.update_name_automatically()
-                            background_color: (0.3, 0.7, 0.3, 1) if root.locale_to_text == "EN" else (0.5, 0.5, 0.5, 1)
-                        # RU
-                        Button:
-                            text: "RU\nРусский"
-                            on_release:
-                                root.locale_to_text = "RU"
-                                root.update_name_automatically()
-                            background_color: (0.3, 0.7, 0.3, 1) if root.locale_to_text == "RU" else (0.5, 0.5, 0.5, 1)
-                        # UK
-                        Button:
-                            text: "UK\nУкраїнська"
-                            on_release:
-                                root.locale_to_text = "UK"
-                                root.update_name_automatically()
-                            background_color: (0.3, 0.7, 0.3, 1) if root.locale_to_text == "UK" else (0.5, 0.5, 0.5, 1)
+                        height: 110
+                        RecycleGridLayout:
+                            cols: 4
+                            default_size: None, dp(50)
+                            default_size_hint: 1, None
+                            size_hint_y: None
+                            height: self.minimum_height
+                            spacing: dp(5)
 
                 # Name - Auto-generated, but editable
                 BoxLayout:
@@ -178,3 +136,41 @@
             Button:
                 text: app._("button_save", app.locale)
                 on_release: root.save_language_pair()
+
+
+<LanguageTileWidget@ButtonBehavior+BoxLayout>:
+    locale: ''
+    text: ''
+    logo: ''
+    selected: False
+    is_from: False
+    orientation: 'vertical'
+    padding: dp(5)
+    spacing: dp(2)
+
+    canvas.before:
+        Color:
+            rgba: (0.3, 0.7, 0.3, 1) if self.selected else (0.2, 0.2, 0.2, 0.8)
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [dp(8)]
+
+    on_release:
+        # Call appropriate selection method based on is_from flag
+        app.root.get_screen('language_pair_add_screen').select_from_language(self.locale) if self.is_from else app.root.get_screen('language_pair_add_screen').select_to_language(self.locale)
+
+    Label:
+        text: root.locale
+        font_size: sp(16)
+        bold: True
+        size_hint_y: 0.4
+        color: (1, 1, 1, 1)
+
+    Label:
+        text: root.text
+        font_size: sp(10)
+        size_hint_y: 0.6
+        text_size: self.width, None
+        halign: 'center'
+        color: (0.9, 0.9, 0.9, 1)

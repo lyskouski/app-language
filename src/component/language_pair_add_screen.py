@@ -28,11 +28,56 @@ class LanguagePairAddScreen(Screen):
         try:
             config_repo = app._container.config_repository()
             languages = config_repo.get_all_languages()
-            self.available_languages = [(lang['locale'], lang['text']) for lang in languages]
+            self.available_languages = [(lang['locale'], lang['text'], lang['logo']) for lang in languages]
+            self.populate_language_tiles()
         except Exception as e:
             print(f"ERROR loading languages: {e}")
             import traceback
             traceback.print_exc()
+
+    def populate_language_tiles(self):
+        """Populate RecycleView tiles with available languages."""
+        if not hasattr(self, 'ids') or 'from_view' not in self.ids:
+            return
+
+        # Prepare data for source language RecycleView
+        from_tiles_data = [
+            {
+                'locale': locale,
+                'text': name,
+                'logo': logo,
+                'selected': locale == self.locale_from_text,
+                'is_from': True  # Flag to identify which selection this is
+            }
+            for locale, name, logo in self.available_languages
+        ]
+
+        # Prepare data for target language RecycleView
+        to_tiles_data = [
+            {
+                'locale': locale,
+                'text': name,
+                'logo': logo,
+                'selected': locale == self.locale_to_text,
+                'is_from': False  # Flag to identify which selection this is
+            }
+            for locale, name, logo in self.available_languages
+        ]
+
+        self.ids.from_view.data = from_tiles_data
+        self.ids.to_view.data = to_tiles_data
+
+    def select_from_language(self, locale):
+        """Select source language."""
+        self.locale_from_text = locale
+        self.update_name_automatically()
+        self.populate_language_tiles()
+
+    def select_to_language(self, locale):
+        """Select target language."""
+        self.locale_to_text = locale
+        self.update_name_automatically()
+        self.populate_language_tiles()
 
     def clear_form(self):
         """Clear all form fields."""
@@ -48,8 +93,8 @@ class LanguagePairAddScreen(Screen):
         """
         if self.locale_from_text and self.locale_to_text:
             # Find language names
-            from_name = next((name for locale, name in self.available_languages if locale == self.locale_from_text), self.locale_from_text)
-            to_name = next((name for locale, name in self.available_languages if locale == self.locale_to_text), self.locale_to_text)
+            from_name = next((name for locale, name, logo in self.available_languages if locale == self.locale_from_text), self.locale_from_text)
+            to_name = next((name for locale, name, logo in self.available_languages if locale == self.locale_to_text), self.locale_to_text)
             self.name_text = f"{self.locale_from_text}-{self.locale_to_text} ({from_name} - {to_name})"
 
     def save_language_pair(self):
