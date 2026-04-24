@@ -117,7 +117,9 @@ class SQLiteConfigRepository:
                 'logo': row['logo_path'] or '',
                 'source': f"assets/data/{row['locale_to']}/{row['locale_from']}/source.json",
                 'store_path': '',
-                'route_path': ''
+                'route_path': '',
+                'category_id': '',  # Empty for language pairs
+                'category_name': ''  # Empty for language pairs
             }
             for row in rows
         ]
@@ -257,7 +259,9 @@ class SQLiteConfigRepository:
                 'logo': game['icon_path'],
                 'store_path': vocabulary_source,  # For vocabulary loading
                 'route_path': game['route_screen'],  # Screen to navigate to
-                'vocab_filter': vocabulary_source
+                'vocab_filter': vocabulary_source,
+                'category_id': '',  # Empty for games
+                'category_name': ''  # Empty for games
             }
             for game in sorted(GAME_TYPES, key=lambda x: x['display_order'])
         ]
