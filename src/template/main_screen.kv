@@ -73,7 +73,7 @@
         size_hint_x: None
         source: root.logo
     Label:
-        text: root.text
+        text: app._(root.text, app.locale) if root.text.startswith('game_') else root.text
     Button:
         text: app._('button_play', app.locale) if root.route_path else ""
         disabled: False if root.route_path else True
