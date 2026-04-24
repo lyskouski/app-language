@@ -80,6 +80,19 @@ Uses `SQLiteVocabularyRepository.save_vocabulary_items()` with:
 ## Testing
 All 68 existing tests pass with the new feature.
 
+## Example Workflow:
+```
+1. Start app → Select "RU-PL" language pair
+2. Navigate to category level → Select "Verbs" dictionary  
+3. Click "Add" button (appears next to "Select" button)
+4. Form opens with:
+   - Category: "Глаголы" (pre-filled, read-only)
+   - Origin: <enter> "бегать"
+   - Translation: <enter> "biegać"
+5. Click "Save"
+6. New verb added to RU-PL Verbs category
+```
+
 ## Future Enhancements
 - Add file picker for sound/image paths
 - Add category dropdown populated from database
