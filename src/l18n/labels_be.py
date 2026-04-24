@@ -34,6 +34,7 @@ labels_be = {
     "field_locale": "Лакалізацыя",
     "error_not_found": "Памылка: Запісаны файл не знойдзен",
     "edit_structure": "Рэдагаваць структуру",
+    "category_vocab_label": "Крыніца слоўніка *",
     "category_order_label": "Парадак адлюстравання (Неабавязкова)",
     "category_name_label": "Назва катэгорыі *",
     "category_icon_label": "Шлях да іконкі (Неабавязкова)",

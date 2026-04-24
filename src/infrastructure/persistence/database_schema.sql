@@ -74,6 +74,7 @@ CREATE TABLE IF NOT EXISTS game_categories (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     language_pair_id INTEGER NOT NULL,
     category_name TEXT NOT NULL,
+    vocabulary_source TEXT NOT NULL,  -- Vocabulary category for games (e.g., 'verbs', 'dictionary', 'numbers', 'articulation')
     icon_path TEXT,
     display_order INTEGER DEFAULT 0,
     is_active INTEGER DEFAULT 1,
@@ -81,18 +82,6 @@ CREATE TABLE IF NOT EXISTS game_categories (
     UNIQUE(language_pair_id, category_name)
 );
 
--- Individual games within categories
-CREATE TABLE IF NOT EXISTS games (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    category_id INTEGER NOT NULL,
-    game_name TEXT NOT NULL,
-    description TEXT,
-    vocabulary_source TEXT,  -- Path or filter for vocabulary items
-    icon_path TEXT,
-    display_order INTEGER DEFAULT 0,
-    is_active INTEGER DEFAULT 1,
-    FOREIGN KEY (category_id) REFERENCES game_categories(id) ON DELETE CASCADE
-);
 
 -- Database metadata and versioning
 CREATE TABLE IF NOT EXISTS db_metadata (

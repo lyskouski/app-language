@@ -15,8 +15,6 @@ class MainScreen(Screen):
             root_widget = self.ids.root_widget
             if hasattr(root_widget, '_config_repo'):
                 # Only reload if the widget has been initialized
-                app = App.get_running_app()
-                print(f"→ MainScreen.on_enter: Reloading data for path='{root_widget.path}' (locale: {app.locale_from}→{app.locale_to})")
                 root_widget.load_data()
                 root_widget.populate_rv()
 

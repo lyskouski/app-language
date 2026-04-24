@@ -9,6 +9,35 @@ Replaces JSON file-based configuration with SQLite storage.
 from typing import List, Dict, Optional
 from infrastructure.persistence.database_connection import DatabaseConnection
 
+# Predefined game types available for ALL categories
+# Each game mode is available for every category, using the category as vocabulary source
+GAME_TYPES = [
+    {
+        'i18n_key': 'game_cards',
+        'route_screen': 'card_screen',
+        'icon_path': 'assets/images/game/card.png',
+        'display_order': 0
+    },
+    {
+        'i18n_key': 'game_harmonica',
+        'route_screen': 'dictionary_screen',
+        'icon_path': 'assets/images/game/dictionary.png',
+        'display_order': 1
+    },
+    {
+        'i18n_key': 'game_harmonica_acoustic',
+        'route_screen': 'phonetics_screen',
+        'icon_path': 'assets/images/game/phonetics.png',
+        'display_order': 2
+    },
+    {
+        'i18n_key': 'game_articulation',
+        'route_screen': 'articulation_screen',
+        'icon_path': 'assets/images/game/articulation.png',
+        'display_order': 3
+    }
+]
+
 
 class SQLiteConfigRepository:
     """
@@ -169,7 +198,7 @@ class SQLiteConfigRepository:
             List of dictionary/category dictionaries
         """
         query = """
-            SELECT gc.id, gc.category_name, gc.icon_path, gc.display_order
+            SELECT gc.id, gc.category_name, gc.vocabulary_source, gc.icon_path, gc.display_order
             FROM game_categories gc
             JOIN language_pairs lp ON gc.language_pair_id = lp.id
             WHERE lp.locale_from = ? AND lp.locale_to = ? AND gc.is_active = 1
@@ -189,7 +218,8 @@ class SQLiteConfigRepository:
                 'locale_from': locale_from,
                 'locale_to': locale_to,
                 'category_id': str(row['id']),  # For Add button
-                'category_name': row['category_name']  # For pre-filling form
+                'category_name': row['category_name'],  # For pre-filling form
+                'vocabulary_source': row['vocabulary_source']  # For vocabulary loading
             }
             for row in rows
         ]
@@ -199,39 +229,42 @@ class SQLiteConfigRepository:
         Get all game modes for a specific dictionary/category.
         This is the third navigation level (after selecting a dictionary).
 
+        Returns predefined games from GAME_TYPES, using the category's vocabulary_source.
+
         Args:
             category_id: Category ID
 
         Returns:
-            List of game configuration dictionaries
+            List of game configuration dictionaries with i18n keys for names
         """
-        query = """
-            SELECT g.id, g.game_name, g.description, g.vocabulary_source,
-                   g.icon_path, g.route_screen, gc.category_name
-            FROM games g
-            JOIN game_categories gc ON g.category_id = gc.id
-            WHERE g.category_id = ? AND g.is_active = 1
-            ORDER BY g.display_order, g.game_name
-        """
+        # Get category's vocabulary source
+        row = self._db.fetchone(
+            "SELECT vocabulary_source FROM game_categories WHERE id = ?",
+            (category_id,)
+        )
 
-        rows = self._db.fetchall(query, (category_id,))
+        if not row:
+            return []
 
+        vocabulary_source = row['vocabulary_source']
+
+        # Return predefined games with category's vocabulary source
         return [
             {
-                'text': row['game_name'],
-                'description': row['description'],
-                'source': row['vocabulary_source'] or '',
-                'logo': row['icon_path'] or '',
-                'store_path': row['vocabulary_source'] or 'all',  # For vocabulary loading
-                'route_path': row['route_screen'] or 'card_screen',  # Screen to navigate to
-                'vocab_filter': row['vocabulary_source'] or 'all'
+                'text': game['i18n_key'],  # i18n key for localization (e.g., 'game_cards')
+                'description': '',
+                'source': vocabulary_source,  # Category's vocabulary source
+                'logo': game['icon_path'],
+                'store_path': vocabulary_source,  # For vocabulary loading
+                'route_path': game['route_screen'],  # Screen to navigate to
+                'vocab_filter': vocabulary_source
             }
-            for row in rows
+            for game in sorted(GAME_TYPES, key=lambda x: x['display_order'])
         ]
 
     def get_games_for_language_pair(self, locale_from: str, locale_to: str) -> List[Dict]:
         """
-        Get all games for a language pair.
+        Get all games for a language pair across all categories.
 
         Args:
             locale_from: Source language locale
@@ -241,33 +274,36 @@ class SQLiteConfigRepository:
             List of game configuration dictionaries
         """
         query = """
-            SELECT g.id, g.game_name, g.description, g.vocabulary_source,
-                   g.icon_path, gc.category_name
-            FROM games g
-            JOIN game_categories gc ON g.category_id = gc.id
+            SELECT gc.id, gc.category_name, gc.vocabulary_source
+            FROM game_categories gc
             JOIN language_pairs lp ON gc.language_pair_id = lp.id
-            WHERE lp.locale_from = ? AND lp.locale_to = ? AND g.is_active = 1
-            ORDER BY gc.display_order, g.display_order
+            WHERE lp.locale_from = ? AND lp.locale_to = ? AND gc.is_active = 1
+            ORDER BY gc.display_order
         """
 
         rows = self._db.fetchall(query, (locale_from, locale_to))
 
-        return [
-            {
-                'name': row['game_name'],
-                'description': row['description'],
-                'source': row['vocabulary_source'],
-                'icon': row['icon_path'],
-                'category': row['category_name']
-            }
-            for row in rows
-        ]
+        # Generate all games for all categories
+        result = []
+        for cat in rows:
+            for game in GAME_TYPES:
+                result.append({
+                    'name': game['i18n_key'],
+                    'description': '',
+                    'source': cat['vocabulary_source'],
+                    'icon': game['icon_path'],
+                    'route_screen': game['route_screen'],
+                    'category': cat['category_name']
+                })
+
+        return result
 
     def add_game_category(
         self,
         locale_from: str,
         locale_to: str,
         category_name: str,
+        vocabulary_source: str,
         icon_path: Optional[str] = None,
         display_order: int = 0
     ) -> int:
@@ -277,7 +313,8 @@ class SQLiteConfigRepository:
         Args:
             locale_from: Source language locale
             locale_to: Target language locale
-            category_name: Category name
+            category_name: Category name (display name)
+            vocabulary_source: Vocabulary category to load (e.g., 'verbs', 'dictionary')
             icon_path: Optional icon path
             display_order: Display order
 
@@ -298,50 +335,12 @@ class SQLiteConfigRepository:
         try:
             cursor = self._db.execute(
                 """INSERT INTO game_categories
-                   (language_pair_id, category_name, icon_path, display_order)
-                   VALUES (?, ?, ?, ?)""",
-                (language_pair_id, category_name, icon_path, display_order)
+                   (language_pair_id, category_name, vocabulary_source, icon_path, display_order)
+                   VALUES (?, ?, ?, ?, ?)""",
+                (language_pair_id, category_name, vocabulary_source, icon_path, display_order)
             )
             self._db.get_connection().commit()
             return cursor.lastrowid
         except Exception as e:
             print(f"Error adding game category: {e}")
-            raise
-
-    def add_game(
-        self,
-        category_id: int,
-        game_name: str,
-        vocabulary_source: str,
-        description: Optional[str] = None,
-        icon_path: Optional[str] = None,
-        display_order: int = 0
-    ) -> int:
-        """
-        Add a game to a category.
-
-        Args:
-            category_id: Game category ID
-            game_name: Game name
-            vocabulary_source: Path to vocabulary data
-            description: Optional description
-            icon_path: Optional icon path
-            display_order: Display order
-
-        Returns:
-            Game ID
-        """
-        try:
-            cursor = self._db.execute(
-                """INSERT INTO games
-                   (category_id, game_name, description, vocabulary_source,
-                    icon_path, display_order)
-                   VALUES (?, ?, ?, ?, ?, ?)""",
-                (category_id, game_name, description, vocabulary_source,
-                 icon_path, display_order)
-            )
-            self._db.get_connection().commit()
-            return cursor.lastrowid
-        except Exception as e:
-            print(f"Error adding game: {e}")
             raise

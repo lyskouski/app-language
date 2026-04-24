@@ -19,7 +19,7 @@ class VocabularyAddScreen(Screen):
     category_text = StringProperty('dictionary')
     category_id = StringProperty('')  # Category ID for database
     difficulty_text = StringProperty('0')
-    
+
     categories = ListProperty(['dictionary', 'verbs', 'numbers', 'articulation'])
 
     def __init__(self, **kwargs):
@@ -43,11 +43,9 @@ class VocabularyAddScreen(Screen):
 
         # Validate required fields
         if not self.origin_text or not self.translation_text:
-            print("ERROR: Origin and Translation are required fields")
             return
 
         if not app.locale_from or not app.locale_to:
-            print("ERROR: Please select a language pair first")
             return
 
         try:
@@ -70,16 +68,13 @@ class VocabularyAddScreen(Screen):
                 replace=False  # Append, don't replace existing items
             )
 
-            print(f"✓ Added vocabulary item: {new_item.origin} → {new_item.translation}")
-
             # Clear form and return to main screen
             self.clear_form()
             app.next_screen('main_screen')
 
         except Exception as e:
-            print(f"ERROR saving vocabulary item: {e}")
-            import traceback
-            traceback.print_exc()
+            print(f"Error adding vocabulary item: {e}")
+            pass
 
     def cancel(self):
         """Cancel and return to main screen."""

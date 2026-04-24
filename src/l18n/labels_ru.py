@@ -34,6 +34,7 @@ labels_ru = {
     "field_locale": "Локализация",
     "error_not_found": "Ошибка: Записанный файл не найден",
     "edit_structure": "Редактировать структуру",
+    "category_vocab_label": "Источник словаря *",
     "category_order_label": "Порядок отображения (Необязательно)",
     "category_name_label": "Название категории *",
     "category_icon_label": "Путь к иконке (Необязательно)",

@@ -34,6 +34,7 @@ labels_uk = {
     "field_locale": "Локалізація",
     "error_not_found": "Помилка: Записаний файл не знайдено",
     "edit_structure": "Редагувати структуру",
+    "category_vocab_label": "Джерело словника *",
     "category_order_label": "Порядок відображення (Необов'язково)",
     "category_name_label": "Назва категорії *",
     "category_icon_label": "Шлях до іконки (Необов'язково)",

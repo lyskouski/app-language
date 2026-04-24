@@ -46,6 +46,7 @@ labels_en = {
     "field_locale": "Locale",
     "error_not_found": "Error: No recorded file found",
     "edit_structure": "Edit Structure",
+    "category_vocab_label": "Vocabulary Source *",
     "category_order_label": "Display Order (Optional)",
     "category_name_label": "Category Name *",
     "category_icon_label": "Icon Path (Optional)",

@@ -92,8 +92,6 @@ class MainApp(App):
         self.locale_from = settings.locale_from
         self.locale_to = settings.locale_to
 
-        print(f"Home directory: {self._resource_service.get_path_with_home('')}")
-
     def _(self, key, locale):
         """Translate a key to the specified locale."""
         return self._localization_service.translate(key, locale)
