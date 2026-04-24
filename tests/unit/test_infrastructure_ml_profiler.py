@@ -20,7 +20,7 @@ class TestMLVocabularyProfiler:
         """Create a temporary database connection for testing."""
         db_path = str(tmp_path / "test_profiler.db")
         return DatabaseConnection(db_path)
-    
+
     @pytest.fixture
     def repository(self, db_connection):
         """Create vocabulary repository for test data."""
@@ -36,7 +36,7 @@ class TestMLVocabularyProfiler:
             VocabularyItem("pharmaceutical", "farmacéutico")
         ]
         repository.save_vocabulary_items("EN", "ES", items)
-        
+
         return SQLiteMLVocabularyProfiler(db_connection, "EN", "ES")
 
     def test_implements_interface(self, profiler):
@@ -106,7 +106,7 @@ class TestMLVocabularyProfiler:
 
         # Verify in database
         row = db_connection.fetchone(
-            """SELECT correct_count, incorrect_count 
+            """SELECT correct_count, incorrect_count
                FROM learning_progress lp
                JOIN vocabulary_items v ON lp.vocabulary_item_id = v.id
                WHERE v.origin = 'hello'"""
@@ -125,7 +125,7 @@ class TestMLVocabularyProfiler:
 
         # Verify in database
         row = db_connection.fetchone(
-            """SELECT correct_count, incorrect_count 
+            """SELECT correct_count, incorrect_count
                FROM learning_progress lp
                JOIN vocabulary_items v ON lp.vocabulary_item_id = v.id
                WHERE v.origin = 'world'"""

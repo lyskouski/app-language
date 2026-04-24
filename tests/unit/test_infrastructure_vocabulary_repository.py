@@ -20,7 +20,7 @@ class TestSQLiteVocabularyRepository:
         """Create a temporary database connection for testing."""
         db_path = str(tmp_path / "test_tlum.db")
         return DatabaseConnection(db_path)
-    
+
     @pytest.fixture
     def repository(self, db_connection):
         """Create a repository instance for testing."""
@@ -45,7 +45,7 @@ class TestSQLiteVocabularyRepository:
         assert loaded_items[0].translation == "hola"
         assert loaded_items[0].sound == "hello.mp3"
         assert loaded_items[0].image == "hello.jpg"
-        
+
         assert loaded_items[1].origin == "world"
         assert loaded_items[1].translation == "mundo"
         assert loaded_items[1].sound is None
@@ -74,10 +74,10 @@ class TestSQLiteVocabularyRepository:
         # Arrange - Save some items
         items = [VocabularyItem("test", "prueba")]
         repository.save_vocabulary_items("EN", "PL", items)
-        
+
         # Act - Load using file path format
         loaded_items = repository.load_from_file("assets/data/PL/EN/store.txt")
-        
+
         # Assert
         assert len(loaded_items) == 1
         assert loaded_items[0].origin == "test"
@@ -90,11 +90,11 @@ class TestSQLiteVocabularyRepository:
             VocabularyItem("old2", "viejo2")
         ]
         repository.save_vocabulary_items("EN", "ES", initial_items, replace=True)
-        
+
         # Act - Replace with new data
         new_items = [VocabularyItem("new1", "nuevo1")]
         repository.save_vocabulary_items("EN", "ES", new_items, replace=True)
-        
+
         # Assert
         loaded_items = repository.load_by_language_pair("EN", "ES")
         assert len(loaded_items) == 1

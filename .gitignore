@@ -14,3 +14,5 @@ linux-flatpak/.flatpak-builder
 linux-flatpak/build-dir
 key.keystore
 .coverage
+tlum.db-shm
+tlum.db-wal

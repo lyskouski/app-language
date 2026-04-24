@@ -18,13 +18,13 @@ class SQLiteConfigRepository:
 
     def __init__(self, db_connection: DatabaseConnection):
         self._db = db_connection
-    
+
     # ===== Language Management =====
-    
+
     def get_all_languages(self) -> List[Dict]:
         """
         Get all available languages.
-        
+
         Returns:
             List of language dictionaries
         """
@@ -34,7 +34,7 @@ class SQLiteConfigRepository:
                WHERE is_active = 1
                ORDER BY display_order, name"""
         )
-        
+
         return [
             {
                 'locale': row['locale'],
@@ -43,11 +43,11 @@ class SQLiteConfigRepository:
             }
             for row in rows
         ]
-    
+
     def add_language(self, locale: str, name: str, logo_path: str, display_order: int = 0) -> None:
         """
         Add a new language.
-        
+
         Args:
             locale: Language locale code (e.g., 'EN', 'PL')
             name: Display name
@@ -56,7 +56,7 @@ class SQLiteConfigRepository:
         """
         try:
             self._db.execute(
-                """INSERT OR REPLACE INTO languages 
+                """INSERT OR REPLACE INTO languages
                    (locale, name, logo_path, display_order, is_active)
                    VALUES (?, ?, ?, ?, 1)""",
                 (locale, name, logo_path, display_order)
@@ -64,13 +64,13 @@ class SQLiteConfigRepository:
             self._db.get_connection().commit()
         except Exception as e:
             print(f"Error adding language: {e}")
-    
+
     # ===== Language Pair Management =====
-    
+
     def get_all_language_pairs(self) -> List[Dict]:
         """
         Get all available language pairs.
-        
+
         Returns:
             List of language pair dictionaries
         """
@@ -79,7 +79,7 @@ class SQLiteConfigRepository:
                FROM language_pairs
                ORDER BY name"""
         )
-        
+
         return [
             {
                 'locale_from': row['locale_from'],
@@ -92,15 +92,15 @@ class SQLiteConfigRepository:
             }
             for row in rows
         ]
-    
+
     def get_language_pair(self, locale_from: str, locale_to: str) -> Optional[Dict]:
         """
         Get a specific language pair.
-        
+
         Args:
             locale_from: Source language locale
             locale_to: Target language locale
-            
+
         Returns:
             Language pair dictionary or None
         """
@@ -110,10 +110,10 @@ class SQLiteConfigRepository:
                WHERE locale_from = ? AND locale_to = ?""",
             (locale_from, locale_to)
         )
-        
+
         if not row:
             return None
-        
+
         return {
             'locale_from': row['locale_from'],
             'locale_to': row['locale_to'],
@@ -121,7 +121,7 @@ class SQLiteConfigRepository:
             'logo': row['logo_path'],
             'source': f"assets/data/{row['locale_to']}/{row['locale_from']}/source.json"
         }
-    
+
     def add_language_pair(
         self,
         locale_from: str,
@@ -131,19 +131,19 @@ class SQLiteConfigRepository:
     ) -> int:
         """
         Add a new language pair.
-        
+
         Args:
             locale_from: Source language locale
             locale_to: Target language locale
             name: Display name (e.g., "EN-PL (English - Polish)")
             logo_path: Optional path to logo image
-            
+
         Returns:
             Language pair ID
         """
         try:
             cursor = self._db.execute(
-                """INSERT OR REPLACE INTO language_pairs 
+                """INSERT OR REPLACE INTO language_pairs
                    (locale_from, locale_to, name, logo_path)
                    VALUES (?, ?, ?, ?)""",
                 (locale_from, locale_to, name, logo_path)
@@ -153,22 +153,22 @@ class SQLiteConfigRepository:
         except Exception as e:
             print(f"Error adding language pair: {e}")
             raise
-    
+
     # ===== Game Configuration Management =====
-    
+
     def get_games_for_language_pair(self, locale_from: str, locale_to: str) -> List[Dict]:
         """
         Get all games for a language pair.
-        
+
         Args:
             locale_from: Source language locale
             locale_to: Target language locale
-            
+
         Returns:
             List of game configuration dictionaries
         """
         query = """
-            SELECT g.id, g.game_name, g.description, g.vocabulary_source, 
+            SELECT g.id, g.game_name, g.description, g.vocabulary_source,
                    g.icon_path, gc.category_name
             FROM games g
             JOIN game_categories gc ON g.category_id = gc.id
@@ -176,9 +176,9 @@ class SQLiteConfigRepository:
             WHERE lp.locale_from = ? AND lp.locale_to = ? AND g.is_active = 1
             ORDER BY gc.display_order, g.display_order
         """
-        
+
         rows = self._db.fetchall(query, (locale_from, locale_to))
-        
+
         return [
             {
                 'name': row['game_name'],
@@ -189,7 +189,7 @@ class SQLiteConfigRepository:
             }
             for row in rows
         ]
-    
+
     def add_game_category(
         self,
         locale_from: str,
@@ -200,14 +200,14 @@ class SQLiteConfigRepository:
     ) -> int:
         """
         Add a game category for a language pair.
-        
+
         Args:
             locale_from: Source language locale
             locale_to: Target language locale
             category_name: Category name
             icon_path: Optional icon path
             display_order: Display order
-            
+
         Returns:
             Category ID
         """
@@ -216,15 +216,15 @@ class SQLiteConfigRepository:
             "SELECT id FROM language_pairs WHERE locale_from = ? AND locale_to = ?",
             (locale_from, locale_to)
         )
-        
+
         if not row:
             raise ValueError(f"Language pair not found: {locale_from}-{locale_to}")
-        
+
         language_pair_id = row['id']
-        
+
         try:
             cursor = self._db.execute(
-                """INSERT INTO game_categories 
+                """INSERT INTO game_categories
                    (language_pair_id, category_name, icon_path, display_order)
                    VALUES (?, ?, ?, ?)""",
                 (language_pair_id, category_name, icon_path, display_order)
@@ -234,7 +234,7 @@ class SQLiteConfigRepository:
         except Exception as e:
             print(f"Error adding game category: {e}")
             raise
-    
+
     def add_game(
         self,
         category_id: int,
@@ -246,7 +246,7 @@ class SQLiteConfigRepository:
     ) -> int:
         """
         Add a game to a category.
-        
+
         Args:
             category_id: Game category ID
             game_name: Game name
@@ -254,17 +254,17 @@ class SQLiteConfigRepository:
             description: Optional description
             icon_path: Optional icon path
             display_order: Display order
-            
+
         Returns:
             Game ID
         """
         try:
             cursor = self._db.execute(
-                """INSERT INTO games 
-                   (category_id, game_name, description, vocabulary_source, 
+                """INSERT INTO games
+                   (category_id, game_name, description, vocabulary_source,
                     icon_path, display_order)
                    VALUES (?, ?, ?, ?, ?, ?)""",
-                (category_id, game_name, description, vocabulary_source, 
+                (category_id, game_name, description, vocabulary_source,
                  icon_path, display_order)
             )
             self._db.get_connection().commit()
