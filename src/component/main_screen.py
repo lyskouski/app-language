@@ -16,12 +16,26 @@ class RootWidget(BoxLayout):
 
     def __init__(self, **kwargs):
         super(RootWidget, self).__init__(**kwargs)
-        # Get services from DI container
-        app = App.get_running_app()
-        self._config_repo = app._container.config_repository()
+        # Defer initialization until app is fully ready
+        Clock.schedule_once(lambda dt: self._init_widget(), 0.1)
 
-        self.load_data()
-        Clock.schedule_once(lambda dt: self.populate_rv())
+    def _init_widget(self):
+        """Initialize widget after app is ready."""
+        try:
+            # Get services from DI container
+            app = App.get_running_app()
+            if not app or not hasattr(app, '_container'):
+                print("ERROR: App not ready or missing container!")
+                return
+
+            self._config_repo = app._container.config_repository()
+
+            self.load_data()
+            Clock.schedule_once(lambda dt: self.populate_rv(), 0.1)
+        except Exception as e:
+            print(f"ERROR in MainScreen._init_widget: {e}")
+            import traceback
+            traceback.print_exc()
 
     def load_breadcrumb(self, path):
         breadcrumbs = self.ids.breadcrumb_view.data
@@ -44,6 +58,7 @@ class RootWidget(BoxLayout):
 
         # Load language pairs from database
         self.data = self._config_repo.get_all_language_pairs()
+        print(f"DEBUG: MainScreen loaded {len(self.data)} language pairs")
 
     def update_data(self, info):
         app = App.get_running_app()
@@ -62,4 +77,17 @@ class RootWidget(BoxLayout):
         self.populate_rv()
 
     def populate_rv(self):
-        self.ids.recycle_view.data = self.data
+        """Populate the RecycleView with data."""
+        try:
+            if not hasattr(self, 'ids') or 'recycle_view' not in self.ids:
+                print("ERROR: recycle_view not found in ids, retrying...")
+                Clock.schedule_once(lambda dt: self.populate_rv(), 0.2)
+                return
+
+            print(f"DEBUG: MainScreen populating RecycleView with {len(self.data)} items")
+            self.ids.recycle_view.data = self.data
+            print("DEBUG: MainScreen RecycleView data set successfully")
+        except Exception as e:
+            print(f"ERROR in populate_rv: {e}")
+            import traceback
+            traceback.print_exc()
