@@ -30,17 +30,35 @@ Added `button_cancel` translations to all language files:
 
 ### 4. Integration
 - Added to main.py screen manager
-- Added "Add" button to main screen header
+- **Add button appears at category level** (after selecting a dictionary)
+- Category is pre-filled automatically from selected dictionary
 - Integrated with existing SQLite vocabulary repository
+- New `add_vocabulary()` method in main_screen.py handles navigation with context
 
 ## Usage
 
-1. Navigate to the main screen
-2. Click the "Add" button in the header
-3. Fill in the required fields (Origin and Translation)
-4. Optionally fill in additional fields
-5. Click "Save" to add the vocabulary item to the database
-6. Click "Cancel" to return without saving
+1. Navigate to the main screen and select a language pair
+2. **Select a dictionary/category** (e.g., "Verbs", "Dictionary", "Numbers")
+3. Click the **"Add"** button next to the category (button appears after category selection)
+4. The category field will be automatically pre-filled and locked
+5. Fill in the required fields (Origin and Translation)
+6. Optionally fill in additional fields (Difficulty, Sound, Image paths)
+7. Click **"Save"** to add the vocabulary item to the selected category
+8. Click **"Cancel"** to return without saving
+
+## UX Improvements (v2)
+
+**Category-Based Workflow:**
+- The "Add" button now appears at the category level (not in the header)
+- Users must select a dictionary/category before adding words
+- Category is automatically pre-filled based on the selected dictionary
+- Category field is read-only (displayed but not editable)
+- This ensures all new words are properly categorized
+
+**Button Layout:**
+- Categories show: **Add (30%)** + **Select (30%)** buttons side-by-side
+- Games show: **Play (40%)** button only
+- Improved visual hierarchy and clearer user flow
 
 ## Technical Details
 
