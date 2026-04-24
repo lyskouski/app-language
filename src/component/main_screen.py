@@ -105,7 +105,7 @@ class RootWidget(BoxLayout):
     def update_data(self, info):
         """Handle navigation when a language pair, dictionary, or game is clicked."""
         try:
-            print(f"DEBUG: update_data called")
+            print("DEBUG: update_data called")
             print(f"DEBUG: info.text = {info.text}")
             print(f"DEBUG: info.store_path = {info.store_path}")
             print(f"DEBUG: info.route_path = {info.route_path}")
@@ -158,7 +158,7 @@ class RootWidget(BoxLayout):
     def play_game(self, info):
         """Load vocabulary and navigate to a game screen."""
         try:
-            print(f"DEBUG: play_game called")
+            print("DEBUG: play_game called")
             print(f"DEBUG: info.text = {info.text}")
             print(f"DEBUG: info.store_path = {info.store_path}")
             print(f"DEBUG: info.route_path = {info.route_path}")

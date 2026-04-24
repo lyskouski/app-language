@@ -2,7 +2,6 @@
 # Use of this source code is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
 
 import numpy as np
-import time
 import pickle
 from typing import Dict, List, Optional
 from domain.entities.vocabulary_item import VocabularyItem

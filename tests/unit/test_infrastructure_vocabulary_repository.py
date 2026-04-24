@@ -4,8 +4,6 @@
 """Tests for SQLiteVocabularyRepository."""
 
 import pytest
-import tempfile
-import os
 
 from domain.entities.vocabulary_item import VocabularyItem
 from infrastructure.persistence.database_connection import DatabaseConnection

@@ -240,20 +240,19 @@ class DataMigration:
 
                             # Get or create category
                             try:
-                                category_id = self.config_repo.add_game_category(
+                                self.config_repo.add_game_category(
                                     locale_from,
                                     locale_to,
                                     category_name,
                                     game.get('icon'),
                                     0
                                 )
-                            except:
+                            except Exception:
                                 # Category might already exist, get it
                                 pass
 
                             # Add game (simplified - would need proper category lookup)
                             game_name = game.get('name', 'Unknown')
-                            source = game.get('store_path', '')
 
                             total_games += 1
                             print(f"  ✓ Found game: {game_name}")
