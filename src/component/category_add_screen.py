@@ -12,7 +12,6 @@ class CategoryAddScreen(Screen):
     Follows Clean Architecture principles with dependency injection.
     """
     category_name_text = StringProperty('')
-    vocabulary_source_text = StringProperty('')
     icon_path_text = StringProperty('')
     display_order_text = StringProperty('0')
 
@@ -22,7 +21,6 @@ class CategoryAddScreen(Screen):
     def clear_form(self):
         """Clear all form fields."""
         self.category_name_text = ''
-        self.vocabulary_source_text = ''
         self.icon_path_text = ''
         self.display_order_text = '0'
 
@@ -38,10 +36,6 @@ class CategoryAddScreen(Screen):
             print("ERROR: Category name is required")
             return
 
-        if not self.vocabulary_source_text:
-            print("ERROR: Vocabulary source is required")
-            return
-
         if not app.locale_from or not app.locale_to:
             print("ERROR: Please select a language pair first")
             return
@@ -50,12 +44,12 @@ class CategoryAddScreen(Screen):
             # Get repository from DI container
             config_repo = app._container.config_repository()
 
-            # Add category to database
+            # Add category to database (use category_name as vocabulary filter)
             category_id = config_repo.add_game_category(
                 app.locale_from,
                 app.locale_to,
                 self.category_name_text.strip(),
-                self.vocabulary_source_text.strip(),
+                self.category_name_text.strip(),  # Use same name for vocabulary filtering
                 self.icon_path_text.strip() if self.icon_path_text else None,
                 int(self.display_order_text) if self.display_order_text else 0
             )

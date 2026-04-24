@@ -31,7 +31,7 @@
                 BoxLayout:
                     orientation: 'vertical'
                     size_hint_y: None
-                    height: 80
+                    height: 100
                     spacing: 5
                     Label:
                         text: app._("category_name_label", app.locale)
@@ -46,29 +46,17 @@
                         multiline: False
                         size_hint_y: None
                         height: 40
+                        hint_text: "e.g., verbs, dictionary, numbers, articulation"
                         on_text: root.category_name_text = self.text
-
-                # Vocabulary Source - REQUIRED
-                BoxLayout:
-                    orientation: 'vertical'
-                    size_hint_y: None
-                    height: 80
-                    spacing: 5
                     Label:
-                        text: app._("category_vocab_label", app.locale)
+                        text: "This name will be used to identify vocabulary items for this category"
+                        font_size: sp(10)
                         size_hint_y: None
-                        height: 30
+                        height: 20
+                        color: (0.7, 0.7, 0.7, 1)
                         text_size: self.size
                         halign: 'left'
-                        valign: 'middle'
-                    TextInput:
-                        id: vocab_source_input
-                        text: root.vocabulary_source_text
-                        multiline: False
-                        size_hint_y: None
-                        height: 40
-                        hint_text: "e.g., verbs, dictionary, numbers, articulation"
-                        on_text: root.vocabulary_source_text = self.text
+                        valign: 'top'
 
                 # Icon Path - Optional
                 BoxLayout:
