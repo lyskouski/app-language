@@ -1,9 +1,6 @@
 # Copyright 2026 The terCAD team. All rights reserved.
 # Use of this source code is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
 
-import json
-import os
-
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.properties import ObjectProperty
@@ -20,19 +17,15 @@ class LanguageWidget(BoxLayout):
         super(LanguageWidget, self).__init__(**kwargs)
         # Get services from DI container
         app = App.get_running_app()
-        self._resource_service = app._container.resource_service()
+        self._config_repo = app._container.config_repository()
         self._settings_service = app._container.settings_service()
 
         self.load_languages()
         Clock.schedule_once(lambda dt: self.populate_languages())
 
     def load_languages(self):
-        """Load available languages using resource service."""
-        self.data = []
-        source_path = self._resource_service.find_resource('assets/languages.json')
-        if source_path and os.path.exists(source_path):
-            with open(source_path, 'r', encoding='utf-8') as f:
-                self.data = json.load(f)
+        """Load available languages from SQLite database."""
+        self.data = self._config_repo.get_all_languages()
 
     def populate_languages(self):
         self.ids.language_view.data = [{

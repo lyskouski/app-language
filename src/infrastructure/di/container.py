@@ -30,11 +30,13 @@ from application.services.resource_service import LocalizationService
 from application.services.media_service import MediaService
 from application.services.recorder_service import RecorderService, IRecorderController
 
-# Infrastructure
-from infrastructure.persistence.file_vocabulary_repository import FileVocabularyRepository
+# Infrastructure - SQLite-based repositories
+from infrastructure.persistence.database_connection import get_database, DatabaseConnection
+from infrastructure.persistence.sqlite_vocabulary_repository import SQLiteVocabularyRepository
+from infrastructure.persistence.sqlite_config_repository import SQLiteConfigRepository
 from infrastructure.persistence.ini_settings_repository import IniSettingsRepository
 from infrastructure.persistence.kivy_resource_repository import KivyResourceRepository
-from infrastructure.ml.ml_vocabulary_profiler import MLVocabularyProfiler
+from infrastructure.ml.sqlite_ml_vocabulary_profiler import SQLiteMLVocabularyProfiler
 from infrastructure.audio.librosa_audio_comparator import LibrosaAudioComparator
 
 
@@ -49,19 +51,33 @@ class DependencyContainer:
     def __init__(self, user_data_dir: str):
         self._user_data_dir = user_data_dir
         self._instances = {}
+        
+        # Initialize database connection
+        db_path = os.path.join(user_data_dir, 'tlum.db')
+        self._db = get_database(db_path)
 
     def _get_or_create(self, key: str, factory):
         """Get or create a singleton instance."""
         if key not in self._instances:
             self._instances[key] = factory()
         return self._instances[key]
-
-    # Repositories
+    
+    def database(self) -> DatabaseConnection:
+        """Get database connection instance."""
+        return self._db
+    
     def vocabulary_repository(self) -> IVocabularyRepository:
-        """Get vocabulary repository instance."""
+        """Get vocabulary repository instance (SQLite-based)."""
         return self._get_or_create(
             'vocabulary_repository',
-            lambda: FileVocabularyRepository()
+            lambda: SQLiteVocabularyRepository(self._db)
+        )
+    
+    def config_repository(self) -> SQLiteConfigRepository:
+        """Get configuration repository instance (SQLite-based)."""
+        return self._get_or_create(
+            'config_repository',
+            lambda: SQLiteConfigRepository(self._db)
         )
 
     def settings_repository(self) -> ISettingsRepository:
@@ -78,8 +94,7 @@ class DependencyContainer:
             lambda: KivyResourceRepository(self._user_data_dir)
         )
 
-    # Infrastructure components
-    def config_parser(self) -> IniConfigParser:
+    def config_parser(self):
         """Get config parser instance."""
         return self._get_or_create(
             'config_parser',
@@ -87,13 +102,24 @@ class DependencyContainer:
         )
 
     def vocabulary_profiler(self, data_path: str) -> Optional[IVocabularyProfiler]:
-        """Get vocabulary profiler instance."""
+        """Get vocabulary profiler instance (SQLite-based)."""
         try:
-            resource_repo = self.resource_repository()
-            return MLVocabularyProfiler(
-                resource_repo.get_path_with_home_dir(f"{data_path}.json"),
-                resource_repo.get_path_with_home_dir(f"{data_path}.pkl")
-            )
+            # Extract locale information from data_path
+            # e.g., "assets/data/PL/EN/store" -> locale_to=PL, locale_from=EN
+            parts = data_path.replace('\\', '/').split('/')
+            locale_from, locale_to = None, None
+            
+            if 'data' in parts:
+                data_idx = parts.index('data')
+                if len(parts) > data_idx + 2:
+                    locale_to = parts[data_idx + 1]
+                    locale_from = parts[data_idx + 2]
+            
+            if not locale_from or not locale_to:
+                print(f"⚠️  Could not extract locales from path: {data_path}")
+                return None
+            
+            return SQLiteMLVocabularyProfiler(self._db, locale_from, locale_to)
         except Exception as e:
             print(f"⚠️  ML profiling disabled due to error: {e}")
             return None
@@ -214,3 +240,5 @@ class DependencyContainer:
         kivy.resources.resource_add_path(os.path.dirname(src_dir))
         if getattr(sys, 'frozen', False):
             kivy.resources.resource_add_path(sys._MEIPASS)
+
+

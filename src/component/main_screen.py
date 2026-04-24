@@ -1,9 +1,6 @@
 # Copyright 2025 The terCAD team. All rights reserved.
 # Use of this source code is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
 
-import json
-import os
-
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.properties import ObjectProperty, StringProperty
@@ -15,13 +12,13 @@ class MainScreen(Screen):
 
 class RootWidget(BoxLayout):
     data = ObjectProperty([])
-    path = StringProperty('assets/source.json')
+    path = StringProperty('root')  # Changed from JSON path to navigation state
 
     def __init__(self, **kwargs):
         super(RootWidget, self).__init__(**kwargs)
         # Get services from DI container
         app = App.get_running_app()
-        self._resource_service = app._container.resource_service()
+        self._config_repo = app._container.config_repository()
 
         self.load_data()
         Clock.schedule_once(lambda dt: self.populate_rv())
@@ -40,16 +37,13 @@ class RootWidget(BoxLayout):
         self.populate_rv()
 
     def load_data(self, path = None):
-        """Load data using resource service."""
+        """Load data from SQLite database."""
         self.data = []
         if not path:
             path = self.path
 
-        # Use resource service to find file
-        source_path = self._resource_service.find_resource(path)
-        if source_path and os.path.exists(source_path):
-            with open(source_path, 'r', encoding='utf-8') as f:
-                self.data = json.load(f)
+        # Load language pairs from database
+        self.data = self._config_repo.get_all_language_pairs()
 
     def update_data(self, info):
         app = App.get_running_app()
@@ -61,7 +55,7 @@ class RootWidget(BoxLayout):
             app.locale_to = info.locale_to
         if not self.ids.breadcrumb_view.data:
             self.ids.breadcrumb_view.data = []
-            self.path = 'assets/source.json'
+            self.path = 'root'
         self.ids.breadcrumb_view.data.append({'text': info.text, 'source': self.path})
         self.path = info.source
         self.load_data()
