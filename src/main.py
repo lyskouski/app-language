@@ -154,21 +154,47 @@ class MainApp(App):
         Uses dependency injection to create vocabulary service.
 
         Args:
-            data_path: Path to vocabulary file. If None, reshuffles current vocabulary.
+            data_path: Path to vocabulary file or 'db' to load from database. If None, reshuffles current vocabulary.
             force_shuffle: If True, uses random shuffle instead of ML prioritization.
         """
         if data_path:
-            # Create vocabulary service with profiler support
-            self._vocabulary_service = self._container.vocabulary_service(data_path)
+            # Check if we should load from database
+            if data_path == 'db' or data_path == 'all':
+                # Load vocabulary directly from database using current locale settings
+                if self.locale_from and self.locale_to:
+                    print(f"DEBUG: Loading vocabulary from database for {self.locale_from}-{self.locale_to}")
 
-            # Find the actual file path and load vocabulary
-            file_path = self._resource_service.find_resource(data_path)
-            if file_path:
-                self._vocabulary_service.load_vocabulary(file_path)
+                    # Get repository directly from container
+                    vocab_repo = self._container.vocabulary_repository()
+                    items = vocab_repo.load_by_language_pair(self.locale_from, self.locale_to)
 
-            # Prepare and get study set
-            self._vocabulary_service.prepare_study_set(25, force_shuffle)
-            self.store = self._vocabulary_service.get_current_study_set()
+                    print(f"DEBUG: Loaded {len(items)} vocabulary items from database")
+
+                    # Create vocabulary service for this language pair
+                    self._vocabulary_service = self._container.vocabulary_service(f"db_{self.locale_from}_{self.locale_to}")
+
+                    # Set items directly (bypass file loading)
+                    self._vocabulary_service._current_items = items
+
+                    # Prepare and get study set
+                    self._vocabulary_service.prepare_study_set(25, force_shuffle)
+                    self.store = self._vocabulary_service.get_current_study_set()
+
+                    print(f"DEBUG: Prepared study set with {len(self.store)} items")
+                else:
+                    print("ERROR: locale_from and locale_to must be set to load from database")
+            else:
+                # Legacy file-based loading
+                self._vocabulary_service = self._container.vocabulary_service(data_path)
+
+                # Find the actual file path and load vocabulary
+                file_path = self._resource_service.find_resource(data_path)
+                if file_path:
+                    self._vocabulary_service.load_vocabulary(file_path)
+
+                # Prepare and get study set
+                self._vocabulary_service.prepare_study_set(25, force_shuffle)
+                self.store = self._vocabulary_service.get_current_study_set()
         elif self._vocabulary_service:
             # Just shuffle if already loaded
             self._vocabulary_service.prepare_study_set(25, force_shuffle)

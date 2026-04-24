@@ -156,6 +156,77 @@ class SQLiteConfigRepository:
 
     # ===== Game Configuration Management =====
 
+    def get_dictionaries_for_language_pair(self, locale_from: str, locale_to: str) -> List[Dict]:
+        """
+        Get all dictionaries/categories for a language pair.
+        This is the second navigation level (after selecting a language pair).
+
+        Args:
+            locale_from: Source language locale
+            locale_to: Target language locale
+
+        Returns:
+            List of dictionary/category dictionaries
+        """
+        query = """
+            SELECT gc.id, gc.category_name, gc.icon_path, gc.display_order
+            FROM game_categories gc
+            JOIN language_pairs lp ON gc.language_pair_id = lp.id
+            WHERE lp.locale_from = ? AND lp.locale_to = ? AND gc.is_active = 1
+            ORDER BY gc.display_order, gc.category_name
+        """
+
+        rows = self._db.fetchall(query, (locale_from, locale_to))
+
+        return [
+            {
+                'id': row['id'],
+                'text': row['category_name'],
+                'logo': row['icon_path'] or '',
+                'source': f"category_{row['id']}",  # Used for navigation
+                'store_path': '',
+                'route_path': '',
+                'locale_from': locale_from,
+                'locale_to': locale_to
+            }
+            for row in rows
+        ]
+
+    def get_games_for_category(self, category_id: int) -> List[Dict]:
+        """
+        Get all game modes for a specific dictionary/category.
+        This is the third navigation level (after selecting a dictionary).
+
+        Args:
+            category_id: Category ID
+
+        Returns:
+            List of game configuration dictionaries
+        """
+        query = """
+            SELECT g.id, g.game_name, g.description, g.vocabulary_source,
+                   g.icon_path, g.route_screen, gc.category_name
+            FROM games g
+            JOIN game_categories gc ON g.category_id = gc.id
+            WHERE g.category_id = ? AND g.is_active = 1
+            ORDER BY g.display_order, g.game_name
+        """
+
+        rows = self._db.fetchall(query, (category_id,))
+
+        return [
+            {
+                'text': row['game_name'],
+                'description': row['description'],
+                'source': row['vocabulary_source'] or '',
+                'logo': row['icon_path'] or '',
+                'store_path': row['vocabulary_source'] or 'all',  # For vocabulary loading
+                'route_path': row['route_screen'] or 'card_screen',  # Screen to navigate to
+                'vocab_filter': row['vocabulary_source'] or 'all'
+            }
+            for row in rows
+        ]
+
     def get_games_for_language_pair(self, locale_from: str, locale_to: str) -> List[Dict]:
         """
         Get all games for a language pair.

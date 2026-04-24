@@ -38,6 +38,7 @@ class RootWidget(BoxLayout):
             traceback.print_exc()
 
     def load_breadcrumb(self, path):
+        """Navigate back using breadcrumb."""
         breadcrumbs = self.ids.breadcrumb_view.data
         cut_index = None
         for i, crumb in enumerate(breadcrumbs):
@@ -47,6 +48,11 @@ class RootWidget(BoxLayout):
         if cut_index is not None:
             self.path = path
             self.ids.breadcrumb_view.data = breadcrumbs[:cut_index]
+        else:
+            # If no matching breadcrumb found, go to root
+            self.path = 'root'
+            self.ids.breadcrumb_view.data = []
+
         self.load_data(path)
         self.populate_rv()
 
@@ -56,25 +62,98 @@ class RootWidget(BoxLayout):
         if not path:
             path = self.path
 
-        # Load language pairs from database
-        self.data = self._config_repo.get_all_language_pairs()
-        print(f"DEBUG: MainScreen loaded {len(self.data)} language pairs")
+        app = App.get_running_app()
+
+        # Root level: show language pairs
+        if path == 'root':
+            self.data = self._config_repo.get_all_language_pairs()
+            print(f"DEBUG: MainScreen loaded {len(self.data)} language pairs")
+
+        # Level 2: Language pair selected → show dictionaries/categories
+        elif path.startswith('assets/data/'):
+            # This is a language pair path like "assets/data/PL/EN/source.json"
+            if app.locale_from and app.locale_to:
+                dictionaries = self._config_repo.get_dictionaries_for_language_pair(app.locale_from, app.locale_to)
+                print(f"DEBUG: MainScreen loaded {len(dictionaries)} dictionaries for {app.locale_from}-{app.locale_to}")
+                self.data = dictionaries
+            else:
+                print("ERROR: locale_from or locale_to not set!")
+                self.data = []
+
+        # Level 3: Dictionary/category selected → show game modes
+        elif path.startswith('category_'):
+            # Extract category ID from path like "category_5"
+            try:
+                category_id = int(path.split('_')[1])
+                games = self._config_repo.get_games_for_category(category_id)
+                print(f"DEBUG: MainScreen loaded {len(games)} games for category {category_id}")
+
+                # Add locale info to each game
+                for game in games:
+                    game['locale_from'] = app.locale_from
+                    game['locale_to'] = app.locale_to
+
+                self.data = games
+            except (IndexError, ValueError) as e:
+                print(f"ERROR: Invalid category path: {path} - {e}")
+                self.data = []
+
+        else:
+            print(f"DEBUG: Unknown path: {path}")
+            self.data = []
 
     def update_data(self, info):
-        app = App.get_running_app()
-        if (info.store_path != ''):
-            app.init_store(info.store_path)
-        if (info.locale_from != ''):
-            app.locale_from = info.locale_from
-        if (info.locale_to != ''):
-            app.locale_to = info.locale_to
-        if not self.ids.breadcrumb_view.data:
-            self.ids.breadcrumb_view.data = []
-            self.path = 'root'
-        self.ids.breadcrumb_view.data.append({'text': info.text, 'source': self.path})
-        self.path = info.source
-        self.load_data()
-        self.populate_rv()
+        """Handle navigation when a language pair, dictionary, or game is clicked."""
+        try:
+            print(f"DEBUG: update_data called")
+            print(f"DEBUG: info.text = {info.text}")
+            print(f"DEBUG: info.store_path = {info.store_path}")
+            print(f"DEBUG: info.route_path = {info.route_path}")
+            print(f"DEBUG: info.source = {info.source}")
+
+            app = App.get_running_app()
+
+            # Update locale settings
+            if (info.locale_from != ''):
+                app.locale_from = info.locale_from
+                print(f"DEBUG: Set app.locale_from = {app.locale_from}")
+            if (info.locale_to != ''):
+                app.locale_to = info.locale_to
+                print(f"DEBUG: Set app.locale_to = {app.locale_to}")
+
+            # Check if this is a game (has route_path) - Level 3 → Game screen
+            if (info.route_path != ''):
+                print(f"DEBUG: Navigating to game screen: {info.route_path}")
+                # Load vocabulary for the game
+                if info.store_path and info.store_path != '':
+                    print(f"DEBUG: Loading vocabulary with filter: {info.store_path}")
+                    app.init_store(info.store_path)
+                else:
+                    print("DEBUG: Loading all vocabulary")
+                    app.init_store('all')
+
+                # Navigate to the specific game screen
+                app.next_screen('loading_screen')
+                Clock.schedule_once(
+                    lambda dt: app.next_screen(info.route_path, app.root.get_screen('loading_screen')),
+                    1
+                )
+                return
+
+            # Otherwise, navigate to next level
+            print("DEBUG: Navigating to next level")
+            if not self.ids.breadcrumb_view.data:
+                self.ids.breadcrumb_view.data = []
+                self.path = 'root'
+            self.ids.breadcrumb_view.data.append({'text': info.text, 'source': self.path})
+            self.path = info.source
+            print(f"DEBUG: New path = {self.path}")
+            self.load_data()
+            self.populate_rv()
+        except Exception as e:
+            print(f"ERROR in update_data: {e}")
+            import traceback
+            traceback.print_exc()
 
     def populate_rv(self):
         """Populate the RecycleView with data."""
