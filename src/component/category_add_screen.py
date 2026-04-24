@@ -45,7 +45,7 @@ class CategoryAddScreen(Screen):
             config_repo = app._container.config_repository()
 
             # Add category to database (use category_name as vocabulary filter)
-            category_id = config_repo.add_game_category(
+            config_repo.add_game_category(
                 app.locale_from,
                 app.locale_to,
                 self.category_name_text.strip(),
