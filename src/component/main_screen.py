@@ -196,6 +196,16 @@ class RootWidget(BoxLayout):
             import traceback
             traceback.print_exc()
 
+    def add_language_pair(self):
+        """Navigate to language pair add screen."""
+        try:
+            app = App.get_running_app()
+            app.next_screen('language_pair_add_screen')
+        except Exception as e:
+            print(f"ERROR in add_language_pair: {e}")
+            import traceback
+            traceback.print_exc()
+
     def populate_rv(self):
         """Populate the RecycleView with data."""
         try:

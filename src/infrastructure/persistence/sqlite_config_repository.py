@@ -68,7 +68,7 @@ class SQLiteConfigRepository:
             {
                 'locale': row['locale'],
                 'text': row['name'],
-                'logo': row['logo_path']
+                'logo': row['logo_path'] or ''
             }
             for row in rows
         ]
@@ -114,7 +114,7 @@ class SQLiteConfigRepository:
                 'locale_from': row['locale_from'],
                 'locale_to': row['locale_to'],
                 'text': row['name'],
-                'logo': row['logo_path'],
+                'logo': row['logo_path'] or '',
                 'source': f"assets/data/{row['locale_to']}/{row['locale_from']}/source.json",
                 'store_path': '',
                 'route_path': ''
@@ -147,7 +147,7 @@ class SQLiteConfigRepository:
             'locale_from': row['locale_from'],
             'locale_to': row['locale_to'],
             'text': row['name'],
-            'logo': row['logo_path'],
+            'logo': row['logo_path'] or '',
             'source': f"assets/data/{row['locale_to']}/{row['locale_from']}/source.json"
         }
 

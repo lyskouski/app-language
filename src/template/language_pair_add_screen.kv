@@ -1,0 +1,180 @@
+# Copyright 2025 The terCAD team. All rights reserved.
+# Use of this source code is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
+
+<LanguagePairAddScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 10
+        spacing: 10
+
+        # Header
+        BoxLayout:
+            size_hint_y: None
+            height: 50
+            Label:
+                text: app._("language_pair_add_title", app.locale)
+                font_size: '20sp'
+                bold: True
+
+        # Form fields
+        ScrollView:
+            size_hint_y: 0.8
+
+            BoxLayout:
+                orientation: 'vertical'
+                spacing: 10
+                size_hint_y: None
+                height: self.minimum_height
+                padding: [10, 0]
+
+                # Source Language - REQUIRED
+                BoxLayout:
+                    orientation: 'vertical'
+                    size_hint_y: None
+                    height: 120
+                    spacing: 5
+                    Label:
+                        text: app._("language_pair_from_label", app.locale)
+                        size_hint_y: None
+                        height: 30
+                        text_size: self.size
+                        halign: 'left'
+                        valign: 'middle'
+                    # Language selection buttons
+                    GridLayout:
+                        cols: 4
+                        size_hint_y: None
+                        height: 80
+                        spacing: 5
+                        # BE
+                        Button:
+                            text: "BE\nБеларускі"
+                            on_release:
+                                root.locale_from_text = "BE"
+                                root.update_name_automatically()
+                            background_color: (0.3, 0.7, 0.3, 1) if root.locale_from_text == "BE" else (0.5, 0.5, 0.5, 1)
+                        # EN
+                        Button:
+                            text: "EN\nEnglish"
+                            on_release:
+                                root.locale_from_text = "EN"
+                                root.update_name_automatically()
+                            background_color: (0.3, 0.7, 0.3, 1) if root.locale_from_text == "EN" else (0.5, 0.5, 0.5, 1)
+                        # RU
+                        Button:
+                            text: "RU\nРусский"
+                            on_release:
+                                root.locale_from_text = "RU"
+                                root.update_name_automatically()
+                            background_color: (0.3, 0.7, 0.3, 1) if root.locale_from_text == "RU" else (0.5, 0.5, 0.5, 1)
+                        # UK
+                        Button:
+                            text: "UK\nУкраїнська"
+                            on_release:
+                                root.locale_from_text = "UK"
+                                root.update_name_automatically()
+                            background_color: (0.3, 0.7, 0.3, 1) if root.locale_from_text == "UK" else (0.5, 0.5, 0.5, 1)
+
+                # Target Language - REQUIRED
+                BoxLayout:
+                    orientation: 'vertical'
+                    size_hint_y: None
+                    height: 120
+                    spacing: 5
+                    Label:
+                        text: app._("language_pair_to_label", app.locale)
+                        size_hint_y: None
+                        height: 30
+                        text_size: self.size
+                        halign: 'left'
+                        valign: 'middle'
+                    # Language selection buttons
+                    GridLayout:
+                        cols: 4
+                        size_hint_y: None
+                        height: 80
+                        spacing: 5
+                        # BE
+                        Button:
+                            text: "BE\nБеларускі"
+                            on_release:
+                                root.locale_to_text = "BE"
+                                root.update_name_automatically()
+                            background_color: (0.3, 0.7, 0.3, 1) if root.locale_to_text == "BE" else (0.5, 0.5, 0.5, 1)
+                        # EN
+                        Button:
+                            text: "EN\nEnglish"
+                            on_release:
+                                root.locale_to_text = "EN"
+                                root.update_name_automatically()
+                            background_color: (0.3, 0.7, 0.3, 1) if root.locale_to_text == "EN" else (0.5, 0.5, 0.5, 1)
+                        # RU
+                        Button:
+                            text: "RU\nРусский"
+                            on_release:
+                                root.locale_to_text = "RU"
+                                root.update_name_automatically()
+                            background_color: (0.3, 0.7, 0.3, 1) if root.locale_to_text == "RU" else (0.5, 0.5, 0.5, 1)
+                        # UK
+                        Button:
+                            text: "UK\nУкраїнська"
+                            on_release:
+                                root.locale_to_text = "UK"
+                                root.update_name_automatically()
+                            background_color: (0.3, 0.7, 0.3, 1) if root.locale_to_text == "UK" else (0.5, 0.5, 0.5, 1)
+
+                # Name - Auto-generated, but editable
+                BoxLayout:
+                    orientation: 'vertical'
+                    size_hint_y: None
+                    height: 80
+                    spacing: 5
+                    Label:
+                        text: app._("language_pair_name_label", app.locale)
+                        size_hint_y: None
+                        height: 30
+                        text_size: self.size
+                        halign: 'left'
+                        valign: 'middle'
+                    TextInput:
+                        id: name_input
+                        text: root.name_text
+                        multiline: False
+                        size_hint_y: None
+                        height: 40
+                        on_text: root.name_text = self.text
+
+                # Logo Path - Optional
+                BoxLayout:
+                    orientation: 'vertical'
+                    size_hint_y: None
+                    height: 80
+                    spacing: 5
+                    Label:
+                        text: app._("language_pair_logo_label", app.locale)
+                        size_hint_y: None
+                        height: 30
+                        text_size: self.size
+                        halign: 'left'
+                        valign: 'middle'
+                    TextInput:
+                        id: logo_input
+                        text: root.logo_path_text
+                        multiline: False
+                        size_hint_y: None
+                        height: 40
+                        hint_text: "e.g., assets/images/language/pair_logo.png"
+                        on_text: root.logo_path_text = self.text
+
+        # Action buttons
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: None
+            height: 50
+            spacing: 10
+            Button:
+                text: app._("button_cancel", app.locale)
+                on_release: root.cancel()
+            Button:
+                text: app._("button_save", app.locale)
+                on_release: root.save_language_pair()

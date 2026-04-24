@@ -39,6 +39,14 @@
         Widget:
             size_hint_x: 0.02
         Button:
+            # Show "Add Language Pair" button when at root level
+            text: app._("button_add", app.locale) + " " + app._("language_pair_add_title", app.locale).split()[0] + " " + app._("language_pair_add_title", app.locale).split()[1] if (root.path == 'root') else ""
+            opacity: 1.0 if (root.path == 'root') else 0
+            disabled: False if (root.path == 'root') else True
+            size_hint_x: 0.35 if (root.path == 'root') else 0.01
+            on_release:
+                root.add_language_pair()
+        Button:
             # Show "Add Category" button when viewing dictionaries (after language pair selected)
             text: app._("button_add", app.locale) + " " + app._("category_add_title", app.locale).split()[1:][0] if (root.path.startswith('assets/data/') and '/source.json' in root.path) else ""
             opacity: 1.0 if (root.path.startswith('assets/data/') and '/source.json' in root.path) else 0

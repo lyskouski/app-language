@@ -33,6 +33,7 @@ from component.structure_update_screen import StructureUpdateScreen
 from component.language_screen import LanguageScreen
 from component.vocabulary_add_screen import VocabularyAddScreen
 from component.category_add_screen import CategoryAddScreen
+from component.language_pair_add_screen import LanguagePairAddScreen
 
 # Clean Architecture imports
 from infrastructure.di.container import DependencyContainer
@@ -137,7 +138,8 @@ class MainApp(App):
             (CardScreen, 'card_screen'),
             (LanguageScreen, 'language_screen'),
             (VocabularyAddScreen, 'vocabulary_add_screen'),
-            (CategoryAddScreen, 'category_add_screen')
+            (CategoryAddScreen, 'category_add_screen'),
+            (LanguagePairAddScreen, 'language_pair_add_screen')
         ]
         for cls, name in screens:
             path = kivy.resources.resource_find(f'template/{name}.kv')
