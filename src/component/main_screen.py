@@ -14,24 +14,8 @@ class MainScreen(Screen):
         if hasattr(self, 'ids') and 'root_widget' in self.ids:
             root_widget = self.ids.root_widget
             if hasattr(root_widget, '_config_repo'):
-                # Check if we're coming back from a game screen
-                # Reset navigation if we're at game level (category_X)
-                if root_widget.path.startswith('category_'):
-                    # Navigate back one level to show categories
-                    if root_widget.ids.breadcrumb_view.data:
-                        # Get the previous breadcrumb
-                        breadcrumbs = root_widget.ids.breadcrumb_view.data
-                        if len(breadcrumbs) > 0:
-                            last_crumb = breadcrumbs[-1]
-                            root_widget.path = last_crumb['source']
-                            # Remove the last breadcrumb
-                            root_widget.ids.breadcrumb_view.data = breadcrumbs[:-1]
-                    else:
-                        # No breadcrumbs, go to root
-                        root_widget.path = 'root'
-                        root_widget.ids.breadcrumb_view.data = []
-
-                # Reload data with current (possibly updated) path
+                # Simply reload data with current path
+                # Don't change navigation state - let breadcrumbs handle that
                 root_widget.load_data()
                 root_widget.populate_rv()
 
