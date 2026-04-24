@@ -104,16 +104,24 @@ class DependencyContainer:
     def vocabulary_profiler(self, data_path: str) -> Optional[IVocabularyProfiler]:
         """Get vocabulary profiler instance (SQLite-based)."""
         try:
-            # Extract locale information from data_path
-            # e.g., "assets/data/PL/EN/store" -> locale_to=PL, locale_from=EN
-            parts = data_path.replace('\\', '/').split('/')
             locale_from, locale_to = None, None
 
-            if 'data' in parts:
-                data_idx = parts.index('data')
-                if len(parts) > data_idx + 2:
-                    locale_to = parts[data_idx + 1]
-                    locale_from = parts[data_idx + 2]
+            # Handle database path format: db_LOCALE_FROM_LOCALE_TO
+            if data_path.startswith('db_'):
+                # Extract locales from database path like "db_BE_RU"
+                parts = data_path[3:].split('_')  # Remove "db_" prefix
+                if len(parts) >= 2:
+                    locale_from = parts[0]
+                    locale_to = parts[1]
+            else:
+                # Handle file path format: assets/data/PL/EN/store
+                # e.g., "assets/data/PL/EN/store" -> locale_to=PL, locale_from=EN
+                parts = data_path.replace('\\', '/').split('/')
+                if 'data' in parts:
+                    data_idx = parts.index('data')
+                    if len(parts) > data_idx + 2:
+                        locale_to = parts[data_idx + 1]
+                        locale_from = parts[data_idx + 2]
 
             if not locale_from or not locale_to:
                 print(f"⚠️  Could not extract locales from path: {data_path}")

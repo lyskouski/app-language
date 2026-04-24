@@ -31,6 +31,9 @@ from component.store_update_screen import StoreUpdateScreen
 from component.structure_screen import StructureScreen
 from component.structure_update_screen import StructureUpdateScreen
 from component.language_screen import LanguageScreen
+from component.vocabulary_add_screen import VocabularyAddScreen
+from component.category_add_screen import CategoryAddScreen
+from component.language_pair_add_screen import LanguagePairAddScreen
 
 # Clean Architecture imports
 from infrastructure.di.container import DependencyContainer
@@ -90,8 +93,6 @@ class MainApp(App):
         self.locale_from = settings.locale_from
         self.locale_to = settings.locale_to
 
-        print(f"Home directory: {self._resource_service.get_path_with_home('')}")
-
     def _(self, key, locale):
         """Translate a key to the specified locale."""
         return self._localization_service.translate(key, locale)
@@ -135,7 +136,10 @@ class MainApp(App):
             (StoreUpdateScreen, 'store_update_screen'),
             (LoadingScreen, 'loading_screen'),
             (CardScreen, 'card_screen'),
-            (LanguageScreen, 'language_screen')
+            (LanguageScreen, 'language_screen'),
+            (VocabularyAddScreen, 'vocabulary_add_screen'),
+            (CategoryAddScreen, 'category_add_screen'),
+            (LanguagePairAddScreen, 'language_pair_add_screen')
         ]
         for cls, name in screens:
             path = kivy.resources.resource_find(f'template/{name}.kv')

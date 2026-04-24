@@ -1,0 +1,181 @@
+# Copyright 2025 The terCAD team. All rights reserved.
+# Use of this source code is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
+
+<VocabularyAddScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 10
+        spacing: 10
+
+        # Header
+        BoxLayout:
+            size_hint_y: None
+            height: 50
+            Label:
+                text: app._("vocab_add_title", app.locale)
+                font_size: '20sp'
+                bold: True
+
+        # Form fields
+        ScrollView:
+            size_hint_y: 0.8
+
+            BoxLayout:
+                orientation: 'vertical'
+                spacing: 10
+                size_hint_y: None
+                height: self.minimum_height
+                padding: [10, 0]
+
+                # Origin (source language word) - REQUIRED
+                BoxLayout:
+                    orientation: 'vertical'
+                    size_hint_y: None
+                    height: 80
+                    spacing: 5
+                    Label:
+                        text: app._("vocab_origin_label", app.locale)
+                        size_hint_y: None
+                        height: 30
+                        text_size: self.size
+                        halign: 'left'
+                        valign: 'middle'
+                    TextInput:
+                        id: origin_input
+                        text: root.origin_text
+                        multiline: False
+                        size_hint_y: None
+                        height: 40
+                        on_text: root.origin_text = self.text
+
+                # Translation (target language word) - REQUIRED
+                BoxLayout:
+                    orientation: 'vertical'
+                    size_hint_y: None
+                    height: 80
+                    spacing: 5
+                    Label:
+                        text: app._("vocab_translation_label", app.locale)
+                        size_hint_y: None
+                        height: 30
+                        text_size: self.size
+                        halign: 'left'
+                        valign: 'middle'
+                    TextInput:
+                        id: translation_input
+                        text: root.translation_text
+                        multiline: False
+                        size_hint_y: None
+                        height: 40
+                        on_text: root.translation_text = self.text
+
+                # Category - Pre-filled (read-only)
+                BoxLayout:
+                    orientation: 'vertical'
+                    size_hint_y: None
+                    height: 80
+                    spacing: 5
+                    Label:
+                        text: app._("vocab_category_label", app.locale)
+                        size_hint_y: None
+                        height: 30
+                        text_size: self.size
+                        halign: 'left'
+                        valign: 'middle'
+                    TextInput:
+                        id: category_input
+                        text: root.category_text
+                        multiline: False
+                        size_hint_y: None
+                        height: 40
+                        readonly: True
+                        disabled: True
+                        background_color: 0.9, 0.9, 0.9, 1
+
+                # Difficulty Level - Optional
+                BoxLayout:
+                    orientation: 'vertical'
+                    size_hint_y: None
+                    height: 80
+                    spacing: 5
+                    Label:
+                        text: app._("vocab_difficulty_label", app.locale)
+                        size_hint_y: None
+                        height: 30
+                        text_size: self.size
+                        halign: 'left'
+                        valign: 'middle'
+                    TextInput:
+                        id: difficulty_input
+                        text: root.difficulty_text
+                        multiline: False
+                        size_hint_y: None
+                        height: 40
+                        input_filter: 'int'
+                        hint_text: "0"
+                        on_text: root.difficulty_text = self.text
+
+                # Sound Path - Optional
+                BoxLayout:
+                    orientation: 'vertical'
+                    size_hint_y: None
+                    height: 80
+                    spacing: 5
+                    Label:
+                        text: app._("vocab_sound_label", app.locale)
+                        size_hint_y: None
+                        height: 30
+                        text_size: self.size
+                        halign: 'left'
+                        valign: 'middle'
+                    TextInput:
+                        id: sound_input
+                        text: root.sound_path_text
+                        multiline: False
+                        size_hint_y: None
+                        height: 40
+                        hint_text: "e.g., assets/audio/word.mp3"
+                        on_text: root.sound_path_text = self.text
+
+                # Image Path - Optional
+                BoxLayout:
+                    orientation: 'vertical'
+                    size_hint_y: None
+                    height: 80
+                    spacing: 5
+                    Label:
+                        text: app._("vocab_image_label", app.locale)
+                        size_hint_y: None
+                        height: 30
+                        text_size: self.size
+                        halign: 'left'
+                        valign: 'middle'
+                    TextInput:
+                        id: image_input
+                        text: root.image_path_text
+                        multiline: False
+                        size_hint_y: None
+                        height: 40
+                        hint_text: "e.g., assets/images/word.png"
+                        on_text: root.image_path_text = self.text
+
+        # Buttons
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: None
+            height: 50
+            spacing: 10
+            padding: [0, 10]
+
+            Button:
+                text: app._("button_cancel", app.locale) if hasattr(app, '_') else "Cancel"
+                size_hint_x: 0.3
+                on_release: root.cancel()
+
+            Widget:
+                size_hint_x: 0.4
+
+            Button:
+                text: app._("button_save", app.locale) if hasattr(app, '_') else "Save"
+                size_hint_x: 0.3
+                on_release: root.save_vocabulary_item()

@@ -1,0 +1,125 @@
+# Copyright 2025 The terCAD team. All rights reserved.
+# Use of this source code is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
+
+<CategoryAddScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 10
+        spacing: 10
+
+        # Header
+        BoxLayout:
+            size_hint_y: None
+            height: 50
+            Label:
+                text: app._("category_add_title", app.locale)
+                font_size: '20sp'
+                bold: True
+
+        # Form fields
+        ScrollView:
+            size_hint_y: 0.8
+
+            BoxLayout:
+                orientation: 'vertical'
+                spacing: 10
+                size_hint_y: None
+                height: self.minimum_height
+                padding: [10, 0]
+
+                # Category Name - REQUIRED
+                BoxLayout:
+                    orientation: 'vertical'
+                    size_hint_y: None
+                    height: 100
+                    spacing: 5
+                    Label:
+                        text: app._("category_name_label", app.locale)
+                        size_hint_y: None
+                        height: 30
+                        text_size: self.size
+                        halign: 'left'
+                        valign: 'middle'
+                    TextInput:
+                        id: category_name_input
+                        text: root.category_name_text
+                        multiline: False
+                        size_hint_y: None
+                        height: 40
+                        hint_text: "e.g., verbs, dictionary, numbers, articulation"
+                        on_text: root.category_name_text = self.text
+                    Label:
+                        text: "This name will be used to identify vocabulary items for this category"
+                        font_size: sp(10)
+                        size_hint_y: None
+                        height: 20
+                        color: (0.7, 0.7, 0.7, 1)
+                        text_size: self.size
+                        halign: 'left'
+                        valign: 'top'
+
+                # Icon Path - Optional
+                BoxLayout:
+                    orientation: 'vertical'
+                    size_hint_y: None
+                    height: 80
+                    spacing: 5
+                    Label:
+                        text: app._("category_icon_label", app.locale)
+                        size_hint_y: None
+                        height: 30
+                        text_size: self.size
+                        halign: 'left'
+                        valign: 'middle'
+                    TextInput:
+                        id: icon_input
+                        text: root.icon_path_text
+                        multiline: False
+                        size_hint_y: None
+                        height: 40
+                        hint_text: "e.g., assets/images/category_icon.png"
+                        on_text: root.icon_path_text = self.text
+
+                # Display Order - Optional
+                BoxLayout:
+                    orientation: 'vertical'
+                    size_hint_y: None
+                    height: 80
+                    spacing: 5
+                    Label:
+                        text: app._("category_order_label", app.locale)
+                        size_hint_y: None
+                        height: 30
+                        text_size: self.size
+                        halign: 'left'
+                        valign: 'middle'
+                    TextInput:
+                        id: order_input
+                        text: root.display_order_text
+                        multiline: False
+                        size_hint_y: None
+                        height: 40
+                        input_filter: 'int'
+                        hint_text: "0"
+                        on_text: root.display_order_text = self.text
+
+        # Buttons
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: None
+            height: 50
+            spacing: 10
+            padding: [0, 10]
+
+            Button:
+                text: app._("button_cancel", app.locale)
+                size_hint_x: 0.3
+                on_release: root.cancel()
+
+            Widget:
+                size_hint_x: 0.4
+
+            Button:
+                text: app._("button_save", app.locale)
+                size_hint_x: 0.3
+                on_release: root.save_category()

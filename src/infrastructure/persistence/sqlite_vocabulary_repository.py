@@ -103,7 +103,7 @@ class SQLiteVocabularyRepository(IVocabularyRepository):
         """
         if category:
             query = """
-                SELECT v.id, v.origin, v.translation, v.sound_path, v.image_path
+                SELECT v.id, v.origin, v.translation, v.sound_path, v.image_path, v.category
                 FROM vocabulary_items v
                 JOIN language_pairs lp ON v.language_pair_id = lp.id
                 WHERE lp.locale_from = ? AND lp.locale_to = ? AND v.category = ?
@@ -112,7 +112,7 @@ class SQLiteVocabularyRepository(IVocabularyRepository):
             rows = self._db.fetchall(query, (locale_from, locale_to, category))
         else:
             query = """
-                SELECT v.id, v.origin, v.translation, v.sound_path, v.image_path
+                SELECT v.id, v.origin, v.translation, v.sound_path, v.image_path, v.category
                 FROM vocabulary_items v
                 JOIN language_pairs lp ON v.language_pair_id = lp.id
                 WHERE lp.locale_from = ? AND lp.locale_to = ?
@@ -127,7 +127,8 @@ class SQLiteVocabularyRepository(IVocabularyRepository):
                     origin=row['origin'],
                     translation=row['translation'],
                     sound=row['sound_path'],
-                    image=row['image_path']
+                    image=row['image_path'],
+                    category=row['category'] if 'category' in row.keys() else None
                 )
                 items.append(item)
             except ValueError as e:
@@ -184,14 +185,15 @@ class SQLiteVocabularyRepository(IVocabularyRepository):
                 for item in items:
                     conn.execute(
                         """INSERT INTO vocabulary_items
-                           (language_pair_id, origin, translation, sound_path, image_path)
-                           VALUES (?, ?, ?, ?, ?)""",
+                           (language_pair_id, origin, translation, sound_path, image_path, category)
+                           VALUES (?, ?, ?, ?, ?, ?)""",
                         (
                             language_pair_id,
                             item.origin,
                             item.translation,
                             item.sound,
-                            item.image
+                            item.image,
+                            item.category
                         )
                     )
         except Exception as e:
