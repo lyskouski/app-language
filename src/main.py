@@ -165,13 +165,17 @@ class MainApp(App):
             if not is_file_path or data_path == 'db' or data_path == 'all':
                 # Load vocabulary directly from database using current locale settings
                 if self.locale_from and self.locale_to:
-                    print(f"DEBUG: Loading vocabulary from database for {self.locale_from}-{self.locale_to}")
+                    # Determine category filter
+                    category_filter = None
                     if data_path not in ('db', 'all'):
-                        print(f"DEBUG: Vocabulary filter: {data_path} (not yet implemented, loading all)")
+                        category_filter = data_path
+                        print(f"DEBUG: Loading vocabulary from database for {self.locale_from}-{self.locale_to}, category: {category_filter}")
+                    else:
+                        print(f"DEBUG: Loading vocabulary from database for {self.locale_from}-{self.locale_to}")
 
                     # Get repository directly from container
                     vocab_repo = self._container.vocabulary_repository()
-                    items = vocab_repo.load_by_language_pair(self.locale_from, self.locale_to)
+                    items = vocab_repo.load_by_language_pair(self.locale_from, self.locale_to, category_filter)
 
                     print(f"DEBUG: Loaded {len(items)} vocabulary items from database")
 

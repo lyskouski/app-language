@@ -176,9 +176,14 @@ class DataMigration:
                         sound = parts[2].strip() if len(parts) > 2 else None
                         image = parts[3].strip() if len(parts) > 3 else None
                         
-                        # Skip empty entries
-                        if not origin or not translation:
+                        # Skip empty origin
+                        if not origin:
                             continue
+                        
+                        # For articulation/tongue twisters, translation can be empty
+                        # Use origin as translation if empty
+                        if not translation:
+                            translation = origin
                         
                         # Clean up empty strings
                         sound = sound if sound else None

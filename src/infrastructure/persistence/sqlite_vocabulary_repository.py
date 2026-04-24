@@ -89,26 +89,36 @@ class SQLiteVocabularyRepository(IVocabularyRepository):
 
         return (None, None)
 
-    def load_by_language_pair(self, locale_from: str, locale_to: str) -> List[VocabularyItem]:
+    def load_by_language_pair(self, locale_from: str, locale_to: str, category: Optional[str] = None) -> List[VocabularyItem]:
         """
-        Load all vocabulary items for a language pair.
+        Load vocabulary items for a language pair, optionally filtered by category.
 
         Args:
             locale_from: Source language locale
             locale_to: Target language locale
+            category: Optional category filter (verbs, articulation, dictionary, numbers)
 
         Returns:
             List of vocabulary items
         """
-        query = """
-            SELECT v.id, v.origin, v.translation, v.sound_path, v.image_path
-            FROM vocabulary_items v
-            JOIN language_pairs lp ON v.language_pair_id = lp.id
-            WHERE lp.locale_from = ? AND lp.locale_to = ?
-            ORDER BY v.id
-        """
-
-        rows = self._db.fetchall(query, (locale_from, locale_to))
+        if category:
+            query = """
+                SELECT v.id, v.origin, v.translation, v.sound_path, v.image_path
+                FROM vocabulary_items v
+                JOIN language_pairs lp ON v.language_pair_id = lp.id
+                WHERE lp.locale_from = ? AND lp.locale_to = ? AND v.category = ?
+                ORDER BY v.id
+            """
+            rows = self._db.fetchall(query, (locale_from, locale_to, category))
+        else:
+            query = """
+                SELECT v.id, v.origin, v.translation, v.sound_path, v.image_path
+                FROM vocabulary_items v
+                JOIN language_pairs lp ON v.language_pair_id = lp.id
+                WHERE lp.locale_from = ? AND lp.locale_to = ?
+                ORDER BY v.id
+            """
+            rows = self._db.fetchall(query, (locale_from, locale_to))
 
         items = []
         for row in rows:
