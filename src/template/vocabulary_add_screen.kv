@@ -12,7 +12,7 @@
             size_hint_y: None
             height: 50
             Label:
-                text: "Add New Vocabulary Item"
+                text: app._("vocab_add_title", app.locale)
                 font_size: '20sp'
                 bold: True
 
@@ -34,7 +34,7 @@
                     height: 80
                     spacing: 5
                     Label:
-                        text: "Origin (Source Language) *"
+                        text: app._("vocab_origin_label", app.locale)
                         size_hint_y: None
                         height: 30
                         text_size: self.size
@@ -55,7 +55,7 @@
                     height: 80
                     spacing: 5
                     Label:
-                        text: "Translation (Target Language) *"
+                        text: app._("vocab_translation_label", app.locale)
                         size_hint_y: None
                         height: 30
                         text_size: self.size
@@ -76,7 +76,7 @@
                     height: 80
                     spacing: 5
                     Label:
-                        text: "Category (Auto-filled)"
+                        text: app._("vocab_category_label", app.locale)
                         size_hint_y: None
                         height: 30
                         text_size: self.size
@@ -99,7 +99,7 @@
                     height: 80
                     spacing: 5
                     Label:
-                        text: "Difficulty Level (0-10)"
+                        text: app._("vocab_difficulty_label", app.locale)
                         size_hint_y: None
                         height: 30
                         text_size: self.size
@@ -122,7 +122,7 @@
                     height: 80
                     spacing: 5
                     Label:
-                        text: "Sound File Path (Optional)"
+                        text: app._("vocab_sound_label", app.locale)
                         size_hint_y: None
                         height: 30
                         text_size: self.size
@@ -144,7 +144,7 @@
                     height: 80
                     spacing: 5
                     Label:
-                        text: "Image File Path (Optional)"
+                        text: app._("vocab_image_label", app.locale)
                         size_hint_y: None
                         height: 30
                         text_size: self.size

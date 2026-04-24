@@ -1,4 +1,11 @@
 labels_uk = {
+    "vocab_translation_label": "Переклад (Цільова мова) *",
+    "vocab_sound_label": "Шлях до аудіо файлу (Необов'язково)",
+    "vocab_origin_label": "Оригінал (Мова джерела) *",
+    "vocab_image_label": "Шлях до зображення (Необов'язково)",
+    "vocab_difficulty_label": "Рівень складності (0-10)",
+    "vocab_category_label": "Категорія (Авто-заповнення)",
+    "vocab_add_title": "Додати нове слово",
     "status_select_sentence": "Виберіть речення",
     "status_saving": "Збереження...",
     "status_recording_stopped": "Запис зупинено",

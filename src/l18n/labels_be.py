@@ -1,4 +1,11 @@
 labels_be = {
+    "vocab_translation_label": "Пераклад (Мэтавая мова) *",
+    "vocab_sound_label": "Шлях да аўдыё файла (Неабавязкова)",
+    "vocab_origin_label": "Арыгінал (Зыходная мова) *",
+    "vocab_image_label": "Шлях да выявы (Неабавязкова)",
+    "vocab_difficulty_label": "Узровень складанасці (0-10)",
+    "vocab_category_label": "Катэгорыя (Аўта-запаўненне)",
+    "vocab_add_title": "Дадаць новае слова",
     "status_select_sentence": "Выберыце сказ",
     "status_saving": "Захоўваецца...",
     "status_recording_stopped": "Запіс спынены",

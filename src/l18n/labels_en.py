@@ -1,4 +1,11 @@
 labels_en = {
+    "vocab_translation_label": "Translation (Target Language) *",
+    "vocab_sound_label": "Sound File Path (Optional)",
+    "vocab_origin_label": "Origin (Source Language) *",
+    "vocab_image_label": "Image File Path (Optional)",
+    "vocab_difficulty_label": "Difficulty Level (0-10)",
+    "vocab_category_label": "Category (Auto-filled)",
+    "vocab_add_title": "Add New Vocabulary Item",
     "status_select_sentence": "Select a sentence",
     "status_saving": "Saving...",
     "status_recording_stopped": "Recording stopped",

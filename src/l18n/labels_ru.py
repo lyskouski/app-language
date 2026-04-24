@@ -1,4 +1,11 @@
 labels_ru = {
+    "vocab_translation_label": "Перевод (Целевой язык) *",
+    "vocab_sound_label": "Путь к аудио файлу (Необязательно)",
+    "vocab_origin_label": "Оригинал (Исходный язык) *",
+    "vocab_image_label": "Путь к изображению (Необязательно)",
+    "vocab_difficulty_label": "Уровень сложности (0-10)",
+    "vocab_category_label": "Категория (Авто-заполнение)",
+    "vocab_add_title": "Добавить новое слово",
     "status_select_sentence": "Выберите предложение",
     "status_saving": "Сохранение...",
     "status_recording_stopped": "Запись остановлена",
