@@ -37,24 +37,24 @@
         height: dp(40)
         size_hint_y: None
         Widget:
-            size_hint_x: dp(0.02)
+            size_hint_x: 0.02
         Button:
-            size_hint_y: None if root.path == 'assets/source.json' else 0
-            disabled: False if root.path == 'assets/source.json' else True
-            opacity: 1.0 if root.path == 'assets/source.json' else 0
-            height: '48dp' if root.path == 'assets/source.json' else 0
-            text: app._("button_add", app.locale)
+            # Show "Add Category" button when viewing dictionaries (after language pair selected)
+            text: app._("button_add", app.locale) + " " + app._("category_add_title", app.locale).split()[1:][0] if (root.path.startswith('assets/data/') and '/source.json' in root.path) else ""
+            opacity: 1.0 if (root.path.startswith('assets/data/') and '/source.json' in root.path) else 0
+            disabled: False if (root.path.startswith('assets/data/') and '/source.json' in root.path) else True
+            size_hint_x: 0.35 if (root.path.startswith('assets/data/') and '/source.json' in root.path) else 0.01
             on_release:
-                app.next_screen('structure_screen')
+                root.add_category()
         Widget:
-            size_hint_x: dp(0.02)
+            size_hint_x: 0.02
         Button:
             text: app._("button_settings", app.locale)
             size_hint_x: 0.3
             on_release:
                 app.next_screen('language_screen')
         Widget:
-            size_hint_x: dp(0.02)
+            size_hint_x: 0.02
     Widget:
         size_hint_y: dp(0.08)
 

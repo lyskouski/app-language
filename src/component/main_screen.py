@@ -8,7 +8,17 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.screenmanager import Screen
 
 class MainScreen(Screen):
-    pass
+    def on_enter(self):
+        """Reload data when screen becomes visible."""
+        # Access the root_widget by id and reload its data
+        if hasattr(self, 'ids') and 'root_widget' in self.ids:
+            root_widget = self.ids.root_widget
+            if hasattr(root_widget, '_config_repo'):
+                # Only reload if the widget has been initialized
+                app = App.get_running_app()
+                print(f"→ MainScreen.on_enter: Reloading data for path='{root_widget.path}' (locale: {app.locale_from}→{app.locale_to})")
+                root_widget.load_data()
+                root_widget.populate_rv()
 
 class RootWidget(BoxLayout):
     data = ObjectProperty([])
@@ -165,16 +175,26 @@ class RootWidget(BoxLayout):
         """Navigate to vocabulary add screen with category pre-filled."""
         try:
             app = App.get_running_app()
-            
+
             # Get the vocabulary add screen and set category
             add_screen = app.root.get_screen('vocabulary_add_screen')
             add_screen.category_text = info.category_name
             add_screen.category_id = info.category_id
-            
+
             # Navigate to add screen
             app.next_screen('vocabulary_add_screen')
         except Exception as e:
             print(f"ERROR in add_vocabulary: {e}")
+            import traceback
+            traceback.print_exc()
+
+    def add_category(self):
+        """Navigate to category add screen."""
+        try:
+            app = App.get_running_app()
+            app.next_screen('category_add_screen')
+        except Exception as e:
+            print(f"ERROR in add_category: {e}")
             import traceback
             traceback.print_exc()
 
