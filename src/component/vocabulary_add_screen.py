@@ -17,6 +17,7 @@ class VocabularyAddScreen(Screen):
     sound_path_text = StringProperty('')
     image_path_text = StringProperty('')
     category_text = StringProperty('dictionary')
+    category_id = StringProperty('')  # Category ID for database
     difficulty_text = StringProperty('0')
     
     categories = ListProperty(['dictionary', 'verbs', 'numbers', 'articulation'])
@@ -25,13 +26,13 @@ class VocabularyAddScreen(Screen):
         super(VocabularyAddScreen, self).__init__(**kwargs)
 
     def clear_form(self):
-        """Clear all form fields."""
+        """Clear all form fields except category (which is pre-filled)."""
         self.origin_text = ''
         self.translation_text = ''
         self.sound_path_text = ''
         self.image_path_text = ''
-        self.category_text = 'dictionary'
         self.difficulty_text = '0'
+        # Don't clear category_text or category_id - they're pre-filled
 
     def save_vocabulary_item(self):
         """

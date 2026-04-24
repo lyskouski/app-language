@@ -187,7 +187,9 @@ class SQLiteConfigRepository:
                 'store_path': '',
                 'route_path': '',
                 'locale_from': locale_from,
-                'locale_to': locale_to
+                'locale_to': locale_to,
+                'category_id': str(row['id']),  # For Add button
+                'category_name': row['category_name']  # For pre-filling form
             }
             for row in rows
         ]

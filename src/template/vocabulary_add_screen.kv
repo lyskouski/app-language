@@ -69,14 +69,14 @@
                         height: 40
                         on_text: root.translation_text = self.text
 
-                # Category - Optional
+                # Category - Pre-filled (read-only)
                 BoxLayout:
                     orientation: 'vertical'
                     size_hint_y: None
                     height: 80
                     spacing: 5
                     Label:
-                        text: "Category (Optional)"
+                        text: "Category (Auto-filled)"
                         size_hint_y: None
                         height: 30
                         text_size: self.size
@@ -88,8 +88,9 @@
                         multiline: False
                         size_hint_y: None
                         height: 40
-                        hint_text: "e.g., dictionary, verbs, numbers"
-                        on_text: root.category_text = self.text
+                        readonly: True
+                        disabled: True
+                        background_color: 0.9, 0.9, 0.9, 1
 
                 # Difficulty Level - Optional
                 BoxLayout:

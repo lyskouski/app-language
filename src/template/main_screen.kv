@@ -49,13 +49,6 @@
         Widget:
             size_hint_x: dp(0.02)
         Button:
-            text: app._("button_add", app.locale)
-            size_hint_x: 0.25
-            on_release:
-                app.next_screen('vocabulary_add_screen')
-        Widget:
-            size_hint_x: dp(0.02)
-        Button:
             text: app._("button_settings", app.locale)
             size_hint_x: 0.3
             on_release:
@@ -74,6 +67,8 @@
     route_path: ""
     locale_from: ""
     locale_to: ""
+    category_id: ""
+    category_name: ""
     Widget:
         size_hint_x: dp(0.05)
     Image:
@@ -85,13 +80,20 @@
         text: app._('button_play', app.locale) if root.route_path else ""
         disabled: False if root.route_path else True
         opacity: 1.0 if root.route_path else 0
-        size_hint_x: dp(0.5) if root.route_path else dp(0.01)
+        size_hint_x: dp(0.4) if root.route_path else dp(0.01)
         on_release:
             app.root.get_screen('main_screen').ids.root_widget.play_game(root)
     Button:
+        text: app._('button_add', app.locale)
+        opacity: 1.0 if (not root.route_path and root.category_id) else 0
+        disabled: False if (not root.route_path and root.category_id) else True
+        size_hint_x: dp(0.3) if (not root.route_path and root.category_id) else 0
+        on_release:
+            app.root.get_screen('main_screen').ids.root_widget.add_vocabulary(root)
+    Button:
         text: app._('button_select', app.locale)
         opacity: 1.0 if not root.route_path else 0
-        size_hint_x: dp(0.5) if not root.route_path else 0
+        size_hint_x: dp(0.3) if not root.route_path else 0
         on_release:
             app.root.get_screen('main_screen').ids.root_widget.update_data(root)
     Widget:

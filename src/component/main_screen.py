@@ -161,6 +161,23 @@ class RootWidget(BoxLayout):
             import traceback
             traceback.print_exc()
 
+    def add_vocabulary(self, info):
+        """Navigate to vocabulary add screen with category pre-filled."""
+        try:
+            app = App.get_running_app()
+            
+            # Get the vocabulary add screen and set category
+            add_screen = app.root.get_screen('vocabulary_add_screen')
+            add_screen.category_text = info.category_name
+            add_screen.category_id = info.category_id
+            
+            # Navigate to add screen
+            app.next_screen('vocabulary_add_screen')
+        except Exception as e:
+            print(f"ERROR in add_vocabulary: {e}")
+            import traceback
+            traceback.print_exc()
+
     def populate_rv(self):
         """Populate the RecycleView with data."""
         try:

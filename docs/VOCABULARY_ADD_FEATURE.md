@@ -14,7 +14,7 @@ This document describes the new vocabulary add feature that allows users to add 
 ### 2. UI Template (`src/template/vocabulary_add_screen.kv`)
 - Form-based interface with the following fields:
   - **Origin** (required): Source language word
-  - **Translation** (required): Target language word  
+  - **Translation** (required): Target language word
   - **Category** (optional): e.g., dictionary, verbs, numbers
   - **Difficulty Level** (optional): 0-10 scale
   - **Sound Path** (optional): Path to audio file
