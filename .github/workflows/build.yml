@@ -298,11 +298,19 @@ jobs:
 
           class NumpyRecipe(CompiledComponentsPythonRecipe):
               version = \"1.21.6\"
-              url = \"https://github.com/numpy/numpy/archive/refs/tags/v{version}.tar.gz\"
+              url = \"https://files.pythonhosted.org/packages/source/n/numpy/numpy-{version}.tar.gz\"
               site_packages_name = \"numpy\"
-              depends = [\"setuptools\"]
+              depends = [\"setuptools\", \"cython\"]
               call_hostpython_via_targetpython = False
               install_in_hostpython = True
+
+              def get_recipe_env(self, arch):
+                  env = super().get_recipe_env(arch)
+                  env[\"NPY_DISABLE_OPTIMIZATION\"] = \"1\"
+                  env[\"BLAS\"] = \"None\"
+                  env[\"LAPACK\"] = \"None\"
+                  env[\"ATLAS\"] = \"None\"
+                  return env
 
               def build_arch(self, arch):
                   super().build_arch(arch)
@@ -313,7 +321,7 @@ jobs:
               f.write(recipe_content)
           "
 
-          echo "Created custom NumPy recipe using setup.py"
+          echo "Created custom NumPy recipe using setup.py from PyPI"
 
           # Patch Python3 recipe
           PATCH_FILE=".buildozer/android/platform/python-for-android/pythonforandroid/recipes/python3/__init__.py"
