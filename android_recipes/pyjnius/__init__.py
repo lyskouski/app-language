@@ -28,12 +28,12 @@ class PyjniusRecipe(OriginalPyjniusRecipe):
         4. Call setup.py install directly
         """
         from pythonforandroid.recipe import Recipe
-        
+
         build_dir = self.get_build_dir(arch.arch)
 
         # Step 1: Run base build (handles NDK and recipe-level setup)
         Recipe.build_arch(self, arch)
-        
+
         # Step 2: Build Cython components (converts .pyx to .c)
         info('Building Cython components for PyJNIus')
         self.build_cython_components(arch)
@@ -57,7 +57,7 @@ class PyjniusRecipe(OriginalPyjniusRecipe):
 
         # Step 5: Get the environment and install using setup.py
         env = self.get_recipe_env(arch)
-        
+
         info('Installing PyJNIus using setup.py (after Cython compilation)')
 
         with current_directory(build_dir):
