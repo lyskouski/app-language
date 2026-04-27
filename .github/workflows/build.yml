@@ -295,20 +295,18 @@ jobs:
             sed -i "s/patches\.append('patches\/3\.14_armv7l_fix\.patch')/pass/" "$PATCH_FILE"
           fi
 
-          # Patch PyJNIus recipe to use setup.py instead of pyproject.toml
-          # This avoids isolated build environment issues
-          PYJNIUS_RECIPE=".buildozer/android/platform/python-for-android/pythonforandroid/recipes/pyjnius/__init__.py"
-          if [ -f "$PYJNIUS_RECIPE" ]; then
-            # Force recipe to use setup.py by setting call_hostpython_via_targetpython = False
-            if ! grep -q "call_hostpython_via_targetpython = False" "$PYJNIUS_RECIPE"; then
-              sed -i "/class PyjniusRecipe/a\\    call_hostpython_via_targetpython = False" "$PYJNIUS_RECIPE"
-            fi
-          fi
-
           echo "NumPy excluded from Android build - ML features will use fallback mode"
 
-          # Now build without numpy
+          # Now build without numpy (will fail on PyJNIus, but extracts sources)
           buildozer android release || true
+
+          # Remove PyJNIus pyproject.toml to force traditional setup.py build
+          # This avoids isolated build environment issues with setuptools.build_meta
+          PYJNIUS_BUILD_DIR=".buildozer/android/platform/build-arm64-v8a/build/other_builds/pyjnius-sdl2/arm64-v8a__ndk_target_24/pyjnius"
+          if [ -f "$PYJNIUS_BUILD_DIR/pyproject.toml" ]; then
+            echo "Removing PyJNIus pyproject.toml to force setup.py build"
+            rm "$PYJNIUS_BUILD_DIR/pyproject.toml"
+          fi
 
           # Patch to handle SVG module compilation issues
           KIVY_SETUP_FILE=".buildozer/android/platform/build-arm64-v8a/build/other_builds/kivy-sdl2/arm64-v8a__ndk_target_24/kivy/setup.py"
