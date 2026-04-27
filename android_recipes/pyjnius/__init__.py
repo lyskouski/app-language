@@ -37,14 +37,14 @@ class PyjniusRecipe(OriginalPyjniusRecipe):
         # Step 2: Compile Cython components (.pyx -> .c)
         info('Building Cython components for PyJNIus')
         env = self.get_recipe_env(arch)
-        
+
         # Find all .pyx files in the source tree
         pyx_files = []
         for root, dirs, files in os.walk(build_dir):
             for file in files:
                 if file.endswith('.pyx'):
                     pyx_files.append(os.path.join(root, file))
-        
+
         if pyx_files:
             info(f'Found {len(pyx_files)} Cython files to compile')
             # Try compiling each .pyx file
