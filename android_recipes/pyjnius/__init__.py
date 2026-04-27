@@ -1,6 +1,6 @@
 from pythonforandroid.recipes.pyjnius import PyjniusRecipe as OriginalPyjniusRecipe
 from pythonforandroid.logger import shprint, info
-from pythonforandroid.util import current_directory, ensure_dir
+from pythonforandroid.util import current_directory
 import sh
 import os
 
@@ -21,11 +21,24 @@ class PyjniusRecipe(OriginalPyjniusRecipe):
 
     def build_arch(self, arch):
         """
-        Override to completely bypass modern build backend and use traditional setup.py.
+        Override to:
+        1. Run parent's base Recipe.build_arch() for any NDK setup
+        2. Compile Cython components (essential for PyJNIus .pyx files)
+        3. Remove pyproject.toml to force legacy setup.py
+        4. Call setup.py install directly
         """
+        from pythonforandroid.recipe import Recipe
+        
         build_dir = self.get_build_dir(arch.arch)
 
-        # Remove all modern build configurations to force legacy setup.py
+        # Step 1: Run base build (handles NDK and recipe-level setup)
+        Recipe.build_arch(self, arch)
+        
+        # Step 2: Build Cython components (converts .pyx to .c)
+        info('Building Cython components for PyJNIus')
+        self.build_cython_components(arch)
+
+        # Step 3: Remove modern build configurations to force legacy setup.py
         files_to_remove = [
             os.path.join(build_dir, 'pyproject.toml'),
             os.path.join(build_dir, 'setup.cfg'),
@@ -37,19 +50,17 @@ class PyjniusRecipe(OriginalPyjniusRecipe):
                 info(f'Removing {os.path.basename(filepath)} to force setup.py')
                 os.remove(filepath)
 
-        # Verify setup.py exists
+        # Step 4: Verify setup.py exists
         setup_py = os.path.join(build_dir, 'setup.py')
         if not os.path.exists(setup_py):
             raise Exception('setup.py not found in PyJNIus source')
 
-        # Get the environment
+        # Step 5: Get the environment and install using setup.py
         env = self.get_recipe_env(arch)
-
-        # Build using traditional setup.py
-        info('Building PyJNIus using traditional setup.py')
+        
+        info('Installing PyJNIus using setup.py (after Cython compilation)')
 
         with current_directory(build_dir):
-            # Use shprint to call setup.py install, just like the parent does
             shprint(
                 sh.Command(self.hostpython_location),
                 'setup.py',
