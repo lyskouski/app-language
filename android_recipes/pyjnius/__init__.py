@@ -17,11 +17,12 @@ class PyjniusRecipe(OriginalPyjniusRecipe):
 
     def build_arch(self, arch):
         """
-        Build PyJNIus with proper Cython handling:
+        Build PyJNIus with mandatory Cython compilation:
         1. Initialize NDK and base recipe setup
         2. Ensure Cython is installed
-        3. Modify setup.py to guarantee Cython availability
-        4. Run setup.py install
+        3. Mandatory: Compile all .pyx files to .c files
+        4. Remove pyproject.toml to force setup.py
+        5. Run setup.py install
         """
         from pythonforandroid.recipe import Recipe
 
@@ -48,20 +49,20 @@ class PyjniusRecipe(OriginalPyjniusRecipe):
             info(f'Warning: pip install cython failed: {e}')
             # Continue anyway - Cython might be available
 
-        # Step 3: Remove pyproject.toml to ensure setup.py is used
+        # Step 3: MANDATORY: Compile .pyx files to .c files
+        info('Compiling Cython files (MANDATORY)')
+        self._compile_cython_files_mandatory(build_dir, env)
+
+        # Step 4: Remove pyproject.toml to ensure setup.py is used
         pyproject = os.path.join(build_dir, 'pyproject.toml')
         if os.path.exists(pyproject):
             info('Removing pyproject.toml to force setup.py')
             os.remove(pyproject)
 
-        # Step 4: Verify setup.py exists
+        # Step 5: Verify setup.py exists
         setup_py = os.path.join(build_dir, 'setup.py')
         if not os.path.exists(setup_py):
             raise Exception('setup.py not found in PyJNIus source')
-
-        # Step 5: Pre-compile any Cython files that have already been prepared
-        # (this is optional and non-fatal if it fails)
-        self._attempt_cython_precompile(build_dir, env)
 
         # Step 6: Run setup.py install
         info('Running setup.py install for PyJNIus')
@@ -79,12 +80,11 @@ class PyjniusRecipe(OriginalPyjniusRecipe):
 
         info('✓ PyJNIus build completed')
 
-    def _attempt_cython_precompile(self, build_dir, env):
+    def _compile_cython_files_mandatory(self, build_dir, env):
         """
-        Attempt to precompile any .pyx files to .c files.
-        This is optional - if it fails, setup.py will try to handle it.
+        Mandatory Cython compilation. Fails if .pyx files can't be compiled.
         """
-        info('Attempting to precompile Cython files')
+        info('Searching for .pyx files...')
 
         pyx_files = []
         for root, dirs, files in os.walk(build_dir):
@@ -93,23 +93,25 @@ class PyjniusRecipe(OriginalPyjniusRecipe):
                     pyx_files.append(os.path.join(root, file))
 
         if not pyx_files:
-            info('No .pyx files found')
+            info('No .pyx files found - continuing anyway')
             return
 
-        info(f'Found {len(pyx_files)} .pyx files')
+        info(f'Found {len(pyx_files)} .pyx files to compile')
 
-        # Try to compile each .pyx file
+        # Compile each .pyx file
+        failed_files = []
         for pyx_file in pyx_files:
             c_file = pyx_file.replace('.pyx', '.c')
+            rel_path = os.path.relpath(pyx_file, build_dir)
 
             # Skip if .c file already exists
             if os.path.exists(c_file):
-                info(f'⊘ {os.path.basename(c_file)} already exists')
+                info(f'⊘ {rel_path} - .c file already exists')
                 continue
 
-            rel_path = os.path.relpath(pyx_file, build_dir)
+            info(f'Compiling {rel_path}...')
             try:
-                info(f'Precompiling {rel_path}')
+                # Compile from build_dir context using relative path
                 with current_directory(build_dir):
                     shprint(
                         sh.Command(self.hostpython_location),
@@ -118,12 +120,22 @@ class PyjniusRecipe(OriginalPyjniusRecipe):
                         rel_path,
                         _env=env
                     )
+
+                # Verify .c file was created
                 if os.path.exists(c_file):
-                    info(f'✓ Precompiled {rel_path}')
+                    info(f'✓ Created {rel_path.replace(".pyx", ".c")}')
                 else:
-                    info(f'⚠ {rel_path} compiled but {os.path.basename(c_file)} not found')
+                    info(f'✗ Cython compilation succeeded but {rel_path.replace(".pyx", ".c")} not found!')
+                    failed_files.append(rel_path)
             except Exception as e:
-                # Non-fatal - setup.py might handle it
-                info(f'⚠ Precompile failed for {rel_path}: {e}')
+                info(f'✗ Failed to compile {rel_path}: {e}')
+                failed_files.append(rel_path)
+
+        # Check if any files failed
+        if failed_files:
+            raise Exception(
+                f'Cython compilation failed for {len(failed_files)} file(s): {failed_files}. '
+                f'These .pyx files must be compiled to .c files for the build to succeed.'
+            )
 
 recipe = PyjniusRecipe()
