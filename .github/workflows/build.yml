@@ -285,9 +285,15 @@ jobs:
           ATLAS: "None"
           LAPACK: "None"
           BLAS: "None"
+          # Pre-install setuptools to avoid isolated build environment issues with PyJNIus
+          PIP_PRE_INSTALL: "setuptools wheel cython"
         run: |
           # Initial setup to clone p4a and recipes
           buildozer android update || true
+
+          # Pre-install setuptools in the host Python before building
+          # This helps PyJNIus build with the isolated build environment
+          pip install --upgrade setuptools wheel cython
 
           # Patch Python3 recipe
           PATCH_FILE=".buildozer/android/platform/python-for-android/pythonforandroid/recipes/python3/__init__.py"
