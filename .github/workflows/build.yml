@@ -289,62 +289,15 @@ jobs:
           # Initial setup to clone p4a and recipes
           buildozer android update || true
 
-          # Create custom numpy recipe directory
-          mkdir -p android_recipes/numpy
-
-          # Create custom numpy recipe that uses setup.py instead of meson
-          python3 -c "
-          recipe_content = '''from pythonforandroid.recipe import CompiledComponentsPythonRecipe
-
-          class NumpyRecipe(CompiledComponentsPythonRecipe):
-              version = "1.23.5"
-              url = \"https://pypi.io/packages/source/n/numpy/numpy-{version}.zip\"
-              site_packages_name = \"numpy\"
-              depends = [\"setuptools\", \"cython\"]
-              call_hostpython_via_targetpython = False
-              install_in_hostpython = True
-              def download_if_necessary(self):
-                  super().download_if_necessary()
-
-              def prebuild_arch(self, arch):
-                  super().prebuild_arch(arch)
-                  # Remove pyproject.toml to force setup.py usage
-                  import os
-                  pyproject_path = os.path.join(self.get_build_dir(arch.arch), 'pyproject.toml')
-                  if os.path.exists(pyproject_path):
-                      os.remove(pyproject_path)
-                      print('Removed pyproject.toml to force setup.py build')
-              def get_recipe_env(self, arch):
-                  env = super().get_recipe_env(arch)
-                  env[\"NPY_DISABLE_OPTIMIZATION\"] = \"1\"
-                  env[\"BLAS\"] = \"None\"
-                  env[\"LAPACK\"] = \"None\"
-                  env[\"ATLAS\"] = \"None\"
-                  return env
-
-              def build_arch(self, arch):
-                  super().build_arch(arch)
-
-          recipe = NumpyRecipe()
-          '''
-          with open('android_recipes/numpy/__init__.py', 'w') as f:
-              f.write(recipe_content)
-          "
-
-          # Pre-download numpy using pip to ensure we have it
-          pip download --no-deps --no-binary :all: numpy==1.23.5 -d /tmp/
-          mkdir -p .buildozer/android/packages/numpy
-          cp /tmp/numpy-1.23.5.tar.gz .buildozer/android/packages/numpy/
-
-          echo "Created custom NumPy recipe and pre-downloaded source from PyPI"
-
           # Patch Python3 recipe
           PATCH_FILE=".buildozer/android/platform/python-for-android/pythonforandroid/recipes/python3/__init__.py"
           if [ -f "$PATCH_FILE" ]; then
             sed -i "s/patches\.append('patches\/3\.14_armv7l_fix\.patch')/pass/" "$PATCH_FILE"
           fi
 
-          # Now build with custom recipe
+          echo "NumPy excluded from Android build - ML features will use fallback mode"
+
+          # Now build without numpy
           buildozer android release || true
 
           # Patch to handle SVG module compilation issues
@@ -361,13 +314,6 @@ jobs:
             # Clean up trailing commas before closing brackets
             sed -i "s/,\s*\]/]/g" "$KIVY_SETUP_FILE"
             sed -i "s/,\s*}/}/g" "$KIVY_SETUP_FILE"
-          fi
-
-          # Patch NumPy to fix unordered_map issue
-          NUMPY_UNIQUE_FILE=".buildozer/android/platform/build-arm64-v8a/build/other_builds/numpy/arm64-v8a__ndk_target_24/numpy/numpy/_core/src/multiarray/unique.cpp"
-          if [ -f "$NUMPY_UNIQUE_FILE" ]; then
-            echo "🔧 Patching NumPy unique.cpp to fix unordered_map issue"
-            sed -i '1i#include <unordered_map>' "$NUMPY_UNIQUE_FILE"
           fi
 
           # Rebuild after fixes
