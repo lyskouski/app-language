@@ -298,7 +298,7 @@ jobs:
 
           class NumpyRecipe(CompiledComponentsPythonRecipe):
               version = \"1.21.6\"
-              url = \"https://files.pythonhosted.org/packages/source/n/numpy/numpy-{version}.tar.gz\"
+              url = \"https://pypi.io/packages/source/n/numpy/numpy-{version}.zip\"
               site_packages_name = \"numpy\"
               depends = [\"setuptools\", \"cython\"]
               call_hostpython_via_targetpython = False
@@ -321,7 +321,12 @@ jobs:
               f.write(recipe_content)
           "
 
-          echo "Created custom NumPy recipe using setup.py from PyPI"
+          # Pre-download numpy using pip to ensure we have it
+          pip download --no-deps --no-binary :all: numpy==1.21.6 -d /tmp/
+          mkdir -p .buildozer/android/packages/numpy
+          cp /tmp/numpy-1.21.6.tar.gz .buildozer/android/packages/numpy/
+
+          echo "Created custom NumPy recipe and pre-downloaded source from PyPI"
 
           # Patch Python3 recipe
           PATCH_FILE=".buildozer/android/platform/python-for-android/pythonforandroid/recipes/python3/__init__.py"
