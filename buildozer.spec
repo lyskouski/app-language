@@ -41,7 +41,7 @@ version = 0.0.1
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3==3.11.14,kivy==2.3.0,requests,pydub,numpy
+requirements = python3==3.11.14,kivy==2.3.0,requests,pydub,numpy==1.24.4
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
