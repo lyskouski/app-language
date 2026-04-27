@@ -295,14 +295,14 @@ jobs:
             sed -i "s/patches\.append('patches\/3\.14_armv7l_fix\.patch')/pass/" "$PATCH_FILE"
           fi
 
-          # Patch NumPy recipe to use older version compatible with setup.py
+          # Patch NumPy recipe to use older version compatible with setup.py (no meson-python)
           NUMPY_RECIPE=".buildozer/android/platform/python-for-android/pythonforandroid/recipes/numpy/__init__.py"
           if [ -f "$NUMPY_RECIPE" ]; then
-            echo "🔧 Patching NumPy recipe to use v1.24.4"
+            echo "🔧 Patching NumPy recipe to use v1.23.5 (last version with pure setup.py)"
             # Backup original
             cp "$NUMPY_RECIPE" "$NUMPY_RECIPE.bak"
-            # Replace version and URL to use older numpy
-            sed -i "s/^version = .*/version = '1.24.4'/" "$NUMPY_RECIPE"
+            # Replace version to use numpy 1.23.5 - last version before mandatory pyproject.toml/meson
+            sed -i "s/^version = .*/version = '1.23.5'/" "$NUMPY_RECIPE"
             sed -i "s|^url = .*|url = 'https://github.com/numpy/numpy/archive/refs/tags/v{version}.tar.gz'|" "$NUMPY_RECIPE"
             echo "NumPy recipe patched. Changes:"
             grep -E "^(version|url) = " "$NUMPY_RECIPE"
