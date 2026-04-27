@@ -10,6 +10,9 @@ class PyjniusRecipe(OriginalPyjniusRecipe):
     to avoid isolated environment issues with python -m build
     """
 
+    # Clear patches - we don't need them and they reference files we don't have
+    patches = []
+
     # Force the recipe to NOT use call_hostpython_via_targetpython
     # This makes it use the traditional build approach
     call_hostpython_via_targetpython = False
