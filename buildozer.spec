@@ -41,7 +41,7 @@ version = 0.0.1
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3==3.11.14,kivy==2.3.0,requests,pydub,numpy==1.24.4
+requirements = python3==3.11.14,kivy==2.3.0,requests,pydub,numpy
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
@@ -353,7 +353,7 @@ p4a.bootstrap = sdl2
 # Setting this to false will pass --ignore-setup-py, true will pass --use-setup-py
 # NOTE: this is general setuptools integration, having pyproject.toml is enough, no need to generate
 # setup.py if you're using Poetry, but you need to add "toml" to source.include_exts.
-p4a.setup_py = false
+p4a.setup_py = true
 
 # (str) extra command line arguments to pass when invoking pythonforandroid.toolchain
 p4a.extra_args = --bootstrap=sdl2 --arch=arm64-v8a
