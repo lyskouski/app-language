@@ -34,9 +34,39 @@ class PyjniusRecipe(OriginalPyjniusRecipe):
         # Step 1: Run base build (handles NDK and recipe-level setup)
         Recipe.build_arch(self, arch)
 
-        # Step 2: Build Cython components (converts .pyx to .c)
+        # Step 2: Compile Cython components (.pyx -> .c)
         info('Building Cython components for PyJNIus')
-        self.build_cython_components(arch)
+        env = self.get_recipe_env(arch)
+        
+        # Find all .pyx files in the source tree
+        pyx_files = []
+        for root, dirs, files in os.walk(build_dir):
+            for file in files:
+                if file.endswith('.pyx'):
+                    pyx_files.append(os.path.join(root, file))
+        
+        if pyx_files:
+            info(f'Found {len(pyx_files)} Cython files to compile')
+            # Try compiling each .pyx file
+            with current_directory(build_dir):
+                for pyx_file in pyx_files:
+                    rel_path = os.path.relpath(pyx_file, build_dir)
+                    info(f'Compiling {rel_path} with Cython...')
+                    try:
+                        # Method 1: Try using python -m cython (most reliable)
+                        shprint(
+                            sh.Command(self.hostpython_location),
+                            '-m', 'cython',
+                            pyx_file,
+                            _env=env
+                        )
+                        info(f'✓ Successfully compiled {rel_path}')
+                    except Exception as e:
+                        # This is non-fatal - setup.py might compile inline
+                        info(f'Note: Cython pre-compilation of {rel_path} skipped: {e}')
+                        continue
+        else:
+            info('No .pyx files found in PyJNIus source')
 
         # Step 3: Remove modern build configurations to force legacy setup.py
         files_to_remove = [
@@ -56,9 +86,7 @@ class PyjniusRecipe(OriginalPyjniusRecipe):
             raise Exception('setup.py not found in PyJNIus source')
 
         # Step 5: Get the environment and install using setup.py
-        env = self.get_recipe_env(arch)
-
-        info('Installing PyJNIus using setup.py (after Cython compilation)')
+        info('Installing PyJNIus using setup.py')
 
         with current_directory(build_dir):
             shprint(
