@@ -297,13 +297,23 @@ jobs:
           recipe_content = '''from pythonforandroid.recipe import CompiledComponentsPythonRecipe
 
           class NumpyRecipe(CompiledComponentsPythonRecipe):
-              version = \"1.21.6\"
+              version = "1.23.5"
               url = \"https://pypi.io/packages/source/n/numpy/numpy-{version}.zip\"
               site_packages_name = \"numpy\"
               depends = [\"setuptools\", \"cython\"]
               call_hostpython_via_targetpython = False
               install_in_hostpython = True
+              def download_if_necessary(self):
+                  super().download_if_necessary()
 
+              def prebuild_arch(self, arch):
+                  super().prebuild_arch(arch)
+                  # Remove pyproject.toml to force setup.py usage
+                  import os
+                  pyproject_path = os.path.join(self.get_build_dir(arch.arch), 'pyproject.toml')
+                  if os.path.exists(pyproject_path):
+                      os.remove(pyproject_path)
+                      print('Removed pyproject.toml to force setup.py build')
               def get_recipe_env(self, arch):
                   env = super().get_recipe_env(arch)
                   env[\"NPY_DISABLE_OPTIMIZATION\"] = \"1\"
@@ -322,9 +332,9 @@ jobs:
           "
 
           # Pre-download numpy using pip to ensure we have it
-          pip download --no-deps --no-binary :all: numpy==1.21.6 -d /tmp/
+          pip download --no-deps --no-binary :all: numpy==1.23.5 -d /tmp/
           mkdir -p .buildozer/android/packages/numpy
-          cp /tmp/numpy-1.21.6.tar.gz .buildozer/android/packages/numpy/
+          cp /tmp/numpy-1.23.5.tar.gz .buildozer/android/packages/numpy/
 
           echo "Created custom NumPy recipe and pre-downloaded source from PyPI"
 
