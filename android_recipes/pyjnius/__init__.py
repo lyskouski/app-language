@@ -8,7 +8,7 @@ import os
 class PyjniusRecipe(OriginalPyjniusRecipe):
     """
     Custom PyJNIus recipe that ensures Cython is available and compiles .pyx files.
-    
+
     PyJNIus ships with .pyx (Cython source) files but not .c (compiled C) files.
     These must be compiled before setup.py can build the C extension.
     """
@@ -85,7 +85,7 @@ class PyjniusRecipe(OriginalPyjniusRecipe):
         This is optional - if it fails, setup.py will try to handle it.
         """
         info('Attempting to precompile Cython files')
-        
+
         pyx_files = []
         for root, dirs, files in os.walk(build_dir):
             for file in files:
@@ -101,7 +101,7 @@ class PyjniusRecipe(OriginalPyjniusRecipe):
         # Try to compile each .pyx file
         for pyx_file in pyx_files:
             c_file = pyx_file.replace('.pyx', '.c')
-            
+
             # Skip if .c file already exists
             if os.path.exists(c_file):
                 info(f'⊘ {os.path.basename(c_file)} already exists')
