@@ -35,3 +35,5 @@ class PyjniusRecipe(OriginalPyjniusRecipe):
 
         # Now call parent build which will use setup.py install
         super().build_arch(arch)
+
+recipe = PyjniusRecipe()
