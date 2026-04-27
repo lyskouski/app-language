@@ -17,11 +17,10 @@ class PyjniusRecipe(OriginalPyjniusRecipe):
     # This makes it use the traditional build approach
     call_hostpython_via_targetpython = False
 
-    def build_arch(self, arch):
-        """Override build to use traditional setup.py install"""
-        super().prebuild_arch(arch)
-        self.install_python_package(arch)
-        super().postbuild_arch(arch)
+    # Don't override build_arch - let parent handle Cython compilation
+    # The call_hostpython_via_targetpython = False is enough to avoid
+    # the modern build system issues
 
 
 recipe = PyjniusRecipe()
+
