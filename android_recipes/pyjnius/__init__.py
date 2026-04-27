@@ -1,7 +1,9 @@
 from pythonforandroid.recipes.pyjnius import PyjniusRecipe as OriginalPyjniusRecipe
-from pythonforandroid.logger import shprint
+from pythonforandroid.logger import shprint, info
 from pythonforandroid.util import current_directory
+from pythonforandroid.recipe import Recipe
 import sh
+import os
 
 
 class PyjniusRecipe(OriginalPyjniusRecipe):
@@ -13,13 +15,22 @@ class PyjniusRecipe(OriginalPyjniusRecipe):
     # Clear patches - we don't need them and they reference files we don't have
     patches = []
 
-    # Force the recipe to NOT use call_hostpython_via_targetpython
-    # This makes it use the traditional build approach
-    call_hostpython_via_targetpython = False
+    def prebuild_arch(self, arch):
+        """Remove pyproject.toml to force traditional setup.py build"""
+        super().prebuild_arch(arch)
 
-    # Don't override build_arch - let parent handle Cython compilation
-    # The call_hostpython_via_targetpython = False is enough to avoid
-    # the modern build system issues
+        # Remove pyproject.toml and setup.cfg to prevent modern build backend
+        build_dir = self.get_build_dir(arch.arch)
+        pyproject_file = os.path.join(build_dir, 'pyproject.toml')
+        setup_cfg_file = os.path.join(build_dir, 'setup.cfg')
+
+        if os.path.exists(pyproject_file):
+            info('Removing pyproject.toml to force traditional setup.py build')
+            os.remove(pyproject_file)
+
+        if os.path.exists(setup_cfg_file):
+            info('Removing setup.cfg to force traditional setup.py build')
+            os.remove(setup_cfg_file)
 
 
 recipe = PyjniusRecipe()
