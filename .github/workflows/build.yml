@@ -289,26 +289,37 @@ jobs:
           # Initial setup to clone p4a and recipes
           buildozer android update || true
 
+          # Create custom numpy recipe directory
+          mkdir -p android_recipes/numpy
+
+          # Create custom numpy recipe that uses setup.py instead of meson
+          cat > android_recipes/numpy/__init__.py << 'EOF'
+from pythonforandroid.recipe import CompiledComponentsPythonRecipe
+
+class NumpyRecipe(CompiledComponentsPythonRecipe):
+    version = '1.21.6'
+    url = 'https://github.com/numpy/numpy/archive/refs/tags/v{version}.tar.gz'
+    site_packages_name = 'numpy'
+    depends = ['setuptools']
+    call_hostpython_via_targetpython = False
+    install_in_hostpython = True
+
+    def build_arch(self, arch):
+        # Use traditional setup.py build
+        super().build_arch(arch)
+
+recipe = NumpyRecipe()
+EOF
+
+          echo "📦 Created custom NumPy recipe using setup.py"
+
           # Patch Python3 recipe
           PATCH_FILE=".buildozer/android/platform/python-for-android/pythonforandroid/recipes/python3/__init__.py"
           if [ -f "$PATCH_FILE" ]; then
             sed -i "s/patches\.append('patches\/3\.14_armv7l_fix\.patch')/pass/" "$PATCH_FILE"
           fi
 
-          # Patch NumPy recipe to use older version without pyproject.toml
-          NUMPY_RECIPE=".buildozer/android/platform/python-for-android/pythonforandroid/recipes/numpy/__init__.py"
-          if [ -f "$NUMPY_RECIPE" ]; then
-            echo "🔧 Patching NumPy recipe to use v1.21.6 (last version without pyproject.toml)"
-            # Backup original
-            cp "$NUMPY_RECIPE" "$NUMPY_RECIPE.bak"
-            # Replace version to use numpy 1.21.6 - last version before pyproject.toml
-            sed -i "s/^version = .*/version = '1.21.6'/" "$NUMPY_RECIPE"
-            sed -i "s|^url = .*|url = 'https://github.com/numpy/numpy/archive/refs/tags/v{version}.tar.gz'|" "$NUMPY_RECIPE"
-            echo "NumPy recipe patched. Changes:"
-            grep -E "^(version|url) = " "$NUMPY_RECIPE"
-          fi
-
-          # Now build with patched recipes
+          # Now build with custom recipe
           buildozer android release || true
 
           # Patch to handle SVG module compilation issues
