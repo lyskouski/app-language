@@ -243,6 +243,9 @@ jobs:
           # Pin to a commit that supports Python 3.11 properly
           pip install --upgrade git+https://github.com/kivy/python-for-android.git@9720dbd5489ebf0e8490a9fb930828f4426b8a20
           pip install --upgrade git+https://github.com/kivy/buildozer.git@master
+          # Pre-install setuptools in the host Python before building
+          # This helps PyJNIus build with the isolated build environment
+          pip install --upgrade setuptools wheel cython
 
       - name: Apply Android Keychain
         if: startsWith(matrix.target, 'Android')
@@ -288,12 +291,6 @@ jobs:
         run: |
           # Initial setup to clone p4a and recipes
           buildozer android update || true
-
-          # Pre-install setuptools in the host Python before building
-          # This helps PyJNIus build with the isolated build environment
-          pip install --upgrade setuptools wheel cython
-
-          # Build with custom recipes
           buildozer android release
 
       - name: Compile Android Debug package
