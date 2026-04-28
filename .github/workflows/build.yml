@@ -277,6 +277,8 @@ jobs:
           # Prevent Python path conflicts between host and build environments
           PYTHONHOME: ""
           PYTHONPATH: ""
+          # Disable isolated build environments (setuptools.build_meta fails in venv)
+          PIP_NO_BUILD_ISOLATION: "1"
           # Force Python version consistency (v0.0.11 config)
           P4A_PYTHON_VERSION: "3.11"
           # Skip problematic Kivy features
@@ -315,6 +317,7 @@ jobs:
         env:
           PYTHONHOME: ""
           PYTHONPATH: ""
+          PIP_NO_BUILD_ISOLATION: "1"
           P4A_PYTHON_VERSION: "3.11"
           KIVY_DEPS_ROOT: ""
           USE_SDL2: "1"
