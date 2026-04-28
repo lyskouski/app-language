@@ -243,8 +243,8 @@ jobs:
           sudo apt-get install -y autoconf automake libtool m4 \
               libffi-dev pkg-config libltdl-dev openjdk-17-jdk unzip \
               build-essential gcc g++
-          # Pin to stable commit with Python 3.11 support (before PyProjectRecipe changes)
-          pip install --upgrade git+https://github.com/kivy/python-for-android.git@9720dbd5489ebf0e8490a9fb930828f4426b8a20
+          # Use latest develop for better PyProjectRecipe support (setuptools.build_meta fixes)
+          pip install --upgrade git+https://github.com/kivy/python-for-android.git@develop
           pip install --upgrade git+https://github.com/kivy/buildozer.git@master
           # Pre-install setuptools in the host Python before building
           pip install --upgrade setuptools wheel cython
