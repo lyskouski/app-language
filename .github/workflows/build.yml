@@ -23,7 +23,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [Windows, Linux, LinuxSnap, LinuxAppImage, Android, AndroidDebug]
+        # Windows, Linux, LinuxSnap, LinuxAppImage,
+        target: [Android, AndroidDebug]
         include:
           - os: windows-latest
             target: Windows
