@@ -1,19 +1,20 @@
-from pythonforandroid.recipe import PythonRecipe
+from pythonforandroid.recipe import CythonRecipe
 from pythonforandroid.toolchain import shprint, current_directory, info
-from pythonforandroid.patching import will_build
 import sh
 from os.path import join
 
 
-class PyjniusRecipe(PythonRecipe):
+class PyjniusRecipe(CythonRecipe):
     """
-    Custom PyJNIus recipe using PythonRecipe instead of PyProjectRecipe.
+    Custom PyJNIus recipe using CythonRecipe to handle .pyx -> .c compilation.
 
-    PyProjectRecipe always calls 'python -m build' with isolated environments that fail.
-    PythonRecipe uses traditional 'setup.py install', which works with p4a's environment.
+    PyProjectRecipe (used by original) calls 'python -m build' with isolated environments that fail.
+    CythonRecipe compiles Cython files then uses 'setup.py install', avoiding build isolation.
 
-    This recipe replicates the environment setup from the original but uses the simpler
-    PythonRecipe base class that doesn't require modern build tools.
+    Key differences from original:
+    - No patches (they don't exist locally and may not be essential)
+    - Uses CythonRecipe's build_cython_components() to generate .c files
+    - Preserves Android-specific environment setup (NDKPLATFORM, LDFLAGS)
     """
 
     version = '1.7.0'
@@ -22,27 +23,20 @@ class PyjniusRecipe(PythonRecipe):
     depends = [('genericndkbuild', 'sdl2', 'sdl3'), 'six']
     site_packages_name = 'jnius'
 
-    # Cython needed for setup.py to compile .pyx files
+    # No patches - they don't exist in local recipes and build may work without them
+    patches = []
+
+    # Cython needed for .pyx compilation
     hostpython_prerequisites = ["Cython<3.2"]
 
-    # Use hostpython to install
     call_hostpython_via_targetpython = False
-    install_in_hostpython = False
 
     def get_recipe_env(self, arch, **kwargs):
-        """Environment setup copied from original PyProjectRecipe-based recipe"""
+        """Add NDKPLATFORM to signal Android build mode to PyJNIus setup.py"""
         env = super().get_recipe_env(arch, **kwargs)
 
-        # Critical LDFLAGS for Android JNI linking
-        env['LDFLAGS'] = env['LDFLAGS'] + ' -L{} '.format(
-            self.ctx.get_libs_dir(arch.arch) +
-            ' -L{} '.format(self.ctx.libs_dir) +
-            ' -L{}'.format(join(self.ctx.bootstrap.build_dir, 'obj', 'local', arch.arch)))
-
-        env['LDSHARED'] = env['CC'] + ' -shared'
-        env['LIBLINK'] = 'NOTNONE'
-
-        # NDKPLATFORM signals Android build mode to setup.py
+        # NDKPLATFORM tells setup.py to use Android mode
+        # (CythonRecipe already sets LDFLAGS, LDSHARED, LIBLINK correctly)
         env['NDKPLATFORM'] = "NOTNONE"
 
         return env
