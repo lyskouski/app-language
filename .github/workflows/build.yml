@@ -272,7 +272,7 @@ jobs:
           grep "^android.numeric_version" buildozer.spec
 
       - name: Compile Android package
-        if: matrix.target == 'Android'
+        if: startsWith(matrix.target, 'Android')
         env:
           PYTHONHOME: ""
           PYTHONPATH: ""
@@ -292,10 +292,45 @@ jobs:
         run: |
           # Initial setup to clone p4a and recipes
           buildozer android update || true
+
+          # First build attempt - expected to fail on Kivy SVG module
+          echo "🔨 First build attempt (expected to fail on SVG)..."
+          buildozer android release || true
+
+          # Patch Kivy setup.py to remove problematic SVG module
+          KIVY_SETUP_FILE=".buildozer/android/platform/build-arm64-v8a/build/other_builds/kivy-sdl2/arm64-v8a__ndk_target_24/kivy/setup.py"
+          if [ -f "$KIVY_SETUP_FILE" ]; then
+            echo "🩹 Patching Kivy setup.py to remove SVG module..."
+            # Remove svg.pyx and svg.pxd entries
+            sed -i "s/,\s*'svg\.pyx'//" "$KIVY_SETUP_FILE"
+            sed -i "s/,\s*'svg\.pxd'//" "$KIVY_SETUP_FILE"
+            sed -i "s/'svg\.pyx',\s*//" "$KIVY_SETUP_FILE"
+            sed -i "s/'svg\.pxd',\s*//" "$KIVY_SETUP_FILE"
+            sed -i "/svg\.pyx/d" "$KIVY_SETUP_FILE"
+            sed -i "/svg\.pxd/d" "$KIVY_SETUP_FILE"
+            # Clean up formatting
+            sed -i "s/,,/,/g" "$KIVY_SETUP_FILE"
+            sed -i "s/,\s*\]/]/g" "$KIVY_SETUP_FILE"
+            sed -i "s/,\s*}/}/g" "$KIVY_SETUP_FILE"
+            echo "✅ SVG module removed from Kivy build"
+          else
+            echo "⚠️  Kivy setup.py not found at expected location, continuing anyway..."
+          fi
+
+          # Second build attempt - should succeed after patching
+          echo "🔨 Second build attempt (after SVG patch)..."
           buildozer android release
 
       - name: Compile Android Debug package
         if: matrix.target == 'AndroidDebug'
+        env:
+          PYTHONHOME: ""
+          PYTHONPATH: ""
+          PIP_NO_BUILD_ISOLATION: "1"
+          KIVY_DEPS_ROOT: ""
+          USE_SDL2: "1"
+          CPPFLAGS: "-std=c++17 -D_LIBCPP_DISABLE_AVAILABILITY"
+          CXXFLAGS: "-std=c++17 -D_LIBCPP_DISABLE_AVAILABILITY"
         run: |
           buildozer android debug
 
