@@ -301,20 +301,9 @@ jobs:
           KIVY_SETUP_FILE=".buildozer/android/platform/build-arm64-v8a/build/other_builds/kivy-sdl2/arm64-v8a__ndk_target_24/kivy/setup.py"
           if [ -f "$KIVY_SETUP_FILE" ]; then
             echo "🩹 Patching Kivy setup.py to remove SVG module..."
-            # Remove svg.pyx and svg.pxd entries
-            sed -i "s/,\s*'svg\.pyx'//" "$KIVY_SETUP_FILE"
-            sed -i "s/,\s*'svg\.pxd'//" "$KIVY_SETUP_FILE"
-            sed -i "s/'svg\.pyx',\s*//" "$KIVY_SETUP_FILE"
-            sed -i "s/'svg\.pxd',\s*//" "$KIVY_SETUP_FILE"
-            sed -i "/svg\.pyx/d" "$KIVY_SETUP_FILE"
-            sed -i "/svg\.pxd/d" "$KIVY_SETUP_FILE"
-            # Clean up formatting
-            sed -i "s/,,/,/g" "$KIVY_SETUP_FILE"
-            sed -i "s/,\s*\]/]/g" "$KIVY_SETUP_FILE"
-            sed -i "s/,\s*}/}/g" "$KIVY_SETUP_FILE"
-            echo "✅ SVG module removed from Kivy build"
+            python3 -c "import sys,re; f=open('$KIVY_SETUP_FILE','r'); c=f.read(); f.close(); orig=c; c=re.sub(r\"['\\\"]svg\\.(pyx|pxd)['\\\"],?\\s*\", '', c); c=re.sub(r\",\\s*['\\\"]svg\\.(pyx|pxd)['\\\"]\", '', c); c=re.sub(r',\\s*,', ',', c); c=re.sub(r',\\s*\\]', ']', c); c=re.sub(r',\\s*\\}', '}', c); compile(c, '$KIVY_SETUP_FILE', 'exec'); f=open('$KIVY_SETUP_FILE','w'); f.write(c); f.close(); print('✅ SVG removed')" || echo "⚠️ Patching failed, continuing..."
           else
-            echo "⚠️  Kivy setup.py not found at expected location, continuing anyway..."
+            echo "⚠️ Kivy setup.py not found, continuing..."
           fi
 
           # Second build attempt - should succeed after patching
