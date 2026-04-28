@@ -42,8 +42,7 @@ version = 0.0.1
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
 # Note: numpy excluded from Android - ML features will use fallback mode
-# Python 3.13 - Kivy 2.3.0 not compatible with 3.14+
-requirements = python3==3.13,kivy==2.3.0,requests,pydub
+requirements = python3,kivy==2.3.0,requests,pydub
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
@@ -79,8 +78,8 @@ osx.kivy_version = 2.3.0
 # Android specific
 #
 
-# (str) Android Python version to use - must match python3 requirement
-android.python_version = 3.13
+# (str) Android Python version to use (let p4a manage, defaults to 3.14.2)
+#android.python_version = 3.13
 
 # (bool) Indicate if the application should be fullscreen or not
 fullscreen = 1
@@ -333,8 +332,8 @@ android.debug_artifact = apk
 p4a.branch = develop
 
 # (str) python-for-android specific commit to use, defaults to HEAD, must be within p4a.branch
-# Unpinned to use latest develop - may have better PyProjectRecipe support
-#p4a.commit = 9720dbd5489ebf0e8490a9fb930828f4426b8a20
+# Pin to stable commit with Python 3.11 support (before PyProjectRecipe changes)
+p4a.commit = 9720dbd5489ebf0e8490a9fb930828f4426b8a20
 
 # (str) python-for-android git clone directory (if empty, it will be automatically cloned from github)
 #p4a.source_dir =
