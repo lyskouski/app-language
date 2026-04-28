@@ -274,6 +274,9 @@ jobs:
       - name: Compile Android package
         if: startsWith(matrix.target, 'Android')
         env:
+          # Prevent Python path conflicts between host and build environments
+          PYTHONHOME: ""
+          PYTHONPATH: ""
           # Force Python version consistency (v0.0.11 config)
           P4A_PYTHON_VERSION: "3.11"
           # Skip problematic Kivy features
@@ -310,6 +313,8 @@ jobs:
       - name: Compile Android Debug package
         if: matrix.target == 'AndroidDebug'
         env:
+          PYTHONHOME: ""
+          PYTHONPATH: ""
           P4A_PYTHON_VERSION: "3.11"
           KIVY_DEPS_ROOT: ""
           USE_SDL2: "1"
