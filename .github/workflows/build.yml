@@ -259,6 +259,14 @@ jobs:
           echo "P4A_RELEASE_KEYALIAS_PASSWD=$ANDROID_KEYSTORE_PSSW" >> $GITHUB_ENV
           echo "P4A_RELEASE_KEYALIAS=key" >> $GITHUB_ENV
 
+      - name: Clean PyJNIus cache (force rebuild with custom recipe)
+        if: startsWith(matrix.target, 'Android')
+        run: |
+          echo "Cleaning PyJNIus build cache to force rebuild with custom recipe"
+          rm -rf .buildozer/android/platform/build-*/build/other_builds/pyjnius* || true
+          rm -rf .buildozer/android/platform/build-*/dists/*/private/lib/python*/site-packages/jnius* || true
+          echo "PyJNIus cache cleaned"
+
       - name: Update version and build number
         if: startsWith(matrix.target, 'Android')
         run: |
