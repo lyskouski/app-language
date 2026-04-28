@@ -42,8 +42,8 @@ version = 0.0.1
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
 # Note: numpy excluded from Android - ML features will use fallback mode
-# Python version removed - let p4a manage it automatically
-requirements = python3,kivy==2.3.0,requests,pydub
+# Python 3.13 - Kivy 2.3.0 not compatible with 3.14+
+requirements = python3==3.13,kivy==2.3.0,requests,pydub
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
