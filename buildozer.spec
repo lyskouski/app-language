@@ -340,7 +340,8 @@ p4a.branch = develop
 #p4a.source_dir =
 
 # (str) The directory in which python-for-android should look for your own build recipes (if any)
-p4a.local_recipes = ./android_recipes/
+# Disabled: Let p4a use its built-in recipes (latest develop may have fixed PyProjectRecipe)
+#p4a.local_recipes = ./android_recipes/
 
 # (str) Filename to the hook for p4a
 #p4a.hook =
