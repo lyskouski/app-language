@@ -22,7 +22,10 @@ class PyjniusRecipe(PythonRecipe):
     depends = [('genericndkbuild', 'sdl2', 'sdl3'), 'six']
     site_packages_name = 'jnius'
 
-    # Use hostpython to install, with Cython available
+    # Cython needed for setup.py to compile .pyx files
+    hostpython_prerequisites = ["Cython<3.2"]
+
+    # Use hostpython to install
     call_hostpython_via_targetpython = False
     install_in_hostpython = False
 
@@ -43,12 +46,6 @@ class PyjniusRecipe(PythonRecipe):
         env['NDKPLATFORM'] = "NOTNONE"
 
         return env
-
-    def prebuild_arch(self, arch):
-        """Ensure Cython is available in hostpython"""
-        super().prebuild_arch(arch)
-        # Cython is needed for setup.py to work
-        self.install_hostpython_prerequisites(packages=['Cython<3.2'])
 
     def postbuild_arch(self, arch):
         """Copy PyJNIus Java classes to build directory (from original recipe)"""
