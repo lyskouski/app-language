@@ -42,7 +42,8 @@ version = 0.0.1
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
 # Note: numpy excluded from Android - ML features will use fallback mode
-requirements = python3==3.11.14,kivy==2.3.0,requests,pydub
+# Python version removed - let p4a manage it automatically
+requirements = python3,kivy==2.3.0,requests,pydub
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
@@ -78,8 +79,8 @@ osx.kivy_version = 2.3.0
 # Android specific
 #
 
-# (str) Android Python version to use (avoid compatibility issues)
-android.python_version = 3.11
+# (str) Android Python version to use (managed by p4a, defaults to latest stable)
+#android.python_version = 3.11
 
 # (bool) Indicate if the application should be fullscreen or not
 fullscreen = 1

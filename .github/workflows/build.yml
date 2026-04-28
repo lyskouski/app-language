@@ -64,6 +64,9 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
+          # Runner Python version (executes build tools, not the app itself)
+          # - Windows/Linux: 3.11 (stable, matches requirements.txt)
+          # - Android: 3.11 (p4a will build its own 3.14.2 from source for the app)
           python-version: '3.11'
 
       - name: Install requirements
@@ -271,11 +274,8 @@ jobs:
       - name: Compile Android package
         if: matrix.target == 'Android'
         env:
-          # Force Python version consistency
           PYTHONHOME: ""
           PYTHONPATH: ""
-          # Ensure p4a uses system Python
-          P4A_PYTHON_VERSION: "3.11"
           # Force traditional setup.py builds, avoid isolated build environments
           PIP_NO_BUILD_ISOLATION: "1"
           # Skip problematic Kivy features
