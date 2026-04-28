@@ -240,11 +240,10 @@ jobs:
           sudo apt-get install -y autoconf automake libtool m4 \
               libffi-dev pkg-config libltdl-dev openjdk-17-jdk unzip \
               build-essential gcc g++
-          # Pin to a commit that supports Python 3.11 properly
-          pip install --upgrade git+https://github.com/kivy/python-for-android.git@9720dbd5489ebf0e8490a9fb930828f4426b8a20
+          # Use latest develop branch - may have better --use-setup-py support
+          pip install --upgrade git+https://github.com/kivy/python-for-android.git@develop
           pip install --upgrade git+https://github.com/kivy/buildozer.git@master
           # Pre-install setuptools in the host Python before building
-          # This helps PyJNIus build with the isolated build environment
           pip install --upgrade setuptools wheel cython
 
       - name: Apply Android Keychain
@@ -258,14 +257,6 @@ jobs:
           echo "P4A_RELEASE_KEYSTORE_PASSWD=$ANDROID_KEYSTORE_PSSW" >> $GITHUB_ENV
           echo "P4A_RELEASE_KEYALIAS_PASSWD=$ANDROID_KEYSTORE_PSSW" >> $GITHUB_ENV
           echo "P4A_RELEASE_KEYALIAS=key" >> $GITHUB_ENV
-
-      - name: Clean PyJNIus cache (force rebuild with custom recipe)
-        if: startsWith(matrix.target, 'Android')
-        run: |
-          echo "Cleaning PyJNIus build cache to force rebuild with custom recipe"
-          rm -rf .buildozer/android/platform/build-*/build/other_builds/pyjnius* || true
-          rm -rf .buildozer/android/platform/build-*/dists/*/private/lib/python*/site-packages/jnius* || true
-          echo "PyJNIus cache cleaned"
 
       - name: Update version and build number
         if: startsWith(matrix.target, 'Android')
@@ -285,6 +276,8 @@ jobs:
           PYTHONPATH: ""
           # Ensure p4a uses system Python
           P4A_PYTHON_VERSION: "3.11"
+          # Force traditional setup.py builds, avoid isolated build environments
+          PIP_NO_BUILD_ISOLATION: "1"
           # Skip problematic Kivy features
           KIVY_DEPS_ROOT: ""
           USE_SDL2: "1"

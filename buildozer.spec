@@ -332,7 +332,8 @@ android.debug_artifact = apk
 p4a.branch = develop
 
 # (str) python-for-android specific commit to use, defaults to HEAD, must be within p4a.branch
-p4a.commit = 9720dbd5489ebf0e8490a9fb930828f4426b8a20
+# Unpinned to use latest develop - may have better PyProjectRecipe support
+#p4a.commit = 9720dbd5489ebf0e8490a9fb930828f4426b8a20
 
 # (str) python-for-android git clone directory (if empty, it will be automatically cloned from github)
 #p4a.source_dir =
