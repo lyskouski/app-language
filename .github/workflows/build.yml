@@ -297,6 +297,20 @@ jobs:
             sed -i "s/patches\.append('patches\/3\.14_armv7l_fix\.patch')/pass/" "$PATCH_FILE"
           fi
 
+          # Patch p4a recipe.py to pin build==1.3.0 (build 1.4.0+ breaks pyproject.toml without build-backend)
+          RECIPE_FILE=".buildozer/android/platform/python-for-android/pythonforandroid/recipe.py"
+          if [ -f "$RECIPE_FILE" ]; then
+            echo "🩹 Patching p4a recipe.py to pin build==1.3.0..."
+            sed -i 's/"build\[virtualenv\]"/"build[virtualenv]==1.3.0"/g' "$RECIPE_FILE"
+          fi
+
+          # Clean hostpython3 to force rebuild with pinned build package
+          HOSTPYTHON_DIR=".buildozer/android/platform/build-arm64-v8a/build/other_builds/hostpython3"
+          if [ -d "$HOSTPYTHON_DIR" ]; then
+            echo "🧹 Cleaning hostpython3 to force rebuild with pinned dependencies..."
+            rm -rf "$HOSTPYTHON_DIR"
+          fi
+
           # Patch Kivy setup.py to remove SVG module (v0.0.11 approach)
           KIVY_SETUP_FILE=".buildozer/android/platform/build-arm64-v8a/build/other_builds/kivy-sdl2/arm64-v8a__ndk_target_24/kivy/setup.py"
           if [ -f "$KIVY_SETUP_FILE" ]; then
