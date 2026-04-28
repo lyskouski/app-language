@@ -246,6 +246,8 @@ jobs:
           # Pin to v0.0.11 working commit with Python 3.11 support
           pip install --upgrade git+https://github.com/kivy/python-for-android.git@9720dbd5489ebf0e8490a9fb930828f4426b8a20
           pip install --upgrade git+https://github.com/kivy/buildozer.git@master
+          # Pin build package to 1.3.0 (November 2025) - build 1.4.0+ breaks pyproject.toml without build-backend
+          pip install "build==1.3.0"
           # Pre-install setuptools in the host Python before building
           pip install --upgrade setuptools wheel cython
 
