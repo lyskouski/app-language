@@ -279,17 +279,9 @@ jobs:
           # Skip problematic Kivy features
           KIVY_DEPS_ROOT: ""
           USE_SDL2: "1"
-          # C++ compilation fixes for NumPy
-          CPPFLAGS: "-std=c++17 -D_LIBCPP_DISABLE_AVAILABILITY"
-          CXXFLAGS: "-std=c++17 -D_LIBCPP_DISABLE_AVAILABILITY"
-          # NumPy-specific compilation flags for Android
-          NPY_NUM_BUILD_JOBS: "2"
-          ATLAS: "None"
-          LAPACK: "None"
-          BLAS: "None"
         run: |
-          # First build attempt - expected to fail (v0.0.11 two-stage approach)
-          echo "🔨 First build attempt (may fail on SVG/NumPy)..."
+          # First build attempt - expected to fail on SVG (v0.0.11 two-stage approach)
+          echo "🔨 First build attempt (may fail on SVG)..."
           buildozer android release || true
 
           # Patch Python 3.14 armv7l issue if present
@@ -311,15 +303,8 @@ jobs:
             sed -i "s/,\s*}/}/g" "$KIVY_SETUP_FILE"
           fi
 
-          # Patch NumPy unique.cpp for unordered_map issue
-          NUMPY_UNIQUE_FILE=".buildozer/android/platform/build-arm64-v8a/build/other_builds/numpy/arm64-v8a__ndk_target_24/numpy/numpy/_core/src/multiarray/unique.cpp"
-          if [ -f "$NUMPY_UNIQUE_FILE" ]; then
-            echo "🩹 Patching NumPy unique.cpp to fix unordered_map issue..."
-            sed -i '1i#include <unordered_map>' "$NUMPY_UNIQUE_FILE"
-          fi
-
           # Second build attempt - should succeed after patching
-          echo "🔨 Second build attempt (after patching)..."
+          echo "🔨 Second build attempt (after SVG patching)..."
           buildozer android release
 
       - name: Compile Android Debug package
@@ -328,12 +313,6 @@ jobs:
           P4A_PYTHON_VERSION: "3.11"
           KIVY_DEPS_ROOT: ""
           USE_SDL2: "1"
-          CPPFLAGS: "-std=c++17 -D_LIBCPP_DISABLE_AVAILABILITY"
-          CXXFLAGS: "-std=c++17 -D_LIBCPP_DISABLE_AVAILABILITY"
-          NPY_NUM_BUILD_JOBS: "2"
-          ATLAS: "None"
-          LAPACK: "None"
-          BLAS: "None"
         run: |
           buildozer android debug
 
