@@ -79,8 +79,8 @@ osx.kivy_version = 2.3.0
 # Android specific
 #
 
-# (str) Android Python version to use (managed by p4a, defaults to latest stable)
-#android.python_version = 3.11
+# (str) Android Python version to use - must match python3 requirement
+android.python_version = 3.13
 
 # (bool) Indicate if the application should be fullscreen or not
 fullscreen = 1
