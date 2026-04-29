@@ -293,9 +293,8 @@ jobs:
           # Fix python3 recipe if it has Python 3.14 patch that causes issues
           PATCH_FILE=".buildozer/android/platform/python-for-android/pythonforandroid/recipes/python3/__init__.py"
           if [ -f "$PATCH_FILE" ]; then
-            # Comment out the problematic 3.14 patch line
-            sed -i "s/patches\.append('patches\/3\.14_armv7l_fix\.patch')/#patches.append('patches\/3.14_armv7l_fix.patch')/" "$PATCH_FILE"
-            sed -i "s/self\.patches\.append('patches\/3\.14_armv7l_fix\.patch')/#self.patches.append('patches\/3.14_armv7l_fix.patch')/" "$PATCH_FILE"
+            # Delete the entire line containing 3.14 patch reference
+            sed -i "/3\.14_armv7l_fix\.patch/d" "$PATCH_FILE"
           fi
 
           # Patch to handle SVG module compilation issues
