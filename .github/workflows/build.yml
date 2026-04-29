@@ -246,10 +246,6 @@ jobs:
           # Pin to v0.0.11 working commit with Python 3.11 support
           pip install --upgrade git+https://github.com/kivy/python-for-android.git@9720dbd5489ebf0e8490a9fb930828f4426b8a20
           pip install --upgrade git+https://github.com/kivy/buildozer.git@master
-          # Pin build package to 1.3.0 (November 2025) - build 1.4.0+ breaks pyproject.toml without build-backend
-          pip install "build==1.3.0"
-          # Pre-install setuptools in the host Python before building
-          pip install --upgrade setuptools wheel cython
 
       - name: Apply Android Keychain
         if: startsWith(matrix.target, 'Android')
@@ -276,82 +272,58 @@ jobs:
       - name: Compile Android package
         if: startsWith(matrix.target, 'Android')
         env:
-          # Prevent Python path conflicts between host and build environments
+          # Force Python version consistency
           PYTHONHOME: ""
           PYTHONPATH: ""
-          # Disable isolated build environments (setuptools.build_meta fails in venv)
-          PIP_NO_BUILD_ISOLATION: "1"
-          # Force Python version consistency (v0.0.11 config)
+          # Ensure p4a uses system Python
           P4A_PYTHON_VERSION: "3.11"
           # Skip problematic Kivy features
           KIVY_DEPS_ROOT: ""
           USE_SDL2: "1"
+          # C++ compilation fixes for NumPy (v0.0.11 approach)
+          CPPFLAGS: "-std=c++17 -D_LIBCPP_DISABLE_AVAILABILITY"
+          CXXFLAGS: "-std=c++17 -D_LIBCPP_DISABLE_AVAILABILITY"
+          # NumPy-specific compilation flags for Android
+          NPY_NUM_BUILD_JOBS: "2"
+          ATLAS: "None"
+          LAPACK: "None"
+          BLAS: "None"
         run: |
-          # Step 1: Initialize buildozer to download p4a (but don't build anything yet)
-          echo "📥 Step 1: Downloading python-for-android..."
-          buildozer android update 2>/dev/null || true
+          buildozer android release || true
 
-          # Step 2: Patch p4a recipe.py BEFORE any builds happen
-          RECIPE_FILE=".buildozer/android/platform/python-for-android/pythonforandroid/recipe.py"
-          if [ -f "$RECIPE_FILE" ]; then
-            echo "🩹 Step 2: Patching p4a recipe.py to pin build==1.3.0 and disable isolated builds..."
-
-            # Pin build version to 1.3.0 (build 1.4.0+ breaks pyproject.toml without build-backend)
-            sed -i 's/"build\[virtualenv\]"/"build[virtualenv]==1.3.0"/g' "$RECIPE_FILE"
-
-            # Add --no-isolation flag to build_args list using Python
-            python3 -c "import re; content = open('$RECIPE_FILE').read(); content = re.sub(r'\]\s*\+\s*self\.extra_build_args', ',\"--no-isolation\"] + self.extra_build_args', content); open('$RECIPE_FILE', 'w').write(content); print('✓ Python patching completed')"
-
-            echo "✅ recipe.py patched"
-            # Verify patches applied
-            grep "build\[virtualenv\]==1.3.0" "$RECIPE_FILE" && echo "✓ build==1.3.0 pinned" || echo "✗ build NOT pinned"
-            grep ',"--no-isolation"\] + self.extra_build_args' "$RECIPE_FILE" && echo "✓ --no-isolation added" || echo "✗ --no-isolation NOT added"
-          else
-            echo "⚠️ recipe.py not found, trying direct build..."
-          fi
-
-          # Step 3: Patch Python 3.14 armv7l issue if present
           PATCH_FILE=".buildozer/android/platform/python-for-android/pythonforandroid/recipes/python3/__init__.py"
           if [ -f "$PATCH_FILE" ]; then
             sed -i "s/patches\.append('patches\/3\.14_armv7l_fix\.patch')/pass/" "$PATCH_FILE"
           fi
 
-          # Step 4: Clean any partial builds to force using patched recipe.py
-          echo "🧹 Step 3: Cleaning partial builds to force rebuild with patches..."
-          rm -rf .buildozer/android/platform/build-arm64-v8a/build/other_builds/hostpython3 || true
-          rm -rf .buildozer/android/platform/build-arm64-v8a/build/other_builds/android-sdl2 || true
-          rm -rf .buildozer/android/platform/build-arm64-v8a/build/other_builds/pyjnius-sdl2 || true
-
-          # Step 5: First real build attempt - expected to fail on SVG
-          echo "🔨 Step 4: First build attempt (may fail on Kivy SVG)..."
-          buildozer android release || true
-
-          # Step 6: Patch Kivy setup.py to remove SVG module (v0.0.11 approach)
+          # Patch to handle SVG module compilation issues
           KIVY_SETUP_FILE=".buildozer/android/platform/build-arm64-v8a/build/other_builds/kivy-sdl2/arm64-v8a__ndk_target_24/kivy/setup.py"
           if [ -f "$KIVY_SETUP_FILE" ]; then
-            echo "🩹 Step 5: Patching Kivy setup.py to remove SVG module..."
+            # Use more precise sed commands to handle SVG removal properly
+            # Remove svg.pyx and svg.pxd while handling commas correctly
             sed -i "s/,\s*'svg\.pyx'//" "$KIVY_SETUP_FILE"
             sed -i "s/,\s*'svg\.pxd'//" "$KIVY_SETUP_FILE"
             sed -i "s/'svg\.pyx',\s*//" "$KIVY_SETUP_FILE"
             sed -i "s/'svg\.pxd',\s*//" "$KIVY_SETUP_FILE"
+            # Clean up any double commas
             sed -i "s/,,/,/g" "$KIVY_SETUP_FILE"
+            # Clean up trailing commas before closing brackets
             sed -i "s/,\s*\]/]/g" "$KIVY_SETUP_FILE"
             sed -i "s/,\s*}/}/g" "$KIVY_SETUP_FILE"
           fi
 
-          # Second build attempt - should succeed after patching
-          echo "🔨 Second build attempt (after patching)..."
+          # Patch NumPy to fix unordered_map issue (v0.0.11 critical fix)
+          NUMPY_UNIQUE_FILE=".buildozer/android/platform/build-arm64-v8a/build/other_builds/numpy/arm64-v8a__ndk_target_24/numpy/numpy/_core/src/multiarray/unique.cpp"
+          if [ -f "$NUMPY_UNIQUE_FILE" ]; then
+            echo "🩹 Patching NumPy unique.cpp to fix unordered_map issue"
+            sed -i '1i#include <unordered_map>' "$NUMPY_UNIQUE_FILE"
+          fi
+
+          # Rebuild after fixes
           buildozer android release
 
       - name: Compile Android Debug package
         if: matrix.target == 'AndroidDebug'
-        env:
-          PYTHONHOME: ""
-          PYTHONPATH: ""
-          PIP_NO_BUILD_ISOLATION: "1"
-          P4A_PYTHON_VERSION: "3.11"
-          KIVY_DEPS_ROOT: ""
-          USE_SDL2: "1"
         run: |
           buildozer android debug
 

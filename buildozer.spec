@@ -41,8 +41,7 @@ version = 0.0.1
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-# Python 3.11.14, Kivy 2.3.0 (NumPy excluded - Android uses native recorder, no NumPy needed)
-requirements = python3==3.11.14,kivy==2.3.0,requests,pydub
+requirements = python3==3.11.14,kivy==2.3.0,requests,pydub,numpy
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
@@ -339,9 +338,7 @@ p4a.commit = 9720dbd5489ebf0e8490a9fb930828f4426b8a20
 #p4a.source_dir =
 
 # (str) The directory in which python-for-android should look for your own build recipes (if any)
-# Using custom PyJNIus recipe with CythonRecipe (setup.py) instead of PyProjectRecipe (pyproject.toml)
-# to avoid isolated build environment issues with setuptools.build_meta
-p4a.local_recipes = ./android_recipes/
+#p4a.local_recipes = ./android/
 
 # (str) Filename to the hook for p4a
 #p4a.hook =
