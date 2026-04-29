@@ -287,9 +287,21 @@ jobs:
           KIVY_DEPS_ROOT: ""
           USE_SDL2: "1"
         run: |
-          # First build attempt - expected to fail on SVG (v0.0.11 two-stage approach)
-          echo "🔨 First build attempt (may fail on SVG)..."
+          # Pre-patch p4a recipe.py before any build (must happen before buildozer downloads p4a)
+          # Wait for buildozer to download p4a first
+          echo "🔨 Initial buildozer setup (downloading p4a)..."
           buildozer android release || true
+
+          # Now patch the downloaded p4a
+          RECIPE_FILE=".buildozer/android/platform/python-for-android/pythonforandroid/recipe.py"
+          if [ -f "$RECIPE_FILE" ]; then
+            echo "🩹 Patching p4a recipe.py to pin build==1.3.0 and disable isolated builds..."
+            # Pin build version to 1.3.0 (build 1.4.0+ breaks pyproject.toml without build-backend)
+            sed -i 's/"build\[virtualenv\]"/"build[virtualenv]==1.3.0"/g' "$RECIPE_FILE"
+            # Add --no-isolation flag after --wheel (using line after pattern)
+            sed -i '/"--wheel",/a\            "--no-isolation",' "$RECIPE_FILE"
+            echo "✅ recipe.py patched"
+          fi
 
           # Patch Python 3.14 armv7l issue if present
           PATCH_FILE=".buildozer/android/platform/python-for-android/pythonforandroid/recipes/python3/__init__.py"
@@ -297,12 +309,9 @@ jobs:
             sed -i "s/patches\.append('patches\/3\.14_armv7l_fix\.patch')/pass/" "$PATCH_FILE"
           fi
 
-          # Patch p4a recipe.py to disable isolated builds (setuptools.build_meta fails in isolated venv)
-          RECIPE_FILE=".buildozer/android/platform/python-for-android/pythonforandroid/recipe.py"
-          if [ -f "$RECIPE_FILE" ]; then
-            echo "🩹 Patching p4a recipe.py to disable isolated builds..."
-            sed -i 's/"--wheel",/"--wheel", "--no-isolation",/g' "$RECIPE_FILE"
-          fi
+          # First real build attempt - expected to fail on SVG
+          echo "🔨 First build attempt (may fail on SVG)..."
+          buildozer android release || true
 
           # Patch Kivy setup.py to remove SVG module (v0.0.11 approach)
           KIVY_SETUP_FILE=".buildozer/android/platform/build-arm64-v8a/build/other_builds/kivy-sdl2/arm64-v8a__ndk_target_24/kivy/setup.py"
