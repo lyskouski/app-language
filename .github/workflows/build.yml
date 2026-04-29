@@ -297,6 +297,13 @@ jobs:
             sed -i "s/patches\.append('patches\/3\.14_armv7l_fix\.patch')/pass/" "$PATCH_FILE"
           fi
 
+          # Patch p4a recipe.py to disable isolated builds (setuptools.build_meta fails in isolated venv)
+          RECIPE_FILE=".buildozer/android/platform/python-for-android/pythonforandroid/recipe.py"
+          if [ -f "$RECIPE_FILE" ]; then
+            echo "🩹 Patching p4a recipe.py to disable isolated builds..."
+            sed -i 's/"--wheel",/"--wheel", "--no-isolation",/g' "$RECIPE_FILE"
+          fi
+
           # Patch Kivy setup.py to remove SVG module (v0.0.11 approach)
           KIVY_SETUP_FILE=".buildozer/android/platform/build-arm64-v8a/build/other_builds/kivy-sdl2/arm64-v8a__ndk_target_24/kivy/setup.py"
           if [ -f "$KIVY_SETUP_FILE" ]; then
@@ -311,7 +318,7 @@ jobs:
           fi
 
           # Second build attempt - should succeed after patching
-          echo "🔨 Second build attempt (after SVG patching)..."
+          echo "🔨 Second build attempt (after patching)..."
           buildozer android release
 
       - name: Compile Android Debug package
