@@ -285,6 +285,8 @@ jobs:
           # Skip problematic Kivy features
           KIVY_DEPS_ROOT: ""
           USE_SDL2: "1"
+          # 16KB page size support for Android 15+ (required by Google Play)
+          LDFLAGS: "-Wl,-z,max-page-size=16384"
         run: |
           buildozer android release || true
 
