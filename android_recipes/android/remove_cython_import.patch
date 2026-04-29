@@ -6,7 +6,7 @@
  import os
 
  library_dirs = os.environ['ANDROID_LIBS_DIR'].split(":")
-@@ -25,7 +24,7 @@
+@@ -25,10 +24,10 @@
                extra_compile_args=['-include', 'stdlib.h'])
  ]
 
@@ -14,5 +14,9 @@
 +# CythonRecipe already cythonizes .pyx files before setup.py runs, so just use modules directly
 
  setup(name='android',
--      ext_modules=cythonized_modules)
-+      ext_modules=modules)
+       version='1.0',
+       packages=['android'],
+       package_dir={'android': 'android'},
+-      ext_modules=cythonized_modules
++      ext_modules=modules
+       )
