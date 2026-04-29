@@ -43,7 +43,8 @@ version = 0.0.1
 # comma separated e.g. requirements = sqlite3,kivy
 # NumPy excluded from Android - only desktop recorder uses it (np.concatenate in recorder_controller_desktop.py)
 # Android uses native MediaRecorder (no NumPy dependency)
-requirements = python3==3.11.14,kivy==2.3.0,requests,pydub
+# No version pinning - let p4a develop choose compatible versions for NDK 28b
+requirements = python3,kivy,requests,pydub
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
@@ -79,8 +80,8 @@ osx.kivy_version = 2.3.0
 # Android specific
 #
 
-# (str) Android Python version to use - 3.11 matches requirements (v0.0.11 working config)
-android.python_version = 3.11
+# (str) Android Python version to use - let p4a choose for NDK 28b compatibility
+#android.python_version = 3.11
 
 # (bool) Indicate if the application should be fullscreen or not
 fullscreen = 1
@@ -341,10 +342,7 @@ p4a.branch = develop
 #p4a.source_dir =
 
 # (str) The directory in which python-for-android should look for your own build recipes (if any)
-# CRITICAL: Enable custom recipes to bypass isolated build environment issue
-# Both PyJNIus and android-sdl2 use PyProjectRecipe → python -m build → isolated env → setuptools.build_meta unavailable
-# Custom recipes use CythonRecipe (setup.py with Cython) which work without isolation
-p4a.local_recipes = ./android_recipes/
+#p4a.local_recipes =
 
 # (str) Filename to the hook for p4a
 #p4a.hook =
