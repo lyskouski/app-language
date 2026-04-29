@@ -245,7 +245,8 @@ jobs:
               build-essential gcc g++
           # Pin to v0.0.11 working commit with Python 3.11 support
           pip install --upgrade git+https://github.com/kivy/python-for-android.git@9720dbd5489ebf0e8490a9fb930828f4426b8a20
-          pip install --upgrade git+https://github.com/kivy/buildozer.git@master
+          # Pin buildozer to Nov 5, 2025 commit (working at v0.0.11 time)
+          pip install --upgrade git+https://github.com/kivy/buildozer.git@a0c22656be62e700aac4ecfbdfb9ef2b524379bf
 
       - name: Apply Android Keychain
         if: startsWith(matrix.target, 'Android')

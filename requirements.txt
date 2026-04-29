@@ -2,8 +2,9 @@ kivy[full]==2.3.0
 sounddevice==0.4.7
 soundfile==0.12.1
 pyinstaller==6.10.0
-buildozer
-python-for-android
+# Pin buildozer and p4a to v0.0.11 working versions (Nov 2025)
+git+https://github.com/kivy/buildozer.git@a0c22656be62e700aac4ecfbdfb9ef2b524379bf
+git+https://github.com/kivy/python-for-android.git@9720dbd5489ebf0e8490a9fb930828f4426b8a20
 cython==3.0.11
 pydub==0.25.1
 # Pin numpy to 1.x series (1.26.4 is last 1.x release before 2.0.0 which requires meson-python)
