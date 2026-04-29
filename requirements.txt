@@ -1,13 +1,16 @@
 kivy[full]==2.3.0
-sounddevice
-soundfile
-pyinstaller
+sounddevice==0.4.7
+soundfile==0.12.1
+pyinstaller==6.10.0
 buildozer
 python-for-android
-cython
-pydub
-numpy
-librosa
+cython==3.0.11
+pydub==0.25.1
+# Pin numpy to 1.x series (1.26.4 is last 1.x release before 2.0.0 which requires meson-python)
+# NumPy 2.x (June 2024+) incompatible with many tools due to meson-python build system
+numpy>=1.24.0,<2.0.0
+# librosa 0.10.2 compatible with numpy 1.x, has audio processing features needed
+librosa==0.10.2.post1
 ruff
 pytest
 coverage

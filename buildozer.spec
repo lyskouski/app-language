@@ -41,7 +41,9 @@ version = 0.0.1
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3==3.11.14,kivy==2.3.0,requests,pydub,numpy
+# NumPy excluded from Android - only desktop recorder uses it (np.concatenate in recorder_controller_desktop.py)
+# Android uses native MediaRecorder (no NumPy dependency)
+requirements = python3==3.11.14,kivy==2.3.0,requests,pydub
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
