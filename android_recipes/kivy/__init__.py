@@ -22,7 +22,7 @@ def is_kivy_affected_by_deadlock_issue(recipe=None, arch=None):
 
 class KivyRecipe(PyProjectRecipe):
     """Custom Kivy recipe that pins build<1.4.0 to avoid isolated environment issues.
-    
+
     build 1.4.0+ (Jan 2026) changed behavior for pyproject.toml files without explicit
     build-backend, forcing setuptools.build_meta:__legacy__ which fails in p4a's
     hostpython environment. build 1.3.0 correctly falls back to setup.py.
@@ -33,7 +33,7 @@ class KivyRecipe(PyProjectRecipe):
 
     depends = [('sdl2', 'sdl3'), 'pyjnius', 'setuptools', 'android']
     python_depends = ['certifi', 'chardet', 'idna', 'requests', 'urllib3', 'filetype']
-    
+
     # Pin build<1.4.0 to avoid isolated environment issues with setuptools.build_meta
     # Also include cython as required by Kivy
     hostpython_prerequisites = ["cython>=0.29.1,<=3.0.12", "build<1.4.0"]
