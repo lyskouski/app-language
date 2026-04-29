@@ -10,15 +10,15 @@ sdl_libs = lib_dict.get(os.environ['BOOTSTRAP'], ['main'])
 
 modules = [
     Extension('android._android',
-              ['android/_android.pyx', 'android/_android_jni.c'],
+              ['android/_android.c', 'android/_android_jni.c'],
               libraries=sdl_libs + ['log'],
               library_dirs=library_dirs),
     Extension('android._android_billing',
-              ['android/_android_billing.pyx', 'android/_android_billing_jni.c'],
+              ['android/_android_billing.c', 'android/_android_billing_jni.c'],
               libraries=['log'],
               library_dirs=library_dirs),
     Extension('android._android_sound',
-              ['android/_android_sound.pyx', 'android/_android_sound_jni.c'],
+              ['android/_android_sound.c', 'android/_android_sound_jni.c'],
               libraries=['log'],
               library_dirs=library_dirs,
               extra_compile_args=['-include', 'stdlib.h'])
