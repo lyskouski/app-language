@@ -287,20 +287,26 @@ jobs:
           KIVY_DEPS_ROOT: ""
           USE_SDL2: "1"
         run: |
-          # Pre-patch p4a recipe.py before any build (must happen before buildozer downloads p4a)
-          # Wait for buildozer to download p4a first
-          echo "🔨 Initial buildozer setup (downloading p4a)..."
-          buildozer android release || true
+          # Download p4a without building (just init buildozer)
+          echo "📥 Downloading python-for-android..."
+          buildozer android p4a -- --help 2>/dev/null || buildozer android clean || true
 
-          # Now patch the downloaded p4a
+          # Patch p4a recipe.py IMMEDIATELY after download, BEFORE any builds
           RECIPE_FILE=".buildozer/android/platform/python-for-android/pythonforandroid/recipe.py"
           if [ -f "$RECIPE_FILE" ]; then
             echo "🩹 Patching p4a recipe.py to pin build==1.3.0 and disable isolated builds..."
+
             # Pin build version to 1.3.0 (build 1.4.0+ breaks pyproject.toml without build-backend)
             sed -i 's/"build\[virtualenv\]"/"build[virtualenv]==1.3.0"/g' "$RECIPE_FILE"
-            # Add --no-isolation flag after --wheel (using line after pattern)
-            sed -i '/"--wheel",/a\            "--no-isolation",' "$RECIPE_FILE"
+
+            # Add --no-isolation to build_args list (researched from official docs)
+            # Pattern: ] + self.extra_build_args → ,"--no-isolation"] + self.extra_build_args
+            sed -i 's/\] + self\.extra_build_args/,"--no-isolation"] + self.extra_build_args/g' "$RECIPE_FILE"
+
             echo "✅ recipe.py patched"
+            # Verify patches applied
+            grep "build\[virtualenv\]==1.3.0" "$RECIPE_FILE" && echo "✓ build version pinned" || echo "✗ build version NOT pinned"
+            grep ',"--no-isolation"\] + self.extra_build_args' "$RECIPE_FILE" && echo "✓ --no-isolation added" || echo "✗ --no-isolation NOT added"
           fi
 
           # Patch Python 3.14 armv7l issue if present
