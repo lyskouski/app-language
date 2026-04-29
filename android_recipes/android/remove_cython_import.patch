@@ -1,0 +1,18 @@
+--- a/setup.py
++++ b/setup.py
+@@ -1,5 +1,4 @@
+ from distutils.core import setup, Extension
+-from Cython.Build import cythonize
+ import os
+
+ library_dirs = os.environ['ANDROID_LIBS_DIR'].split(":")
+@@ -25,7 +24,7 @@
+               extra_compile_args=['-include', 'stdlib.h'])
+ ]
+
+-cythonized_modules = cythonize(modules, compiler_directives={'language_level': "3"})
++# CythonRecipe already cythonizes .pyx files before setup.py runs, so just use modules directly
+
+ setup(name='android',
+-      ext_modules=cythonized_modules)
++      ext_modules=modules)

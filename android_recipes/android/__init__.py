@@ -14,10 +14,10 @@ class AndroidRecipe(IncludedFilesBehaviour, CythonRecipe):
 
     src_filename = 'src'
 
+    patches = ['remove_cython_import.patch']
+
     depends = [('sdl3', 'sdl2', 'genericndkbuild'), 'pyjnius']
     call_hostpython_via_targetpython = False
-    # Explicitly ensure Cython is available in hostpython for setup.py
-    hostpython_prerequisites = ['Cython']
 
     config_env = {}
 
