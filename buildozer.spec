@@ -119,8 +119,8 @@ android.minapi = 24
 #android.sdk = 20
 
 # (str) Android NDK version to use
-# NDK r27+ required for 16KB page size support (Android 15 requirement)
-android.ndk = 27c
+# NDK r28+ required for 16KB page size support (Android 15 requirement)
+android.ndk = 28b
 
 # (int) Android NDK API to use. This is the minimum API your app will support, it should usually match android.minapi.
 android.ndk_api = 24
@@ -334,8 +334,8 @@ android.debug_artifact = apk
 p4a.branch = develop
 
 # (str) python-for-android specific commit to use, defaults to HEAD, must be within p4a.branch
-# Pin to v0.0.11 working commit with Python 3.11 support
-p4a.commit = 9720dbd5489ebf0e8490a9fb930828f4426b8a20
+# Use HEAD of develop branch for NDK 28b support (16KB page size fix)
+#p4a.commit =
 
 # (str) python-for-android git clone directory (if empty, it will be automatically cloned from github)
 #p4a.source_dir =
