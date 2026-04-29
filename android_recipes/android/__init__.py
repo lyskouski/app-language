@@ -1,12 +1,12 @@
-from pythonforandroid.recipe import PythonRecipe, IncludedFilesBehaviour
+from pythonforandroid.recipe import CythonRecipe, IncludedFilesBehaviour
 from pythonforandroid.util import current_directory
 from pythonforandroid import logger
 
 from os.path import join
 
 
-class AndroidRecipe(IncludedFilesBehaviour, PythonRecipe):
-    """Custom recipe using PythonRecipe (setup.py) instead of PyProjectRecipe (pyproject.toml)
+class AndroidRecipe(IncludedFilesBehaviour, CythonRecipe):
+    """Custom recipe using CythonRecipe (setup.py with Cython) instead of PyProjectRecipe (pyproject.toml)
     to avoid isolated build environment issues with setuptools.build_meta"""
     # name = 'android'
     version = None
@@ -15,8 +15,7 @@ class AndroidRecipe(IncludedFilesBehaviour, PythonRecipe):
     src_filename = 'src'
 
     depends = [('sdl3', 'sdl2', 'genericndkbuild'), 'pyjnius']
-    call_hostpython_via_targetpython = False  # PythonRecipe needs this
-    install_in_hostpython = False  # Don't install in hostpython
+    call_hostpython_via_targetpython = False
 
     config_env = {}
 

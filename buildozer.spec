@@ -342,7 +342,7 @@ p4a.commit = 9720dbd5489ebf0e8490a9fb930828f4426b8a20
 # (str) The directory in which python-for-android should look for your own build recipes (if any)
 # CRITICAL: Enable custom recipes to bypass isolated build environment issue
 # Both PyJNIus and android-sdl2 use PyProjectRecipe → python -m build → isolated env → setuptools.build_meta unavailable
-# Custom recipes use CythonRecipe/PythonRecipe (setup.py) which work without isolation
+# Custom recipes use CythonRecipe (setup.py with Cython) which work without isolation
 p4a.local_recipes = ./android_recipes/
 
 # (str) Filename to the hook for p4a
