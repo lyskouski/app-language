@@ -16,6 +16,8 @@ class AndroidRecipe(IncludedFilesBehaviour, CythonRecipe):
 
     depends = [('sdl3', 'sdl2', 'genericndkbuild'), 'pyjnius']
     call_hostpython_via_targetpython = False
+    # Explicitly ensure Cython is available in hostpython for setup.py
+    hostpython_prerequisites = ['Cython']
 
     config_env = {}
 

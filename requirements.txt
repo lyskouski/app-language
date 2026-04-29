@@ -2,9 +2,9 @@ kivy[full]==2.3.0
 sounddevice==0.4.7
 soundfile==0.12.1
 pyinstaller==6.10.0
-# Pin buildozer and p4a to v0.0.11 working versions (Nov 2025)
-git+https://github.com/kivy/buildozer.git@a0c22656be62e700aac4ecfbdfb9ef2b524379bf
-git+https://github.com/kivy/python-for-android.git@9720dbd5489ebf0e8490a9fb930828f4426b8a20
+# buildozer and p4a: use version constraints for desktop, exact versions pinned in CI for Android
+buildozer>=1.5.0
+python-for-android
 # Cython 2.9.x required by buildozer 1.5.1.dev0 (depends on cython<3.0)
 cython>=0.29.0,<3.0
 pydub==0.25.1
