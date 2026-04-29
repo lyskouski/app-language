@@ -339,8 +339,9 @@ p4a.commit = 9720dbd5489ebf0e8490a9fb930828f4426b8a20
 #p4a.source_dir =
 
 # (str) The directory in which python-for-android should look for your own build recipes (if any)
-# Disabled: Let latest p4a develop handle PyJNIus with its built-in recipe
-#p4a.local_recipes = ./android_recipes/
+# Using custom PyJNIus recipe with CythonRecipe (setup.py) instead of PyProjectRecipe (pyproject.toml)
+# to avoid isolated build environment issues with setuptools.build_meta
+p4a.local_recipes = ./android_recipes/
 
 # (str) Filename to the hook for p4a
 #p4a.hook =
