@@ -243,6 +243,10 @@ jobs:
           sudo apt-get install -y autoconf automake libtool m4 \
               libffi-dev pkg-config libltdl-dev openjdk-17-jdk unzip \
               build-essential gcc g++
+          # Pin build package to <1.4.0 to avoid isolated environment issues
+          # build 1.4.0+ (Jan 2026) forces setuptools.build_meta:__legacy__ which fails in p4a
+          # build 1.3.0 (Aug 2025) correctly falls back to setup.py
+          pip install "build<1.4.0"
           # Pin to v0.0.11 working commit with Python 3.11 support
           pip install --upgrade git+https://github.com/kivy/python-for-android.git@9720dbd5489ebf0e8490a9fb930828f4426b8a20
           # Pin buildozer to Nov 5, 2025 commit (working at v0.0.11 time)
