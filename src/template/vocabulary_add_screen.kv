@@ -4,16 +4,16 @@
 <VocabularyAddScreen>:
     BoxLayout:
         orientation: 'vertical'
-        padding: 10
-        spacing: 10
+        padding: dp(10)
+        spacing: dp(10)
 
         # Header
         BoxLayout:
             size_hint_y: None
-            height: 50
+            height: dp(50)
             Label:
                 text: app._("vocab_add_title", app.locale)
-                font_size: '20sp'
+                font_size: sp(20)
                 bold: True
 
         # Form fields
@@ -22,21 +22,22 @@
 
             BoxLayout:
                 orientation: 'vertical'
-                spacing: 10
+                spacing: dp(10)
                 size_hint_y: None
                 height: self.minimum_height
-                padding: [10, 0]
+                padding: [dp(8), 0]
 
                 # Origin (source language word) - REQUIRED
                 BoxLayout:
                     orientation: 'vertical'
                     size_hint_y: None
-                    height: 80
-                    spacing: 5
+                    height: dp(85)
+                    spacing: dp(5)
                     Label:
                         text: app._("vocab_origin_label", app.locale)
                         size_hint_y: None
-                        height: 30
+                        height: dp(32)
+                        font_size: sp(16)
                         text_size: self.size
                         halign: 'left'
                         valign: 'middle'
@@ -45,19 +46,21 @@
                         text: root.origin_text
                         multiline: False
                         size_hint_y: None
-                        height: 40
+                        height: dp(48)
+                        font_size: sp(18)
                         on_text: root.origin_text = self.text
 
                 # Translation (target language word) - REQUIRED
                 BoxLayout:
                     orientation: 'vertical'
                     size_hint_y: None
-                    height: 80
-                    spacing: 5
+                    height: dp(85)
+                    spacing: dp(5)
                     Label:
                         text: app._("vocab_translation_label", app.locale)
                         size_hint_y: None
-                        height: 30
+                        height: dp(32)
+                        font_size: sp(16)
                         text_size: self.size
                         halign: 'left'
                         valign: 'middle'
@@ -66,19 +69,21 @@
                         text: root.translation_text
                         multiline: False
                         size_hint_y: None
-                        height: 40
+                        height: dp(48)
+                        font_size: sp(18)
                         on_text: root.translation_text = self.text
 
                 # Category - Pre-filled (read-only)
                 BoxLayout:
                     orientation: 'vertical'
                     size_hint_y: None
-                    height: 80
-                    spacing: 5
+                    height: dp(85)
+                    spacing: dp(5)
                     Label:
                         text: app._("vocab_category_label", app.locale)
                         size_hint_y: None
-                        height: 30
+                        height: dp(32)
+                        font_size: sp(16)
                         text_size: self.size
                         halign: 'left'
                         valign: 'middle'
@@ -87,7 +92,8 @@
                         text: root.category_text
                         multiline: False
                         size_hint_y: None
-                        height: 40
+                        height: dp(48)
+                        font_size: sp(16)
                         readonly: True
                         disabled: True
                         background_color: 0.9, 0.9, 0.9, 1
@@ -96,12 +102,13 @@
                 BoxLayout:
                     orientation: 'vertical'
                     size_hint_y: None
-                    height: 80
-                    spacing: 5
+                    height: dp(85)
+                    spacing: dp(5)
                     Label:
                         text: app._("vocab_difficulty_label", app.locale)
                         size_hint_y: None
-                        height: 30
+                        height: dp(32)
+                        font_size: sp(16)
                         text_size: self.size
                         halign: 'left'
                         valign: 'middle'
@@ -110,7 +117,8 @@
                         text: root.difficulty_text
                         multiline: False
                         size_hint_y: None
-                        height: 40
+                        height: dp(48)
+                        font_size: sp(18)
                         input_filter: 'int'
                         hint_text: "0"
                         on_text: root.difficulty_text = self.text
@@ -119,12 +127,13 @@
                 BoxLayout:
                     orientation: 'vertical'
                     size_hint_y: None
-                    height: 80
-                    spacing: 5
+                    height: dp(85)
+                    spacing: dp(5)
                     Label:
                         text: app._("vocab_sound_label", app.locale)
                         size_hint_y: None
-                        height: 30
+                        height: dp(32)
+                        font_size: sp(16)
                         text_size: self.size
                         halign: 'left'
                         valign: 'middle'
@@ -133,7 +142,8 @@
                         text: root.sound_path_text
                         multiline: False
                         size_hint_y: None
-                        height: 40
+                        height: dp(48)
+                        font_size: sp(16)
                         hint_text: "e.g., assets/audio/word.mp3"
                         on_text: root.sound_path_text = self.text
 
@@ -141,12 +151,13 @@
                 BoxLayout:
                     orientation: 'vertical'
                     size_hint_y: None
-                    height: 80
-                    spacing: 5
+                    height: dp(85)
+                    spacing: dp(5)
                     Label:
                         text: app._("vocab_image_label", app.locale)
                         size_hint_y: None
-                        height: 30
+                        height: dp(32)
+                        font_size: sp(16)
                         text_size: self.size
                         halign: 'left'
                         valign: 'middle'
@@ -155,7 +166,8 @@
                         text: root.image_path_text
                         multiline: False
                         size_hint_y: None
-                        height: 40
+                        height: dp(48)
+                        font_size: sp(16)
                         hint_text: "e.g., assets/images/word.png"
                         on_text: root.image_path_text = self.text
 
@@ -163,12 +175,13 @@
         BoxLayout:
             orientation: 'horizontal'
             size_hint_y: None
-            height: 50
-            spacing: 10
-            padding: [0, 10]
+            height: dp(50)
+            spacing: dp(10)
+            padding: [0, dp(5)]
 
             Button:
                 text: app._("button_cancel", app.locale) if hasattr(app, '_') else "Cancel"
+                font_size: sp(18)
                 size_hint_x: 0.3
                 on_release: root.cancel()
 
@@ -177,5 +190,6 @@
 
             Button:
                 text: app._("button_save", app.locale) if hasattr(app, '_') else "Save"
+                font_size: sp(18)
                 size_hint_x: 0.3
                 on_release: root.save_vocabulary_item()

@@ -4,16 +4,16 @@
 <CategoryAddScreen>:
     BoxLayout:
         orientation: 'vertical'
-        padding: dp(15)
-        spacing: dp(15)
+        padding: dp(10)
+        spacing: dp(10)
 
         # Header
         BoxLayout:
             size_hint_y: None
-            height: dp(56)
+            height: dp(50)
             Label:
                 text: app._("category_add_title", app.locale)
-                font_size: sp(22)
+                font_size: sp(20)
                 bold: True
 
         # Form fields
@@ -22,17 +22,17 @@
 
             BoxLayout:
                 orientation: 'vertical'
-                spacing: dp(15)
+                spacing: dp(10)
                 size_hint_y: None
                 height: self.minimum_height
-                padding: [dp(10), 0]
+                padding: [dp(8), 0]
 
                 # Category Name - REQUIRED
                 BoxLayout:
                     orientation: 'vertical'
                     size_hint_y: None
-                    height: dp(120)
-                    spacing: dp(8)
+                    height: dp(105)
+                    spacing: dp(5)
                     Label:
                         text: app._("category_name_label", app.locale)
                         size_hint_y: None
@@ -64,8 +64,8 @@
                 BoxLayout:
                     orientation: 'vertical'
                     size_hint_y: None
-                    height: dp(100)
-                    spacing: dp(8)
+                    height: dp(85)
+                    spacing: dp(5)
                     Label:
                         text: app._("category_icon_label", app.locale)
                         size_hint_y: None
@@ -88,8 +88,8 @@
                 BoxLayout:
                     orientation: 'vertical'
                     size_hint_y: None
-                    height: dp(100)
-                    spacing: dp(8)
+                    height: dp(85)
+                    spacing: dp(5)
                     Label:
                         text: app._("category_order_label", app.locale)
                         size_hint_y: None
@@ -113,9 +113,9 @@
         BoxLayout:
             orientation: 'horizontal'
             size_hint_y: None
-            height: dp(56)
-            spacing: dp(15)
-            padding: [0, dp(10)]
+            height: dp(50)
+            spacing: dp(10)
+            padding: [0, dp(5)]
 
             Button:
                 text: app._("button_cancel", app.locale)
