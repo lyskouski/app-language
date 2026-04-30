@@ -68,31 +68,43 @@ class DatabaseConnection:
     _instance = None
     _lock = threading.Lock()
 
+    @staticmethod
+    def _normalize_path(path: str) -> str:
+        """Normalize path for consistent comparison."""
+        return os.path.normpath(os.path.abspath(path))
+
     def __new__(cls, db_path: str):
+        normalized_path = cls._normalize_path(db_path)
+
         with cls._lock:
             # If instance exists but with different path, reset it
-            if cls._instance is not None and cls._instance.db_path != db_path:
-                cls._instance.close()
-                cls._instance._initialized = False
-                cls._instance = None
+            if cls._instance is not None:
+                existing_path = getattr(cls._instance, 'db_path', None)
+                if existing_path and cls._normalize_path(existing_path) != normalized_path:
+                    print(f"DatabaseConnection: switching from {existing_path} to {normalized_path}")
+                    cls._instance.close()
+                    cls._instance._initialized = False
+                    cls._instance = None
 
             if cls._instance is None:
                 cls._instance = super(DatabaseConnection, cls).__new__(cls)
                 cls._instance._initialized = False
-                cls._instance.db_path = db_path
+                cls._instance.db_path = normalized_path
         return cls._instance
 
     def __init__(self, db_path: str):
-        if self._initialized and self.db_path == db_path:
+        normalized_path = self._normalize_path(db_path)
+
+        if getattr(self, '_initialized', False) and self.db_path == normalized_path:
             return
 
-        self.db_path = db_path
+        self.db_path = normalized_path
         self._local = threading.local()
         self._initialized = True
-
         # Ensure database directory exists
-        os.makedirs(os.path.dirname(db_path) if os.path.dirname(db_path) else '.', exist_ok=True)
-
+        db_dir = os.path.dirname(normalized_path)
+        if db_dir:
+            os.makedirs(db_dir, exist_ok=True)
         # Initialize database schema
         self._init_database()
 
