@@ -4,16 +4,16 @@
 <CategoryAddScreen>:
     BoxLayout:
         orientation: 'vertical'
-        padding: 10
-        spacing: 10
+        padding: dp(15)
+        spacing: dp(15)
 
         # Header
         BoxLayout:
             size_hint_y: None
-            height: 50
+            height: dp(56)
             Label:
                 text: app._("category_add_title", app.locale)
-                font_size: '20sp'
+                font_size: sp(22)
                 bold: True
 
         # Form fields
@@ -22,21 +22,22 @@
 
             BoxLayout:
                 orientation: 'vertical'
-                spacing: 10
+                spacing: dp(15)
                 size_hint_y: None
                 height: self.minimum_height
-                padding: [10, 0]
+                padding: [dp(10), 0]
 
                 # Category Name - REQUIRED
                 BoxLayout:
                     orientation: 'vertical'
                     size_hint_y: None
-                    height: 100
-                    spacing: 5
+                    height: dp(120)
+                    spacing: dp(8)
                     Label:
                         text: app._("category_name_label", app.locale)
                         size_hint_y: None
-                        height: 30
+                        height: dp(36)
+                        font_size: sp(16)
                         text_size: self.size
                         halign: 'left'
                         valign: 'middle'
@@ -45,14 +46,15 @@
                         text: root.category_name_text
                         multiline: False
                         size_hint_y: None
-                        height: 40
+                        height: dp(48)
+                        font_size: sp(18)
                         hint_text: "e.g., verbs, dictionary, numbers, articulation"
                         on_text: root.category_name_text = self.text
                     Label:
                         text: "This name will be used to identify vocabulary items for this category"
-                        font_size: sp(10)
+                        font_size: sp(12)
                         size_hint_y: None
-                        height: 20
+                        height: dp(24)
                         color: (0.7, 0.7, 0.7, 1)
                         text_size: self.size
                         halign: 'left'
@@ -62,12 +64,13 @@
                 BoxLayout:
                     orientation: 'vertical'
                     size_hint_y: None
-                    height: 80
-                    spacing: 5
+                    height: dp(100)
+                    spacing: dp(8)
                     Label:
                         text: app._("category_icon_label", app.locale)
                         size_hint_y: None
-                        height: 30
+                        height: dp(36)
+                        font_size: sp(16)
                         text_size: self.size
                         halign: 'left'
                         valign: 'middle'
@@ -76,7 +79,8 @@
                         text: root.icon_path_text
                         multiline: False
                         size_hint_y: None
-                        height: 40
+                        height: dp(48)
+                        font_size: sp(16)
                         hint_text: "e.g., assets/images/category_icon.png"
                         on_text: root.icon_path_text = self.text
 
@@ -84,12 +88,13 @@
                 BoxLayout:
                     orientation: 'vertical'
                     size_hint_y: None
-                    height: 80
-                    spacing: 5
+                    height: dp(100)
+                    spacing: dp(8)
                     Label:
                         text: app._("category_order_label", app.locale)
                         size_hint_y: None
-                        height: 30
+                        height: dp(36)
+                        font_size: sp(16)
                         text_size: self.size
                         halign: 'left'
                         valign: 'middle'
@@ -98,7 +103,8 @@
                         text: root.display_order_text
                         multiline: False
                         size_hint_y: None
-                        height: 40
+                        height: dp(48)
+                        font_size: sp(18)
                         input_filter: 'int'
                         hint_text: "0"
                         on_text: root.display_order_text = self.text
@@ -107,12 +113,13 @@
         BoxLayout:
             orientation: 'horizontal'
             size_hint_y: None
-            height: 50
-            spacing: 10
-            padding: [0, 10]
+            height: dp(56)
+            spacing: dp(15)
+            padding: [0, dp(10)]
 
             Button:
                 text: app._("button_cancel", app.locale)
+                font_size: sp(18)
                 size_hint_x: 0.3
                 on_release: root.cancel()
 
@@ -121,5 +128,6 @@
 
             Button:
                 text: app._("button_save", app.locale)
+                font_size: sp(18)
                 size_hint_x: 0.3
                 on_release: root.save_category()
