@@ -13,6 +13,52 @@ from contextlib import contextmanager
 import threading
 
 
+def _find_schema_file() -> Optional[str]:
+    """Find the database schema file, handling both desktop and Android."""
+    # First try relative to this file (desktop)
+    local_path = os.path.join(os.path.dirname(__file__), 'database_schema.sql')
+    if os.path.exists(local_path):
+        return local_path
+
+    # Try Kivy resource system (Android and packaged apps)
+    try:
+        from kivy.resources import resource_find
+        # Direct filename
+        schema_path = resource_find('database_schema.sql')
+        if schema_path:
+            return schema_path
+        # Try with infrastructure path prefix
+        schema_path = resource_find('infrastructure/persistence/database_schema.sql')
+        if schema_path:
+            return schema_path
+        # Try src path prefix
+        schema_path = resource_find('src/infrastructure/persistence/database_schema.sql')
+        if schema_path:
+            return schema_path
+    except ImportError:
+        pass
+
+    # Android fallback: try common app directories
+    try:
+        from android import mActivity  # noqa: F401
+        # On Android, try to find in app's files directory
+        from kivy.app import App
+        app = App.get_running_app()
+        if app:
+            android_paths = [
+                os.path.join(app.user_data_dir, '..', 'app', 'src', 'infrastructure', 'persistence', 'database_schema.sql'),
+                os.path.join(app.user_data_dir, '..', 'app', 'infrastructure', 'persistence', 'database_schema.sql'),
+            ]
+            for path in android_paths:
+                normalized = os.path.normpath(path)
+                if os.path.exists(normalized):
+                    return normalized
+    except ImportError:
+        pass
+
+    return None
+
+
 class DatabaseConnection:
     """
     Singleton database connection manager.
@@ -23,15 +69,21 @@ class DatabaseConnection:
     _lock = threading.Lock()
 
     def __new__(cls, db_path: str):
-        if cls._instance is None:
-            with cls._lock:
-                if cls._instance is None:
-                    cls._instance = super(DatabaseConnection, cls).__new__(cls)
-                    cls._instance._initialized = False
+        with cls._lock:
+            # If instance exists but with different path, reset it
+            if cls._instance is not None and cls._instance.db_path != db_path:
+                cls._instance.close()
+                cls._instance._initialized = False
+                cls._instance = None
+
+            if cls._instance is None:
+                cls._instance = super(DatabaseConnection, cls).__new__(cls)
+                cls._instance._initialized = False
+                cls._instance.db_path = db_path
         return cls._instance
 
     def __init__(self, db_path: str):
-        if self._initialized:
+        if self._initialized and self.db_path == db_path:
             return
 
         self.db_path = db_path
@@ -46,15 +98,15 @@ class DatabaseConnection:
 
     def _init_database(self) -> None:
         """Initialize database schema if not exists."""
-        schema_path = os.path.join(os.path.dirname(__file__), 'database_schema.sql')
+        schema_path = _find_schema_file()
 
         with self.get_connection() as conn:
-            if os.path.exists(schema_path):
+            if schema_path:
                 with open(schema_path, 'r', encoding='utf-8') as f:
                     schema_sql = f.read()
                     conn.executescript(schema_sql)
             else:
-                print(f"Warning: Database schema file not found: {schema_path}")
+                print("Warning: Database schema file not found")
 
     def get_connection(self) -> sqlite3.Connection:
         """

@@ -55,9 +55,18 @@ class DependencyContainer:
         self._user_data_dir = user_data_dir
         self._instances = {}
 
+        # Setup resource paths early (needed for database schema loading)
+        self._setup_resource_paths()
+
         # Initialize database connection
         db_path = os.path.join(user_data_dir, 'tlum.db')
         self._db = get_database(db_path)
+
+    def _setup_resource_paths(self):
+        """Setup Kivy resource paths early for schema loading."""
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        persistence_dir = os.path.join(os.path.dirname(current_dir), 'persistence')
+        kivy.resources.resource_add_path(persistence_dir)
 
     def _get_or_create(self, key: str, factory):
         """Get or create a singleton instance."""
@@ -251,6 +260,9 @@ class DependencyContainer:
         src_dir = os.path.dirname(os.path.dirname(current_dir))
         kivy.resources.resource_add_path(src_dir)
         kivy.resources.resource_add_path(os.path.dirname(src_dir))
+        # Add infrastructure/persistence for database schema
+        persistence_dir = os.path.join(os.path.dirname(current_dir), 'persistence')
+        kivy.resources.resource_add_path(persistence_dir)
         if getattr(sys, 'frozen', False):
             kivy.resources.resource_add_path(sys._MEIPASS)
 
