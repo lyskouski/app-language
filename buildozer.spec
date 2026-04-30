@@ -41,10 +41,8 @@ version = 0.0.1
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-# NumPy excluded from Android - only desktop recorder uses it (np.concatenate in recorder_controller_desktop.py)
-# Android uses native MediaRecorder (no NumPy dependency)
-# No version pinning - let p4a develop choose compatible versions for NDK 28b
-requirements = python3,kivy,requests,pydub
+# NumPy needed for ML vocabulary profiler (sqlite_ml_vocabulary_profiler.py)
+requirements = python3,kivy,requests,pydub,numpy
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes

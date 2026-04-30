@@ -37,7 +37,10 @@ from infrastructure.persistence.sqlite_config_repository import SQLiteConfigRepo
 from infrastructure.persistence.ini_settings_repository import IniSettingsRepository
 from infrastructure.persistence.kivy_resource_repository import KivyResourceRepository
 from infrastructure.ml.sqlite_ml_vocabulary_profiler import SQLiteMLVocabularyProfiler
-from infrastructure.audio.librosa_audio_comparator import LibrosaAudioComparator
+
+# Audio comparator - conditionally import (desktop only, uses librosa)
+if platform not in ['android', 'ios']:
+    from infrastructure.audio.librosa_audio_comparator import LibrosaAudioComparator
 
 
 class DependencyContainer:
@@ -102,7 +105,7 @@ class DependencyContainer:
         )
 
     def vocabulary_profiler(self, data_path: str) -> Optional[IVocabularyProfiler]:
-        """Get vocabulary profiler instance (SQLite-based)."""
+        """Get vocabulary profiler instance (SQLite-based ML profiler)."""
         try:
             locale_from, locale_to = None, None
 
@@ -132,8 +135,10 @@ class DependencyContainer:
             print(f"⚠️  ML profiling disabled due to error: {e}")
             return None
 
-    def audio_comparator(self) -> IAudioComparator:
-        """Get audio comparator instance."""
+    def audio_comparator(self) -> Optional[IAudioComparator]:
+        """Get audio comparator instance (desktop only, requires numpy/librosa)."""
+        if platform in ['android', 'ios']:
+            return None
         return self._get_or_create(
             'audio_comparator',
             lambda: LibrosaAudioComparator()
