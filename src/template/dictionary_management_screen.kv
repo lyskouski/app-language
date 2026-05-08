@@ -88,5 +88,5 @@
         active: root.selected
         size_hint_x: None
         width: dp(50)
-        on_active: app.root.get_screen('dictionary_management_screen').ids.management_widget.toggle_item_selection(root.item_id)
+        on_active: app.root.get_screen('dictionary_management_screen').ids.management_widget.toggle_item_selection(root.item_id, self.active)
 

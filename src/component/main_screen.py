@@ -102,6 +102,13 @@ class RootWidget(BoxLayout):
                     game['locale_from'] = app.locale_from
                     game['locale_to'] = app.locale_to
 
+                # Load default vocabulary for this category
+                # Extract vocabulary_source from the first game (all games share same source)
+                if games and len(games) > 0:
+                    vocabulary_source = games[0].get('source', '')
+                    if vocabulary_source:
+                        app.init_store(vocabulary_source)
+
                 self.data = games
             except (IndexError, ValueError) as e:
                 print(f"ERROR: Invalid category path: {path} - {e}")

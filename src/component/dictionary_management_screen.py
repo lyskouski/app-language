@@ -45,8 +45,8 @@ class DictionaryManagementWidget(BoxLayout):
                     # Store reference to root widget for context
                     self._root_widget = root_widget
 
-            self.load_vocabulary_items()
-            Clock.schedule_once(lambda dt: self.populate_rv(), 0.1)
+            # Don't load data here - app.store is empty during initialization
+            # Data will be loaded in on_enter() when the screen is actually shown
         except Exception as e:
             print(f"ERROR in DictionaryManagementWidget._init_widget: {e}")
             import traceback
@@ -110,19 +110,24 @@ class DictionaryManagementWidget(BoxLayout):
                             traceback.print_exc()
 
             # Initialize selected items based on what's in app.store
+            # app.store contains VocabularyItem objects (domain entities)
+            # self.data contains dictionaries loaded from the database
+            # We match these against the full category vocabulary list
             self.selected_items = []
-            if app and app.store:
-                # Find indices of items that match items in app.store
-                for idx, item in enumerate(self.data):
-                    # Compare by origin and translation
-                    item_origin = item.get('origin', '') if isinstance(item, dict) else str(item)
-                    for store_item in app.store:
-                        store_origin = store_item.get('origin', '') if isinstance(store_item, dict) else str(store_item)
-                        if item_origin == store_origin:
-                            self.selected_items.append(str(idx))
-                            break
 
-            print(f"DEBUG: Total vocabulary items: {len(self.data)}, selected: {len(self.selected_items)}")
+            if app and app.store and len(app.store) > 0:
+                # Build a set of origins from app.store for quick lookup
+                store_origins = set()
+                for store_item in app.store:
+                    # app.store contains VocabularyItem domain entities
+                    origin = store_item.origin if hasattr(store_item, 'origin') else str(store_item)
+                    store_origins.add(origin)
+
+                # Find indices in self.data that match store origins
+                for idx, item in enumerate(self.data):
+                    item_origin = item.get('origin', '') if isinstance(item, dict) else str(item)
+                    if item_origin in store_origins:
+                        self.selected_items.append(str(idx))
         except Exception as e:
             print(f"ERROR in load_vocabulary_items: {e}")
             import traceback
@@ -167,41 +172,61 @@ class DictionaryManagementWidget(BoxLayout):
         finally:
             self._populating = False
 
-    def toggle_item_selection(self, item_id):
+    def toggle_item_selection(self, item_id, checkbox_active):
         """Toggle selection state of a vocabulary item."""
-        if item_id in self.selected_items:
-            self.selected_items.remove(item_id)
+        # The checkbox state is passed from the on_active binding
+        if checkbox_active:
+            if item_id not in self.selected_items:
+                self.selected_items.append(item_id)
         else:
-            self.selected_items.append(item_id)
+            if item_id in self.selected_items:
+                self.selected_items.remove(item_id)
 
-        # Update only the specific item in the RecycleView without full refresh
+        # Update only the specific item in the RecycleView data to avoid ViewHolder reuse issues
         try:
             if hasattr(self, 'ids') and 'item_view' in self.ids:
                 current_data = list(self.ids.item_view.data)
                 item_index = int(item_id)
                 if 0 <= item_index < len(current_data):
-                    current_data[item_index]['selected'] = item_id in self.selected_items
-                    # Use list slice to trigger update without infinite loop
-                    self.ids.item_view.data = current_data[:]
+                    # Update only this specific item's selected state
+                    current_data[item_index]['selected'] = checkbox_active
+                    # Reassign to trigger RecycleView update (must reassign, not modify in-place)
+                    self.ids.item_view.data = current_data
         except Exception as e:
             print(f"ERROR in toggle_item_selection: {e}")
 
     def apply_selection(self):
         """Apply the selected items to the app store."""
         try:
+            from domain.entities.vocabulary_item import VocabularyItem
             app = App.get_running_app()
 
             # Filter data based on selected items
             selected_indices = sorted([int(item_id) for item_id in self.selected_items])
-            filtered_data = [self.data[i] for i in selected_indices if i < len(self.data)]
+            selected_dicts = [self.data[i] for i in selected_indices if i < len(self.data)]
 
-            # Update app store with selected items
-            app.store = filtered_data
+            # Convert back to VocabularyItem objects to match app.store format
+            selected_items = [
+                VocabularyItem(
+                    origin=item['origin'],
+                    translation=item['translation'],
+                    sound=item.get('sound'),
+                    image=item.get('image'),
+                    category=item.get('category')
+                )
+                for item in selected_dicts
+            ]
 
-            # If vocabulary service exists, update it too
+            # Update app store with selected items (must be VocabularyItem objects, not dicts)
+            app.store.clear()
+            app.store.extend(selected_items)
+
+            # If vocabulary service exists, update its study set too
             if hasattr(app, '_vocabulary_service') and app._vocabulary_service:
-                app._vocabulary_service._current_items = filtered_data
+                app._vocabulary_service._current_items = selected_items
+                app._vocabulary_service.prepare_study_set(len(selected_items), force_shuffle=False)
 
+            print(f"DEBUG: Saved {len(selected_items)} selected items to app.store")
             self.go_back()
         except Exception as e:
             print(f"ERROR in apply_selection: {e}")
