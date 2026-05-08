@@ -102,12 +102,18 @@ class RootWidget(BoxLayout):
                     game['locale_from'] = app.locale_from
                     game['locale_to'] = app.locale_to
 
-                # Load default vocabulary for this category
-                # Extract vocabulary_source from the first game (all games share same source)
-                if games and len(games) > 0:
-                    vocabulary_source = games[0].get('source', '')
-                    if vocabulary_source:
-                        app.init_store(vocabulary_source)
+                # Only reset and reinitialize if custom selection is NOT active
+                # If user made custom selection via Manage, preserve it
+                if not app._custom_selection_active:
+                    # Load default vocabulary for this category
+                    # This provides the initial 25 items that will be pre-selected in Manage
+                    if games and len(games) > 0:
+                        vocabulary_source = games[0].get('source', '')
+                        if vocabulary_source:
+                            app.init_store(vocabulary_source)
+                else:
+                    # Custom selection is active - keep it as-is, don't reinitialize
+                    print(f"DEBUG: Preserving custom selection (custom_selection_active=True)")
 
                 self.data = games
             except (IndexError, ValueError) as e:
@@ -134,12 +140,6 @@ class RootWidget(BoxLayout):
 
             # Check if this is a game (has route_path) - Level 3 → Game screen
             if (info.route_path != ''):
-                # Load vocabulary for the game
-                if info.store_path and info.store_path != '':
-                    app.init_store(info.store_path)
-                else:
-                    app.init_store('all')
-
                 # Navigate to the specific game screen
                 app.next_screen('loading_screen')
                 Clock.schedule_once(
@@ -165,12 +165,6 @@ class RootWidget(BoxLayout):
         """Load vocabulary and navigate to a game screen."""
         try:
             app = App.get_running_app()
-
-            # Load vocabulary for the game
-            if info.store_path and info.store_path != '':
-                app.init_store(info.store_path)
-            else:
-                app.init_store('all')
 
             # Navigate to the loading screen, then to the game screen
             app.next_screen('loading_screen')

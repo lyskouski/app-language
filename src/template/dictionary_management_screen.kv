@@ -49,24 +49,12 @@
             on_release: root.apply_selection()
 
 
-<VocabularyItemWidget@BoxLayout>:
+<VocabularyItemWidget>:
     orientation: "horizontal"
-    origin: ""
-    translation: ""
-    item_id: ""
-    item_index: 0
-    selected: False
     height: dp(70)
     size_hint_y: None
     padding: [dp(10), dp(5)]
     spacing: dp(10)
-
-    canvas.before:
-        Color:
-            rgba: (0.2, 0.8, 0.2, 0.2) if self.selected else (0.9, 0.9, 0.9, 0.1)
-        Rectangle:
-            pos: self.pos
-            size: self.size
 
     BoxLayout:
         orientation: "vertical"

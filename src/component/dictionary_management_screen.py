@@ -3,9 +3,48 @@
 
 from kivy.app import App
 from kivy.clock import Clock
-from kivy.properties import ObjectProperty, ListProperty
+from kivy.graphics import Color, Rectangle
+from kivy.properties import ObjectProperty, ListProperty, BooleanProperty, StringProperty, NumericProperty
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.screenmanager import Screen
+
+
+class VocabularyItemWidget(BoxLayout):
+    """Widget for displaying a vocabulary item with checkbox in RecycleView."""
+    origin = StringProperty('')
+    translation = StringProperty('')
+    item_id = StringProperty('')
+    item_index = NumericProperty(0)
+    selected = BooleanProperty(False)
+
+    def __init__(self, **kwargs):
+        super(VocabularyItemWidget, self).__init__(**kwargs)
+        # Bind selected property to canvas invalidation for visual update
+        self.bind(selected=self._on_selected_changed, pos=self._on_pos_changed, size=self._on_size_changed)
+        # Draw background initially
+        Clock.schedule_once(lambda dt: self._draw_background(), 0)
+
+    def _on_selected_changed(self, instance, value):
+        """Called when selected property changes - invalidate canvas to redraw background."""
+        self.canvas.before.clear()
+        self._draw_background()
+
+    def _on_pos_changed(self, instance, value):
+        """Called when position changes - redraw background."""
+        self._draw_background()
+
+    def _on_size_changed(self, instance, value):
+        """Called when size changes - redraw background."""
+        self._draw_background()
+
+    def _draw_background(self):
+        """Redraw the background rectangle based on selected state."""
+        with self.canvas.before:
+            if self.selected:
+                Color(0.2, 0.8, 0.2, 0.2)  # Green for selected
+            else:
+                Color(0.9, 0.9, 0.9, 0.1)  # Light gray for not selected
+            Rectangle(pos=self.pos, size=self.size)
 
 
 class DictionaryManagementScreen(Screen):
@@ -23,6 +62,7 @@ class DictionaryManagementWidget(BoxLayout):
     data = ObjectProperty([])
     selected_items = ListProperty([])
     _populating = False  # Guard against recursive calls
+    _updating_checkbox = False  # Guard against circular checkbox binding
 
     def __init__(self, **kwargs):
         super(DictionaryManagementWidget, self).__init__(**kwargs)
@@ -174,6 +214,10 @@ class DictionaryManagementWidget(BoxLayout):
 
     def toggle_item_selection(self, item_id, checkbox_active):
         """Toggle selection state of a vocabulary item."""
+        # Guard against circular checkbox binding updates
+        if self._updating_checkbox:
+            return
+
         # The checkbox state is passed from the on_active binding
         if checkbox_active:
             if item_id not in self.selected_items:
@@ -182,18 +226,21 @@ class DictionaryManagementWidget(BoxLayout):
             if item_id in self.selected_items:
                 self.selected_items.remove(item_id)
 
-        # Update only the specific item in the RecycleView data to avoid ViewHolder reuse issues
+        # Update the RecycleView data for this specific item without triggering on_active
         try:
             if hasattr(self, 'ids') and 'item_view' in self.ids:
                 current_data = list(self.ids.item_view.data)
                 item_index = int(item_id)
                 if 0 <= item_index < len(current_data):
-                    # Update only this specific item's selected state
-                    current_data[item_index]['selected'] = checkbox_active
-                    # Reassign to trigger RecycleView update (must reassign, not modify in-place)
+                    # Update the selected state based on current selected_items
+                    current_data[item_index]['selected'] = item_id in self.selected_items
+                    # Set flag to prevent on_active from firing when we update the checkbox
+                    self._updating_checkbox = True
                     self.ids.item_view.data = current_data
+                    self._updating_checkbox = False
         except Exception as e:
             print(f"ERROR in toggle_item_selection: {e}")
+            self._updating_checkbox = False
 
     def apply_selection(self):
         """Apply the selected items to the app store."""
@@ -225,6 +272,10 @@ class DictionaryManagementWidget(BoxLayout):
             if hasattr(app, '_vocabulary_service') and app._vocabulary_service:
                 app._vocabulary_service._current_items = selected_items
                 app._vocabulary_service.prepare_study_set(len(selected_items), force_shuffle=False)
+
+            # Mark that custom selection is now active - prevents reinitializing when game is played
+            app._custom_selection_active = True
+            print(f"DEBUG: Custom selection active - app.store will be preserved during gameplay")
 
             print(f"DEBUG: Saved {len(selected_items)} selected items to app.store")
             self.go_back()

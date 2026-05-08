@@ -88,6 +88,9 @@ class MainApp(App):
         # Initialize vocabulary service (will be created when needed)
         self._vocabulary_service = None
 
+        # Track whether custom dictionary selection is active
+        self._custom_selection_active = False
+
         # Load settings
         settings = self._settings_service.load_settings()
         self.locale = settings.interface_locale
