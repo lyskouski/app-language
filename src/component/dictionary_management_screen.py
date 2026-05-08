@@ -19,32 +19,36 @@ class VocabularyItemWidget(BoxLayout):
 
     def __init__(self, **kwargs):
         super(VocabularyItemWidget, self).__init__(**kwargs)
-        # Bind selected property to canvas invalidation for visual update
+        # Create canvas instructions that we'll update
+        with self.canvas.before:
+            self._bg_color = Color(0.9, 0.9, 0.9, 0.1)  # Initial light gray
+            self._bg_rect = Rectangle(pos=self.pos, size=self.size)
+
+        # Bind selected property to canvas update for visual change
         self.bind(selected=self._on_selected_changed, pos=self._on_pos_changed, size=self._on_size_changed)
-        # Draw background initially
-        Clock.schedule_once(lambda dt: self._draw_background(), 0)
 
     def _on_selected_changed(self, instance, value):
-        """Called when selected property changes - invalidate canvas to redraw background."""
-        self.canvas.before.clear()
-        self._draw_background()
+        """Called when selected property changes - update background color."""
+        print(f"DEBUG: VocabularyItemWidget {self.item_id} selected changed to {value}")
+        self._update_background_color()
 
     def _on_pos_changed(self, instance, value):
-        """Called when position changes - redraw background."""
-        self._draw_background()
+        """Called when position changes - update rectangle position."""
+        if hasattr(self, '_bg_rect'):
+            self._bg_rect.pos = self.pos
 
     def _on_size_changed(self, instance, value):
-        """Called when size changes - redraw background."""
-        self._draw_background()
+        """Called when size changes - update rectangle size."""
+        if hasattr(self, '_bg_rect'):
+            self._bg_rect.size = self.size
 
-    def _draw_background(self):
-        """Redraw the background rectangle based on selected state."""
-        with self.canvas.before:
+    def _update_background_color(self):
+        """Update background color based on selected state."""
+        if hasattr(self, '_bg_color'):
             if self.selected:
-                Color(0.2, 0.8, 0.2, 0.2)  # Green for selected
+                self._bg_color.rgba = (0.2, 0.8, 0.2, 0.2)  # Green for selected
             else:
-                Color(0.9, 0.9, 0.9, 0.1)  # Light gray for not selected
-            Rectangle(pos=self.pos, size=self.size)
+                self._bg_color.rgba = (0.9, 0.9, 0.9, 0.1)  # Light gray for not selected
 
 
 class DictionaryManagementScreen(Screen):
