@@ -25,6 +25,7 @@ from component.card_screen import CardScreen
 from component.loading_screen import LoadingScreen
 from component.main_screen import MainScreen
 from component.dictionary_screen import DictionaryScreen
+from component.dictionary_management_screen import DictionaryManagementScreen
 from component.phonetics_screen import PhoneticsScreen
 from component.articulation_screen import ArticulationScreen
 from component.store_update_screen import StoreUpdateScreen
@@ -129,6 +130,7 @@ class MainApp(App):
         screens = [
             (MainScreen, 'main_screen'),
             (DictionaryScreen, 'dictionary_screen'),
+            (DictionaryManagementScreen, 'dictionary_management_screen'),
             (PhoneticsScreen, 'phonetics_screen'),
             (ArticulationScreen, 'articulation_screen'),
             (StructureScreen, 'structure_screen'),

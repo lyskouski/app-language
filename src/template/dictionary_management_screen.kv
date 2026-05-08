@@ -1,0 +1,92 @@
+# Copyright 2025 The terCAD team. All rights reserved.
+# Use of this source code is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
+
+<DictionaryManagementScreen>:
+    DictionaryManagementWidget:
+        id: management_widget
+
+<DictionaryManagementWidget@BoxLayout>:
+    orientation: "vertical"
+
+    BoxLayout:
+        orientation: "horizontal"
+        height: dp(50)
+        size_hint_y: None
+        padding: dp(12)
+        spacing: dp(10)
+
+        Label:
+            text: app._("dictionaries_manage_title", app.locale)
+            size_hint_x: 1
+
+    RecycleView:
+        id: item_view
+        viewclass: "VocabularyItemWidget"
+        RecycleBoxLayout:
+            default_size: None, dp(70)
+            default_size_hint: 1, None
+            size_hint_y: None
+            height: self.minimum_height
+            orientation: "vertical"
+            spacing: dp(5)
+            padding: dp(12)
+
+    BoxLayout:
+        orientation: "horizontal"
+        height: dp(50)
+        size_hint_y: None
+        padding: dp(12)
+        spacing: dp(10)
+
+        Button:
+            text: app._("button_cancel", app.locale)
+            size_hint_x: 0.5
+            on_release: root.go_back()
+
+        Button:
+            text: app._("button_save", app.locale)
+            size_hint_x: 0.5
+            on_release: root.apply_selection()
+
+
+<VocabularyItemWidget@BoxLayout>:
+    orientation: "horizontal"
+    origin: ""
+    translation: ""
+    item_id: ""
+    item_index: 0
+    selected: False
+    height: dp(70)
+    size_hint_y: None
+    padding: [dp(10), dp(5)]
+    spacing: dp(10)
+
+    canvas.before:
+        Color:
+            rgba: (0.2, 0.8, 0.2, 0.2) if self.selected else (0.9, 0.9, 0.9, 0.1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    BoxLayout:
+        orientation: "vertical"
+        spacing: dp(3)
+
+        Label:
+            text: root.origin if root.origin else "No origin"
+            size_hint_x: 1
+            bold: True
+            font_size: "14sp"
+
+        Label:
+            text: root.translation if root.translation else ""
+            size_hint_x: 1
+            font_size: "12sp"
+            opacity: 0.7
+
+    CheckBox:
+        active: root.selected
+        size_hint_x: None
+        width: dp(50)
+        on_active: app.root.get_screen('dictionary_management_screen').ids.management_widget.toggle_item_selection(root.item_id)
+

@@ -64,5 +64,6 @@ labels_ru = {
     "button_back": "Вернуться",
     "button_add": "Добавить",
     "search": "Поиск...",
+    "dictionaries_manage_title": "Управлять",
     "_": "Фатальная ошибка"
 }

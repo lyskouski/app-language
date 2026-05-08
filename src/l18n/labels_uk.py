@@ -64,5 +64,6 @@ labels_uk = {
     "button_back": "Назад",
     "button_add": "Додати",
     "search": "Пошук...",
+    "dictionaries_manage_title": "Керувати",
     "_": "Фатальна помилка"
 }

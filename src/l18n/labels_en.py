@@ -64,5 +64,6 @@ labels_en = {
     "button_back": "Back",
     "button_add": "Add",
     "search": "Search...",
+    "dictionaries_manage_title": "Manage",
     "_": "Fatal Error"
 }
