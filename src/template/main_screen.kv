@@ -20,6 +20,18 @@
             default_size: None, dp(24)
     Widget:
         size_hint_y: dp(0.04)
+    BoxLayout:
+        size_hint_y: None
+        height: dp(50)
+        padding: [dp(12), dp(5), dp(12), dp(8)]
+        spacing: dp(0)
+        TextInput:
+            id: filter_input
+            multiline: False
+            hint_text: app._('search', app.locale)
+            padding: [dp(10), dp(8)]
+            background_color: 0.95, 0.95, 0.95, 1
+            on_text: root.on_filter_text(self.text)
     RecycleView:
         id: recycle_view
         viewclass: "RootItemWidget"

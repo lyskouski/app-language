@@ -63,5 +63,6 @@ labels_en = {
     "button_cancel": "Cancel",
     "button_back": "Back",
     "button_add": "Add",
+    "search": "Search...",
     "_": "Fatal Error"
 }

@@ -63,5 +63,6 @@ labels_ru = {
     "button_cancel": "Отмена",
     "button_back": "Вернуться",
     "button_add": "Добавить",
+    "search": "Поиск...",
     "_": "Фатальная ошибка"
 }

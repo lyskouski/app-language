@@ -63,5 +63,6 @@ labels_be = {
     "button_cancel": "Адмена",
     "button_back": "Вярнуцца",
     "button_add": "Дадаць",
+    "search": "Пошук...",
     "_": "Фатальная памылка"
 }

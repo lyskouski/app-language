@@ -3,7 +3,7 @@
 
 from kivy.app import App
 from kivy.clock import Clock
-from kivy.properties import ObjectProperty, StringProperty
+from kivy.properties import ObjectProperty, StringProperty, ListProperty
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.screenmanager import Screen
 
@@ -21,10 +21,12 @@ class MainScreen(Screen):
 
 class RootWidget(BoxLayout):
     data = ObjectProperty([])
+    filtered_data = ListProperty([])
     path = StringProperty('root')  # Changed from JSON path to navigation state
 
     def __init__(self, **kwargs):
         super(RootWidget, self).__init__(**kwargs)
+        self._filter_text = ''  # Store filter text as regular attribute
         # Defer initialization until app is fully ready
         Clock.schedule_once(lambda dt: self._init_widget(), 0.1)
 
@@ -68,6 +70,7 @@ class RootWidget(BoxLayout):
     def load_data(self, path = None):
         """Load data from SQLite database."""
         self.data = []
+        self._filter_text = ''  # Reset filter when loading new data
         if not path:
             path = self.path
 
@@ -106,6 +109,9 @@ class RootWidget(BoxLayout):
 
         else:
             self.data = []
+
+        # Initialize filtered data when data is loaded
+        self._update_filtered_data()
 
     def update_data(self, info):
         """Handle navigation when a language pair, dictionary, or game is clicked."""
@@ -207,6 +213,22 @@ class RootWidget(BoxLayout):
             import traceback
             traceback.print_exc()
 
+    def on_filter_text(self, text):
+        """Filter data based on text input."""
+        self._filter_text = text.lower().strip()
+        self._update_filtered_data()
+
+    def _update_filtered_data(self):
+        """Update filtered data and repopulate RecycleView."""
+        if not self._filter_text:
+            self.filtered_data = self.data[:]
+        else:
+            self.filtered_data = [
+                item for item in self.data
+                if self._filter_text in str(item.get('text', '')).lower()
+            ]
+        self.populate_rv()
+
     def populate_rv(self):
         """Populate the RecycleView with data."""
         try:
@@ -215,7 +237,7 @@ class RootWidget(BoxLayout):
                 Clock.schedule_once(lambda dt: self.populate_rv(), 0.2)
                 return
 
-            self.ids.recycle_view.data = self.data
+            self.ids.recycle_view.data = self.filtered_data
         except Exception as e:
             print(f"ERROR in populate_rv: {e}")
             import traceback

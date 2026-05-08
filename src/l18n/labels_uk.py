@@ -63,5 +63,6 @@ labels_uk = {
     "button_cancel": "Скасувати",
     "button_back": "Назад",
     "button_add": "Додати",
+    "search": "Пошук...",
     "_": "Фатальна помилка"
 }
