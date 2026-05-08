@@ -1,22 +1,32 @@
 # Copyright 2025 The terCAD team. All rights reserved.
 # Use of this source code is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
 
+#:kivy 2.0
+#:import MDBoxLayout kivymd.uix.boxlayout.MDBoxLayout
+#:import MDRaisedButton kivymd.uix.button.MDRaisedButton
+#:import MDFlatButton kivymd.uix.button.MDFlatButton
+#:import MDLabel kivymd.uix.label.MDLabel
+
 <DictionaryManagementScreen>:
     DictionaryManagementWidget:
         id: management_widget
 
-<DictionaryManagementWidget@BoxLayout>:
+<DictionaryManagementWidget@MDBoxLayout>:
     orientation: "vertical"
+    padding: 0
+    spacing: 0
 
-    BoxLayout:
+    MDBoxLayout:
         orientation: "horizontal"
         height: dp(50)
         size_hint_y: None
         padding: dp(12)
         spacing: dp(10)
 
-        Label:
+        MDLabel:
             text: app._("dictionaries_manage_title", app.locale)
+            bold: True
+            font_style: "H5"
             size_hint_x: 1
 
     RecycleView:
@@ -31,19 +41,19 @@
             spacing: dp(5)
             padding: dp(12)
 
-    BoxLayout:
+    MDBoxLayout:
         orientation: "horizontal"
         height: dp(50)
         size_hint_y: None
         padding: dp(12)
         spacing: dp(10)
 
-        Button:
+        MDFlatButton:
             text: app._("button_cancel", app.locale)
             size_hint_x: 0.5
             on_release: root.go_back()
 
-        Button:
+        MDRaisedButton:
             text: app._("button_save", app.locale)
             size_hint_x: 0.5
             on_release: root.apply_selection()
@@ -56,20 +66,20 @@
     padding: [dp(10), dp(5)]
     spacing: dp(10)
 
-    BoxLayout:
+    MDBoxLayout:
         orientation: "vertical"
         spacing: dp(3)
 
-        Label:
+        MDLabel:
             text: root.origin if root.origin else "No origin"
             size_hint_x: 1
             bold: True
-            font_size: "14sp"
+            font_style: "Button"
 
-        Label:
+        MDLabel:
             text: root.translation if root.translation else ""
             size_hint_x: 1
-            font_size: "12sp"
+            font_style: "Caption"
             opacity: 0.7
 
     CheckBox:
@@ -77,4 +87,3 @@
         size_hint_x: None
         width: dp(50)
         on_active: app.root.get_screen('dictionary_management_screen').ids.management_widget.toggle_item_selection(root.item_id, self.active)
-

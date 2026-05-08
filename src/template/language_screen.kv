@@ -1,22 +1,25 @@
 # Copyright 2026 The terCAD team. All rights reserved.
 # Use of this source code is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
 
+#:kivy 2.0
+#:import MDBoxLayout kivymd.uix.boxlayout.MDBoxLayout
+#:import MDLabel kivymd.uix.label.MDLabel
+#:import MDRaisedButton kivymd.uix.button.MDRaisedButton
+
 <LanguageScreen@Screen>:
     LanguageWidget:
         id: language_widget
 
-<LanguageWidget@BoxLayout>:
+<LanguageWidget@MDBoxLayout>:
     orientation: "vertical"
     padding: dp(20)
     spacing: dp(20)
 
-    Label:
+    MDLabel:
         text: "Select Language"
-        font_size: sp(24)
+        font_style: "H4"
         size_hint_y: None
         height: dp(60)
-        text_size: self.width, None
-        halign: "center"
 
     RecycleView:
         id: language_view
@@ -30,7 +33,7 @@
             orientation: "vertical"
             spacing: dp(10)
 
-<LanguageItemWidget@BoxLayout>:
+<LanguageItemWidget@MDBoxLayout>:
     orientation: "horizontal"
     size_hint_y: None
     height: dp(80)
@@ -54,17 +57,16 @@
         allow_stretch: True
         keep_ratio: True
 
-    Label:
+    MDLabel:
         text: root.text
-        text_size: self.width, None
         halign: "left"
         valign: "middle"
-        font_size: sp(16)
+        font_style: "Body1"
+        size_hint_x: 1
 
-    Button:
+    MDRaisedButton:
         text: "Select / Wybierz"
         size_hint_x: None
         width: dp(140)
-        background_color: 0.2, 0.7, 0.2, 1
         on_release:
             app.root.get_screen('language_screen').ids.language_widget.select_language(root.locale)

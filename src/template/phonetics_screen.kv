@@ -1,71 +1,33 @@
 # Copyright 2025 The terCAD team. All rights reserved.
 # Use of this source code is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
 
+#:kivy 2.0
+#:import MDBoxLayout kivymd.uix.boxlayout.MDBoxLayout
+#:import MDTopAppBar kivymd.uix.toolbar.MDTopAppBar
 #:import PhoneticsWidget component.phonetics_widget
 
 <PhoneticsScreen>:
-    BoxLayout:
+    MDBoxLayout:
         orientation: 'vertical'
-
-        ActionBar:
+        MDTopAppBar:
             hidden: app.is_mobile
-            # size_hint_y: 0 if app.is_mobile else None
             opacity: 1.0 if not app.is_mobile else 0
-            height: '48dp' if not app.is_mobile else 0
-            ActionView:
-                use_separator: True
-                ActionPrevious:
-                    with_previous: True
-                    on_release: app.next_screen('main_screen')
-                    title: app._('game_phonetics', app.locale)
-                ActionButton:
-                    text: app._('button_clear', app.locale)
-                    on_release: app.next_screen('phonetics_screen')
-                ActionButton:
-                    text: app._('button_shuffle', app.locale)
-                    on_release:
-                        app.init_store(force_shuffle=True)
-                        app.refresh_widgets()
+            height: '56dp' if not app.is_mobile else 0
+            title: app._('game_phonetics', app.locale)
+            left_action_items: [["arrow-left", lambda x: app.next_screen('main_screen')]]
 
-        Accordion:
-            AccordionItem:
-                title: "%s & %s" % (app.locale_to, app.locale_from)
-                collapse: False
-                BoxLayout:
-                    PhoneticsWidget:
-                        origin: True
-                        secondary: True
-            AccordionItem:
-                title: "%s -> %s" % (app.locale_to, app.locale_to)
-                collapse: True
-                BoxLayout:
-                    PhoneticsWidget:
-                        origin: True
-                        secondary: False
-            AccordionItem:
-                title: "%s -> %s" % (app.locale_to, app.locale_from)
-                collapse: True
-                BoxLayout:
-                    PhoneticsWidget:
-                        origin: False
-                        secondary: True
+        MDBoxLayout:
+            orientation: 'vertical'
+            padding: dp(5)
+            spacing: dp(5)
 
-        ActionBar:
+            PhoneticsWidget:
+                origin: True
+                secondary: True
+
+        MDTopAppBar:
             hidden: False if app.is_mobile else True
-            # size_hint_y: None if app.is_mobile else 0
             opacity: 1.0 if app.is_mobile else 0
-            height: '48dp' if app.is_mobile else 0
-            ActionView:
-                use_separator: True
-                ActionPrevious:
-                    with_previous: True
-                    on_release: app.next_screen('main_screen')
-                    title: app._('game_phonetics', app.locale)
-                ActionButton:
-                    text: app._('button_clear', app.locale)
-                    on_release: app.next_screen('phonetics_screen')
-                ActionButton:
-                    text: app._('button_shuffle', app.locale)
-                    on_release:
-                        app.init_store(force_shuffle=True)
-                        app.refresh_widgets()
+            height: '56dp' if app.is_mobile else 0
+            title: app._('game_phonetics', app.locale)
+            left_action_items: [["arrow-left", lambda x: app.next_screen('main_screen')]]

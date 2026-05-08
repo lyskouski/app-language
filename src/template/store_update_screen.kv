@@ -1,29 +1,44 @@
 # Copyright 2025 The terCAD team. All rights reserved.
 # Use of this source code is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
 
+#:kivy 2.0
+#:import MDBoxLayout kivymd.uix.boxlayout.MDBoxLayout
+#:import MDTextField kivymd.uix.textfield.MDTextField
+#:import MDRaisedButton kivymd.uix.button.MDRaisedButton
+#:import MDLabel kivymd.uix.label.MDLabel
+
 <StoreUpdateScreen>:
-    BoxLayout:
+    MDBoxLayout:
         orientation: 'vertical'
-        padding: 10
-        spacing: 10
-        TextInput:
+        padding: dp(16)
+        spacing: dp(16)
+
+        # Title
+        MDLabel:
+            text: app._("store_update_title", app.locale) if hasattr(app, '_') else "Edit Data"
+            font_style: "H6"
+            size_hint_y: None
+            height: dp(32)
+
+        # Text area
+        MDTextField:
             id: textarea
             text: root.data
             multiline: True
-            size_hint_y: 82
-        Widget:
-            size_hint_y: 0.5
-        BoxLayout:
+            mode: "rectangle"
+            size_hint_y: 1
+
+        # Buttons
+        MDBoxLayout:
             orientation: "horizontal"
-            Widget:
-                size_hint_x: dp(0.01)
-            Button:
-                size_hint_y: 6
+            size_hint_y: None
+            height: dp(48)
+            spacing: dp(12)
+
+            MDRaisedButton:
                 text: app._("button_save", app.locale)
+                size_hint_x: 1
+                height: dp(40)
                 on_release:
                     root.save_data()
                     app.next_screen('structure_screen')
-            Widget:
-                size_hint_x: dp(0.01)
-        Widget:
-            size_hint_y: 0.5
