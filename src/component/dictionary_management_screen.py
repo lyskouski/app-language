@@ -70,14 +70,28 @@ class DictionaryManagementWidget(BoxLayout):
                         try:
                             category_id = int(path.split('_')[1])
 
-                            # Get config repository to find category info
+                            # Get config repository to find category vocabulary_source
                             config_repo = app._container.config_repository()
 
-                            # Load all vocabulary for this language pair first
-                            vocab_repo = app._container.vocabulary_repository()
-                            all_vocab = vocab_repo.load_by_language_pair(app.locale_from, app.locale_to)
+                            # Query the database to get vocabulary_source for this category_id
+                            # This is the actual category name used in vocabulary_items table
+                            games = config_repo.get_games_for_category(category_id)
 
-                            # Convert to dicts and keep track
+                            # Extract vocabulary_source from category info
+                            vocabulary_source = None
+                            if games and len(games) > 0:
+                                # games is a list, extract source from first game
+                                vocabulary_source = games[0].get('source', '')
+
+                            if not vocabulary_source:
+                                print(f"ERROR: Could not find vocabulary_source for category_id {category_id}")
+                                return
+
+                            # Load vocabulary filtered by category
+                            vocab_repo = app._container.vocabulary_repository()
+                            all_vocab = vocab_repo.load_by_language_pair(app.locale_from, app.locale_to, vocabulary_source)
+
+                            # Convert to dicts
                             vocab_dicts = []
                             for item in all_vocab:
                                 vocab_dicts.append({
@@ -88,16 +102,27 @@ class DictionaryManagementWidget(BoxLayout):
                                     'category': getattr(item, 'category', '')
                                 })
 
-                            # For now, use all vocabulary items from the language pair
-                            # In a real scenario, vocabulary_items table should have category_id foreign key
                             self.data = vocab_dicts
-                            print(f"DEBUG: Loaded {len(self.data)} vocabulary items for language pair {app.locale_from}-{app.locale_to}")
+                            print(f"DEBUG: Loaded {len(self.data)} vocabulary items for category '{vocabulary_source}' ({app.locale_from}-{app.locale_to})")
                         except (IndexError, ValueError) as e:
                             print(f"ERROR: Could not parse category from path '{path}': {e}")
+                            import traceback
+                            traceback.print_exc()
 
-            # Initialize selected items (all items are selected by default)
-            self.selected_items = [str(i) for i in range(len(self.data))]
-            print(f"DEBUG: Total vocabulary items: {len(self.data)}")
+            # Initialize selected items based on what's in app.store
+            self.selected_items = []
+            if app and app.store:
+                # Find indices of items that match items in app.store
+                for idx, item in enumerate(self.data):
+                    # Compare by origin and translation
+                    item_origin = item.get('origin', '') if isinstance(item, dict) else str(item)
+                    for store_item in app.store:
+                        store_origin = store_item.get('origin', '') if isinstance(store_item, dict) else str(store_item)
+                        if item_origin == store_origin:
+                            self.selected_items.append(str(idx))
+                            break
+
+            print(f"DEBUG: Total vocabulary items: {len(self.data)}, selected: {len(self.selected_items)}")
         except Exception as e:
             print(f"ERROR in load_vocabulary_items: {e}")
             import traceback
