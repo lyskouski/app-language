@@ -1,129 +1,132 @@
 # Copyright 2025 The terCAD team. All rights reserved.
 # Use of this source code is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
 
+#:kivy 2.0
+#:import MDBoxLayout kivymd.uix.boxlayout.MDBoxLayout
+#:import MDScrollView kivymd.uix.scrollview.MDScrollView
+#:import MDTextField kivymd.uix.textfield.MDTextField
+#:import MDLabel kivymd.uix.label.MDLabel
+#:import MDRaisedButton kivymd.uix.button.MDRaisedButton
+#:import MDFlatButton kivymd.uix.button.MDFlatButton
+
 <StructureUpdateScreen@Screen>:
-    BoxLayout:
+    MDBoxLayout:
         orientation: 'vertical'
         padding: dp(10)
         spacing: dp(10)
-        ScrollView:
+        MDScrollView:
             do_scroll_x: False
             do_scroll_y: True
-            BoxLayout:
+            MDBoxLayout:
                 orientation: 'vertical'
                 padding: dp(10)
                 spacing: dp(10)
                 size_hint_y: None
                 height: self.minimum_height
-                Label:
+                MDLabel:
                     text: app._('field_text', app.locale)
                     size_hint_y: None
-                    halign: "left"
-                    valign: "middle"
                     height: dp(40)
-                    size_hint_y: None
-                TextInput:
+                    halign: "left"
+                    font_style: "Body2"
+                MDTextField:
                     text: root.text
                     on_text: root.text = self.text
                     hint_text: app._('field_text__hint', app.locale)
-                    multiline: False
+                    mode: "rectangle"
                     size_hint_y: None
                     height: dp(40)
-                Label:
+                MDLabel:
                     text: app._('field_source', app.locale)
                     size_hint_y: None
-                    halign: "left"
-                    valign: "middle"
                     height: dp(40)
-                    size_hint_y: None
-                TextInput:
+                    halign: "left"
+                    font_style: "Body2"
+                MDTextField:
                     text: root.source
                     on_text: root.source = self.text
                     hint_text: app._('field_source__hint', app.locale)
-                    multiline: False
+                    mode: "rectangle"
                     size_hint_y: None
                     height: dp(40)
-                Label:
+                MDLabel:
                     text: app._('field_logo', app.locale)
                     size_hint_y: None
-                    halign: "left"
-                    valign: "middle"
                     height: dp(40)
-                    size_hint_y: None
-                TextInput:
+                    halign: "left"
+                    font_style: "Body2"
+                MDTextField:
                     text: root.logo
                     on_text: root.logo = self.text
                     hint_text: app._('field_logo__hint', app.locale)
-                    multiline: False
+                    mode: "rectangle"
                     size_hint_y: None
                     height: dp(40)
-                Label:
+                MDLabel:
                     text: app._('field_store_path', app.locale)
                     size_hint_y: None
-                    halign: "left"
-                    valign: "middle"
                     height: dp(40)
-                    size_hint_y: None
-                TextInput:
+                    halign: "left"
+                    font_style: "Body2"
+                MDTextField:
                     text: root.store_path
                     on_text: root.store_path = self.text
                     hint_text: app._('field_store_path__hint', app.locale)
-                    multiline: False
+                    mode: "rectangle"
                     size_hint_y: None
                     height: dp(40)
-                Label:
+                MDLabel:
                     text: app._('field_route_path', app.locale)
                     size_hint_y: None
-                    halign: "left"
-                    valign: "middle"
                     height: dp(40)
-                    size_hint_y: None
-                TextInput:
+                    halign: "left"
+                    font_style: "Body2"
+                MDTextField:
                     text: root.route_path
                     on_text: root.route_path = self.text
                     hint_text: app._('field_route_path__hint', app.locale)
-                    multiline: False
+                    mode: "rectangle"
                     size_hint_y: None
                     height: dp(40)
-                Label:
+                MDLabel:
                     text: app._('field_locale', app.locale)
                     size_hint_y: None
-                    halign: "left"
-                    valign: "middle"
                     height: dp(40)
-                    size_hint_y: None
-                TextInput:
+                    halign: "left"
+                    font_style: "Body2"
+                MDTextField:
                     text: root.locale_from
                     on_text: root.locale_from = self.text
                     hint_text: app._('field_locale__hint', app.locale)
-                    multiline: False
+                    mode: "rectangle"
                     size_hint_y: None
                     height: dp(40)
-                Label:
+                MDLabel:
                     text: app._('field_locale_to', app.locale)
                     size_hint_y: None
-                    halign: "left"
-                    valign: "middle"
                     height: dp(40)
-                    size_hint_y: None
-                TextInput:
+                    halign: "left"
+                    font_style: "Body2"
+                MDTextField:
                     text: root.locale_to
                     on_text: root.locale_to = self.text
                     hint_text: app._('field_locale_to__hint', app.locale)
-                    multiline: False
+                    mode: "rectangle"
                     size_hint_y: None
                     height: dp(40)
-        BoxLayout:
+        MDBoxLayout:
             size_hint_y: None
-            height: dp(40)
-            Button:
+            height: dp(50)
+            spacing: dp(10)
+            padding: dp(10)
+            MDFlatButton:
                 text: app._('button_back', app.locale)
-                size_hint_x: dp(0.5)
+                size_hint_x: 0.5
                 on_release:
                     app.next_screen('structure_screen')
-            Button:
+            MDRaisedButton:
                 text: app._('button_save', app.locale)
-                size_hint_x: dp(0.5)
+                size_hint_x: 0.5
                 on_release:
                     root.update_data()
                     app.root.get_screen('structure_screen').load_data()

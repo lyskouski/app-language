@@ -39,6 +39,9 @@ from component.language_pair_add_screen import LanguagePairAddScreen
 # Clean Architecture imports
 from infrastructure.di.container import DependencyContainer
 
+# Theme and styling imports
+from theme.md3_theme import MD3ThemeConfig, MD3Colors, MD3Typography, MD3Spacing
+
 ## Load all widgets (for distribution) to avoid:
 # AttributeError: module 'component' has no attribute 'recorder_widget'
 import component.harmonica_widget
@@ -46,7 +49,7 @@ import component.phonetics_widget
 import component.recorder_widget
 import component.card_layout_widget
 
-from kivy.app import App
+from kivymd.app import MDApp
 from kivy.lang import Builder
 from kivy.properties import BooleanProperty, StringProperty, ListProperty
 from kivy.uix.screenmanager import ScreenManager
@@ -55,7 +58,7 @@ from kivy.utils import platform
 from kivy.base import EventLoop
 EventLoop.ensure_window()
 
-class MainApp(App):
+class MainApp(MDApp):
     """
     Main Application class following SOLID principles.
 
@@ -79,6 +82,9 @@ class MainApp(App):
         # Initialize dependency injection container (Composition Root)
         self._container = DependencyContainer(self.user_data_dir)
         self._container.setup_kivy_resources()
+
+        # Apply Material Design 3 theme configuration
+        MD3ThemeConfig.apply_to_app(self)
 
         # Get services through dependency injection
         self._settings_service = self._container.settings_service()

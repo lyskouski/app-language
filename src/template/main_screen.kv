@@ -1,12 +1,22 @@
 # Copyright 2025 The terCAD team. All rights reserved.
 # Use of this source code is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
 
+#:kivy 2.0
+#:import MDBoxLayout kivymd.uix.boxlayout.MDBoxLayout
+#:import MDTextField kivymd.uix.textfield.MDTextField
+#:import MDRaisedButton kivymd.uix.button.MDRaisedButton
+#:import MDFlatButton kivymd.uix.button.MDFlatButton
+#:import MDLabel kivymd.uix.label.MDLabel
+
 <MainScreen>:
     RootWidget:
         id: root_widget
 
-<RootWidget@BoxLayout>:
+<RootWidget@MDBoxLayout>:
     orientation: "vertical"
+    padding: 0
+    spacing: 0
+
     RecycleView:
         id: breadcrumb_view
         viewclass: "BreadcrumbWidget"
@@ -18,75 +28,70 @@
             height: self.minimum_height
             size_hint_y: None
             default_size: None, dp(24)
-    Widget:
-        size_hint_y: dp(0.04)
-    BoxLayout:
+
+    MDBoxLayout:
         size_hint_y: None
-        height: dp(50)
-        padding: [dp(12), dp(5), dp(12), dp(8)]
-        spacing: dp(0)
-        TextInput:
+        height: dp(56)
+        padding: dp(12)
+        spacing: dp(10)
+        MDTextField:
             id: filter_input
-            multiline: False
             hint_text: app._('search', app.locale)
-            padding: [dp(10), dp(8)]
-            background_color: 0.95, 0.95, 0.95, 1
+            mode: "rectangle"
             on_text: root.on_filter_text(self.text)
+            size_hint_x: 1
+
     RecycleView:
         id: recycle_view
         viewclass: "RootItemWidget"
         size_hint_y: 1
         RecycleBoxLayout:
-            default_size: None, dp(48)
+            default_size: None, dp(70)
             default_size_hint: 1, None
             size_hint_y: None
             height: self.minimum_height
             orientation: "vertical"
-    Widget:
-        size_hint_y: dp(0.04)
-    BoxLayout:
+            spacing: dp(8)
+            padding: [dp(12), dp(8)]
+
+    MDBoxLayout:
         orientation: "horizontal"
-        height: dp(40)
+        height: dp(56)
         size_hint_y: None
-        Widget:
-            size_hint_x: 0.02
-        Button:
-            # Show "Add Language Pair" button when at root level
+        padding: dp(12)
+        spacing: dp(8)
+
+        MDFlatButton:
             text: app._("language_pair_add_title", app.locale) if (root.path == 'root') else ""
             opacity: 1.0 if (root.path == 'root') else 0
             disabled: False if (root.path == 'root') else True
             size_hint_x: 0.25 if (root.path == 'root') else 0.01
-            on_release:
-                root.add_language_pair()
-        Button:
-            # Show "Manage Dictionaries" button when viewing games (not root, not dictionaries)
+            height: dp(40)
+            on_release: root.add_language_pair()
+
+        MDFlatButton:
             text: app._("dictionaries_manage_title", app.locale) if (root.path != 'root' and not root.path.startswith('assets/data/')) else ""
             opacity: 1.0 if (root.path != 'root' and not root.path.startswith('assets/data/')) else 0
             disabled: False if (root.path != 'root' and not root.path.startswith('assets/data/')) else True
             size_hint_x: 0.25 if (root.path != 'root' and not root.path.startswith('assets/data/')) else 0.01
-            on_release:
-                app.next_screen('dictionary_management_screen')
-        Button:
-            # Show "Add Category" button when viewing dictionaries (after language pair selected)
+            height: dp(40)
+            on_release: app.next_screen('dictionary_management_screen')
+
+        MDFlatButton:
             text: app._("category_add_title", app.locale) if (root.path.startswith('assets/data/') and '/source.json' in root.path) else ""
             opacity: 1.0 if (root.path.startswith('assets/data/') and '/source.json' in root.path) else 0
             disabled: False if (root.path.startswith('assets/data/') and '/source.json' in root.path) else True
             size_hint_x: 0.25 if (root.path.startswith('assets/data/') and '/source.json' in root.path) else 0.01
-            on_release:
-                root.add_category()
-        Widget:
-            size_hint_x: 0.02
-        Button:
+            height: dp(40)
+            on_release: root.add_category()
+
+        MDFlatButton:
             text: app._("button_settings", app.locale)
             size_hint_x: 0.3
-            on_release:
-                app.next_screen('language_screen')
-        Widget:
-            size_hint_x: 0.02
-    Widget:
-        size_hint_y: dp(0.08)
+            height: dp(40)
+            on_release: app.next_screen('language_screen')
 
-<RootItemWidget@BoxLayout>:
+<RootItemWidget@MDBoxLayout>:
     orientation: "horizontal"
     text: ""
     source: ""
@@ -97,53 +102,57 @@
     locale_to: ""
     category_id: ""
     category_name: ""
-    Widget:
-        size_hint_x: 0.05
+    padding: dp(8)
+    spacing: dp(12)
+    size_hint_y: None
+    height: dp(70)
+
     Image:
         size_hint_x: None
+        size_hint_y: None
         width: dp(48)
+        height: dp(48)
         source: root.logo
-    Label:
-        text: app._(root.text, app.locale) if root.text.startswith('game_') else root.text
-        size_hint_x: 0.4
-    Button:
+
+    MDBoxLayout:
+        orientation: "vertical"
+        spacing: dp(2)
+        MDLabel:
+            text: app._(root.text, app.locale) if root.text.startswith('game_') else root.text
+            bold: True
+            font_style: "H6"
+
+    MDRaisedButton:
         text: app._('button_play', app.locale) if root.route_path else ""
         disabled: False if root.route_path else True
         opacity: 1.0 if root.route_path else 0
-        size_hint_x: 0.4 if root.route_path else 0.01
-        on_release:
-            app.root.get_screen('main_screen').ids.root_widget.play_game(root)
-    Button:
+        size_hint_x: None
+        width: dp(80) if root.route_path else dp(0)
+        height: dp(36)
+        on_release: app.root.get_screen('main_screen').ids.root_widget.play_game(root)
+
+    MDFlatButton:
         text: app._('button_add', app.locale)
         opacity: 1.0 if (not root.route_path and root.category_id) else 0
         disabled: False if (not root.route_path and root.category_id) else True
-        size_hint_x: 0.25 if (not root.route_path and root.category_id) else 0.01
-        on_release:
-            app.root.get_screen('main_screen').ids.root_widget.add_vocabulary(root)
-    Button:
+        size_hint_x: None
+        width: dp(70) if (not root.route_path and root.category_id) else dp(0)
+        height: dp(36)
+        on_release: app.root.get_screen('main_screen').ids.root_widget.add_vocabulary(root)
+
+    MDFlatButton:
         text: app._('button_select', app.locale)
         opacity: 1.0 if not root.route_path else 0
-        size_hint_x: 0.25 if not root.route_path else 0.01
-        on_release:
-            app.root.get_screen('main_screen').ids.root_widget.update_data(root)
-    Widget:
-        size_hint_x: 0.05
+        size_hint_x: None
+        width: dp(80) if not root.route_path else dp(0)
+        height: dp(36)
+        on_release: app.root.get_screen('main_screen').ids.root_widget.update_data(root)
 
-<BreadcrumbWidget@Button>:
+<BreadcrumbWidget@MDRaisedButton>:
     text: ""
     source: ""
-    cursor: "hand"
-    width: self.texture_size[0] + dp(20)
     size_hint_x: None
-    background_normal: ""
-    background_color: 0,0,0,0
-    canvas.after:
-        Color:
-            rgba: 1, 1, 1, 1
-        Triangle:
-            points: (self.right - dp(5), self.y + dp(6), self.right - dp(2), self.center_y, self.right - dp(5), self.top - dp(6))
-        Line:
-            points: (self.x + dp(10), self.y - dp(1), self.right - dp(10), self.y - dp(1))
-            width: 0.25
-    on_release:
-        app.root.get_screen('main_screen').ids.root_widget.load_breadcrumb(root.source)
+    size_hint_y: None
+    height: dp(30)
+    width: dp(100)
+    on_release: app.root.get_screen('main_screen').ids.root_widget.load_breadcrumb(root.source)

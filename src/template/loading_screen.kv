@@ -1,10 +1,13 @@
 # Copyright 2025 The terCAD team. All rights reserved.
 # Use of this source code is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
 
+#:kivy 2.0
+#:import MDLabel kivymd.uix.label.MDLabel
+
 <LoadingScreen>:
-    Label:
-        text: app._('status_loading', app.locale) # + ' ' + str(root.status) + '%'
-        font_size: '24sp'
+    MDLabel:
+        text: app._('status_loading', app.locale)
+        font_style: "H4"
         size_hint: None, None
         size: self.texture_size
         pos_hint: {'center_x': 0.5, 'center_y': 0.5}

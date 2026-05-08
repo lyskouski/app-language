@@ -238,7 +238,16 @@ class RootWidget(BoxLayout):
                 Clock.schedule_once(lambda dt: self.populate_rv(), 0.2)
                 return
 
-            self.ids.recycle_view.data = self.filtered_data
+            # Ensure all id fields are strings (RecycleView requires StringProperty for 'id')
+            clean_data = []
+            for i, item in enumerate(self.filtered_data):
+                clean_item = item.copy() if isinstance(item, dict) else item
+                # Convert or remove 'id' if it exists
+                if isinstance(clean_item, dict) and 'id' in clean_item:
+                    clean_item['id'] = str(clean_item['id'])
+                clean_data.append(clean_item)
+
+            self.ids.recycle_view.data = clean_data
         except Exception as e:
             print(f"ERROR in populate_rv: {e}")
             import traceback
