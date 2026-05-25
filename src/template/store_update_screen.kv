@@ -1,8 +1,12 @@
 # Copyright 2025 The terCAD team. All rights reserved.
 # Use of this source code is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
 
+#:kivy 2.0
+#:import CBoxLayout carbonkivy.uix.boxlayout.CBoxLayout
+#:import CButtonSecondary carbonkivy.uix.button.CButtonSecondary
+
 <StoreUpdateScreen>:
-    BoxLayout:
+    CBoxLayout:
         orientation: 'vertical'
         padding: 10
         spacing: 10
@@ -17,7 +21,7 @@
             orientation: "horizontal"
             Widget:
                 size_hint_x: dp(0.01)
-            Button:
+            CButtonSecondary:
                 size_hint_y: 6
                 text: app._("button_save", app.locale)
                 on_release:

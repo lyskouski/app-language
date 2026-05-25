@@ -1,11 +1,15 @@
 # Copyright 2025 The terCAD team. All rights reserved.
 # Use of this source code is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
 
+#:kivy 2.0
+#:import CBoxLayout carbonkivy.uix.boxlayout.CBoxLayout
+#:import CButtonSecondary carbonkivy.uix.button.CButtonSecondary
+
 <MainScreen>:
     RootWidget:
         id: root_widget
 
-<RootWidget@BoxLayout>:
+<RootWidget@CBoxLayout>:
     orientation: "vertical"
     RecycleView:
         id: breadcrumb_view
@@ -50,7 +54,7 @@
         size_hint_y: None
         Widget:
             size_hint_x: 0.02
-        Button:
+        CButtonSecondary:
             # Show "Add Language Pair" button when at root level
             text: app._("language_pair_add_title", app.locale) if (root.path == 'root') else ""
             opacity: 1.0 if (root.path == 'root') else 0
@@ -58,7 +62,7 @@
             size_hint_x: 0.25 if (root.path == 'root') else 0.01
             on_release:
                 root.add_language_pair()
-        Button:
+        CButtonSecondary:
             # Show "Manage Dictionaries" button when viewing games (not root, not dictionaries)
             text: app._("dictionaries_manage_title", app.locale) if (root.path != 'root' and not root.path.startswith('assets/data/')) else ""
             opacity: 1.0 if (root.path != 'root' and not root.path.startswith('assets/data/')) else 0
@@ -66,7 +70,7 @@
             size_hint_x: 0.25 if (root.path != 'root' and not root.path.startswith('assets/data/')) else 0.01
             on_release:
                 app.next_screen('dictionary_management_screen')
-        Button:
+        CButtonSecondary:
             # Show "Add Category" button when viewing dictionaries (after language pair selected)
             text: app._("category_add_title", app.locale) if (root.path.startswith('assets/data/') and '/source.json' in root.path) else ""
             opacity: 1.0 if (root.path.startswith('assets/data/') and '/source.json' in root.path) else 0
@@ -76,7 +80,7 @@
                 root.add_category()
         Widget:
             size_hint_x: 0.02
-        Button:
+        CButtonSecondary:
             text: app._("button_settings", app.locale)
             size_hint_x: 0.3
             on_release:
@@ -86,7 +90,7 @@
     Widget:
         size_hint_y: dp(0.08)
 
-<RootItemWidget@BoxLayout>:
+<RootItemWidget@CBoxLayout>:
     orientation: "horizontal"
     text: ""
     source: ""
@@ -113,14 +117,14 @@
         size_hint_x: 0.4 if root.route_path else 0.01
         on_release:
             app.root.get_screen('main_screen').ids.root_widget.play_game(root)
-    Button:
+    CButtonSecondary:
         text: app._('button_add', app.locale)
         opacity: 1.0 if (not root.route_path and root.category_id) else 0
         disabled: False if (not root.route_path and root.category_id) else True
         size_hint_x: 0.25 if (not root.route_path and root.category_id) else 0.01
         on_release:
             app.root.get_screen('main_screen').ids.root_widget.add_vocabulary(root)
-    Button:
+    CButtonSecondary:
         text: app._('button_select', app.locale)
         opacity: 1.0 if not root.route_path else 0
         size_hint_x: 0.25 if not root.route_path else 0.01
@@ -129,7 +133,7 @@
     Widget:
         size_hint_x: 0.05
 
-<BreadcrumbWidget@Button>:
+<BreadcrumbWidget@CButtonSecondary>:
     text: ""
     source: ""
     cursor: "hand"
