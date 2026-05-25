@@ -4,6 +4,7 @@
 #:kivy 2.0
 #:import CBoxLayout carbonkivy.uix.boxlayout.CBoxLayout
 #:import CButtonSecondary carbonkivy.uix.button.CButtonSecondary
+#:import Button kivy.uix.button.Button
 
 <MainScreen>:
     RootWidget:
@@ -35,6 +36,8 @@
             hint_text: app._('search', app.locale)
             padding: [dp(10), dp(8)]
             background_color: 0.95, 0.95, 0.95, 1
+            hint_text_color_focus: 0.5, 0.5, 0.5, 1
+            hint_text_color: 0.7, 0.7, 0.7, 1
             on_text: root.on_filter_text(self.text)
     RecycleView:
         id: recycle_view
@@ -60,6 +63,7 @@
             opacity: 1.0 if (root.path == 'root') else 0
             disabled: False if (root.path == 'root') else True
             size_hint_x: 0.25 if (root.path == 'root') else 0.01
+            color: 0, 0, 0, 1
             on_release:
                 root.add_language_pair()
         CButtonSecondary:
@@ -68,6 +72,7 @@
             opacity: 1.0 if (root.path != 'root' and not root.path.startswith('assets/data/')) else 0
             disabled: False if (root.path != 'root' and not root.path.startswith('assets/data/')) else True
             size_hint_x: 0.25 if (root.path != 'root' and not root.path.startswith('assets/data/')) else 0.01
+            color: 0, 0, 0, 1
             on_release:
                 app.next_screen('dictionary_management_screen')
         CButtonSecondary:
@@ -76,6 +81,7 @@
             opacity: 1.0 if (root.path.startswith('assets/data/') and '/source.json' in root.path) else 0
             disabled: False if (root.path.startswith('assets/data/') and '/source.json' in root.path) else True
             size_hint_x: 0.25 if (root.path.startswith('assets/data/') and '/source.json' in root.path) else 0.01
+            color: 0, 0, 0, 1
             on_release:
                 root.add_category()
         Widget:
@@ -83,6 +89,7 @@
         CButtonSecondary:
             text: app._("button_settings", app.locale)
             size_hint_x: 0.3
+            color: 0, 0, 0, 1
             on_release:
                 app.next_screen('language_screen')
         Widget:
@@ -115,6 +122,7 @@
         disabled: False if root.route_path else True
         opacity: 1.0 if root.route_path else 0
         size_hint_x: 0.4 if root.route_path else 0.01
+        color: 0, 0, 0, 1
         on_release:
             app.root.get_screen('main_screen').ids.root_widget.play_game(root)
     CButtonSecondary:
@@ -122,18 +130,20 @@
         opacity: 1.0 if (not root.route_path and root.category_id) else 0
         disabled: False if (not root.route_path and root.category_id) else True
         size_hint_x: 0.25 if (not root.route_path and root.category_id) else 0.01
+        color: 0, 0, 0, 1
         on_release:
             app.root.get_screen('main_screen').ids.root_widget.add_vocabulary(root)
     CButtonSecondary:
         text: app._('button_select', app.locale)
         opacity: 1.0 if not root.route_path else 0
         size_hint_x: 0.25 if not root.route_path else 0.01
+        color: 0, 0, 0, 1
         on_release:
             app.root.get_screen('main_screen').ids.root_widget.update_data(root)
     Widget:
         size_hint_x: 0.05
 
-<BreadcrumbWidget@CButtonSecondary>:
+<BreadcrumbWidget@Button>:
     text: ""
     source: ""
     cursor: "hand"

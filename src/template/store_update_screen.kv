@@ -24,6 +24,7 @@
             CButtonSecondary:
                 size_hint_y: 6
                 text: app._("button_save", app.locale)
+                color: 0, 0, 0, 1
                 on_release:
                     root.save_data()
                     app.next_screen('structure_screen')

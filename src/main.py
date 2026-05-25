@@ -55,6 +55,10 @@ from kivy.utils import platform
 from kivy.base import EventLoop
 EventLoop.ensure_window()
 
+# Load global theme configuration
+theme_path = kivy.resources.resource_find('template/theme.kv')
+Builder.load_file(theme_path)
+
 class MainApp(CarbonApp):
     """
     Main Application class following SOLID principles.
