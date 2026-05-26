@@ -1,9 +1,12 @@
 # Copyright 2025 The terCAD team. All rights reserved.
 # Use of this source code is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
 
+#:kivy 2.0
 #:import CardLayoutWidget component.card_layout_widget
+#:import CBoxLayout carbonkivy.uix.boxlayout.CBoxLayout
+#:import CButtonSecondary carbonkivy.uix.button.CButtonSecondary
 
-<CardWidget@Button>:
+<CardWidget>:
     text: root.text_init if self.state == 'down' else root.text_flip
     size_hint: None, None
     size: max(dp(150), min(self.parent.width * 0.24, self.parent.height * 0.24)) if self.parent else dp(150), max(dp(150), min(self.parent.width * 0.24, self.parent.height * 0.24)) if self.parent else dp(150)
@@ -11,16 +14,23 @@
     bold: True
     outline_color: 0, 0, 0, 1
     outline_width: 2
+    bg_color: 0, 0, 0, 0
+    hover_color: 0, 0, 0, 0
+    active_color: 0, 0, 0, 0
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 1
+        Rectangle:
+            source: root.image_down if self.state == 'down' else root.image_normal
+            pos: self.pos
+            size: self.size
 
 <CardScreen@Screen>:
-    BoxLayout:
+    CBoxLayout:
         orientation: 'vertical'
 
         ActionBar:
-            hidden: app.is_mobile
-            # size_hint_y: 0 if app.is_mobile else None
-            opacity: 1.0 if not app.is_mobile else 0
-            height: '48dp' if not app.is_mobile else 0
+            height: dp(48)
             ActionView:
                 use_separator: True
                 ActionPrevious:
@@ -29,11 +39,13 @@
                     title: app._('game_cards', app.locale)
                 ActionButton:
                     text: app._('button_flip', app.locale)
+                    color: 1, 1, 1, 1
                     on_release:
                         root.ids.card_widget.flip = not root.ids.card_widget.flip
                         root.ids.card_widget.load_data()
                 ActionButton:
                     text: app._('button_shuffle', app.locale)
+                    color: 1, 1, 1, 1
                     on_release:
                         app.init_store(force_shuffle=True)
                         app.refresh_widgets()
@@ -49,25 +61,3 @@
                 height: self.minimum_height
                 size_hint_x: 1
                 width: self.parent.width
-
-        ActionBar:
-            hidden: False if app.is_mobile else True
-            # size_hint_y: None if app.is_mobile else 0
-            opacity: 1.0 if app.is_mobile else 0
-            height: '48dp' if app.is_mobile else 0
-            ActionView:
-                use_separator: True
-                ActionPrevious:
-                    with_previous: True
-                    on_release: app.next_screen('main_screen')
-                    title: app._('game_cards', app.locale)
-                ActionButton:
-                    text: app._('button_flip', app.locale)
-                    on_release:
-                        root.ids.card_widget.flip = not root.ids.card_widget.flip
-                        root.ids.card_widget.load_data()
-                ActionButton:
-                    text: app._('button_shuffle', app.locale)
-                    on_release:
-                        app.init_store(force_shuffle=True)
-                        app.refresh_widgets()

@@ -1,0 +1,44 @@
+# Copyright 2025 The terCAD team. All rights reserved.
+# Use of this source code is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
+
+#:kivy 2.0
+
+# Global Theme Configuration
+# Sets default colors for all text widgets
+
+<Label>:
+    color: 0, 0, 0, 1
+
+<TextInput>:
+    foreground_color: 0, 0, 0, 1
+
+<MultilineLabel>:
+    size_hint_y: None
+    height: self.texture_size[1]
+    text_size: self.width, None
+    halign: "left"
+    valign: "middle"
+
+[CustomAccordionItemTitle@Label]:
+    text: ctx.title
+    color: 0.08, 0.08, 0.08, 1
+    bold: True
+    canvas.before:
+        Color:
+            rgba: (0.95, 0.95, 0.95, 1) if ctx.item.collapse else (0.88, 0.92, 0.98, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+        PushMatrix
+        Translate:
+            xy: self.center_x, self.center_y
+        Rotate:
+            angle: 90 if ctx.item.orientation == 'horizontal' else 0
+            axis: 0, 0, 1
+        Translate:
+            xy: -self.center_x, -self.center_y
+    canvas.after:
+        PopMatrix
+
+<AccordionItem>:
+    title_template: "CustomAccordionItemTitle"

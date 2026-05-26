@@ -238,7 +238,13 @@ class RootWidget(BoxLayout):
                 Clock.schedule_once(lambda dt: self.populate_rv(), 0.2)
                 return
 
-            self.ids.recycle_view.data = self.filtered_data
+            # Remove 'id' field from data as Kivy's id property must be a string
+            # and we don't use it in the UI
+            clean_data = [
+                {k: v for k, v in item.items() if k != 'id'}
+                for item in self.filtered_data
+            ]
+            self.ids.recycle_view.data = clean_data
         except Exception as e:
             print(f"ERROR in populate_rv: {e}")
             import traceback

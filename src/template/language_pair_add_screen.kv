@@ -1,8 +1,13 @@
 # Copyright 2025 The terCAD team. All rights reserved.
 # Use of this source code is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
 
+#:kivy 2.0
+#:import CBoxLayout carbonkivy.uix.boxlayout.CBoxLayout
+#:import CScrollView carbonkivy.uix.scrollview.CScrollView
+#:import CButtonSecondary carbonkivy.uix.button.CButtonSecondary
+
 <LanguagePairAddScreen>:
-    BoxLayout:
+    CBoxLayout:
         orientation: 'vertical'
         padding: dp(10)
         spacing: dp(10)
@@ -17,7 +22,7 @@
                 bold: True
 
         # Form fields
-        ScrollView:
+        CScrollView:
             size_hint_y: 0.8
 
             BoxLayout:
@@ -104,6 +109,7 @@
                         size_hint_y: None
                         height: dp(48)
                         font_size: sp(18)
+
                         on_text: root.name_text = self.text
 
                 # Logo Path - Optional
@@ -136,11 +142,11 @@
             size_hint_y: None
             height: dp(50)
             spacing: dp(10)
-            Button:
+            CButtonSecondary:
                 text: app._("button_cancel", app.locale)
                 font_size: sp(18)
                 on_release: root.cancel()
-            Button:
+            CButtonSecondary:
                 text: app._("button_save", app.locale)
                 font_size: sp(18)
                 on_release: root.save_language_pair()

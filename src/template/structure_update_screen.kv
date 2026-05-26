@@ -1,15 +1,20 @@
 # Copyright 2025 The terCAD team. All rights reserved.
 # Use of this source code is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
 
+#:kivy 2.0
+#:import CBoxLayout carbonkivy.uix.boxlayout.CBoxLayout
+#:import CScrollView carbonkivy.uix.scrollview.CScrollView
+#:import CButtonSecondary carbonkivy.uix.button.CButtonSecondary
+
 <StructureUpdateScreen@Screen>:
-    BoxLayout:
+    CBoxLayout:
         orientation: 'vertical'
         padding: dp(10)
         spacing: dp(10)
         ScrollView:
             do_scroll_x: False
             do_scroll_y: True
-            BoxLayout:
+            CBoxLayout:
                 orientation: 'vertical'
                 padding: dp(10)
                 spacing: dp(10)
@@ -29,6 +34,7 @@
                     multiline: False
                     size_hint_y: None
                     height: dp(40)
+                    foreground_color: 0, 0, 0, 1
                 Label:
                     text: app._('field_source', app.locale)
                     size_hint_y: None
@@ -43,6 +49,7 @@
                     multiline: False
                     size_hint_y: None
                     height: dp(40)
+                    foreground_color: 0, 0, 0, 1
                 Label:
                     text: app._('field_logo', app.locale)
                     size_hint_y: None
@@ -57,6 +64,7 @@
                     multiline: False
                     size_hint_y: None
                     height: dp(40)
+                    foreground_color: 0, 0, 0, 1
                 Label:
                     text: app._('field_store_path', app.locale)
                     size_hint_y: None
@@ -71,6 +79,7 @@
                     multiline: False
                     size_hint_y: None
                     height: dp(40)
+                    foreground_color: 0, 0, 0, 1
                 Label:
                     text: app._('field_route_path', app.locale)
                     size_hint_y: None
@@ -116,12 +125,12 @@
         BoxLayout:
             size_hint_y: None
             height: dp(40)
-            Button:
+            CButtonSecondary:
                 text: app._('button_back', app.locale)
                 size_hint_x: dp(0.5)
                 on_release:
                     app.next_screen('structure_screen')
-            Button:
+            CButtonSecondary:
                 text: app._('button_save', app.locale)
                 size_hint_x: dp(0.5)
                 on_release:

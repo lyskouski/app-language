@@ -3,13 +3,15 @@
 
 from kivy.app import App
 from kivy.properties import BooleanProperty, StringProperty
-from kivy.uix.button import Button
+from carbonkivy.uix.button import CButtonSecondary
 from kivy.uix.stacklayout import StackLayout
 
 
-class CardWidget(Button):
+class CardWidget(CButtonSecondary):
     text_init = StringProperty('')
     text_flip = StringProperty('')
+    image_normal = StringProperty('')
+    image_down = StringProperty('')
 
 class CardLayoutWidget(StackLayout):
     flip = BooleanProperty(False)
@@ -34,6 +36,6 @@ class CardLayoutWidget(StackLayout):
             button.text_flip = item.origin if self.flip else item.translation
             path = app.get_image_dir()
             image = self._resource_service.find_resource(f"{path}/{item.image}" if item.image else 'assets/images/error.png')
-            button.background_normal = image if image else self._resource_service.find_resource('assets/images/error.png')
-            button.background_down = self._resource_service.find_resource('assets/images/success.png')
+            button.image_normal = image if image else self._resource_service.find_resource('assets/images/error.png')
+            button.image_down = self._resource_service.find_resource('assets/images/success.png')
             self.add_widget(button)

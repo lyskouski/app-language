@@ -1,11 +1,15 @@
 # Copyright 2025 The terCAD team. All rights reserved.
 # Use of this source code is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
 
+#:kivy 2.0
+#:import CBoxLayout carbonkivy.uix.boxlayout.CBoxLayout
+#:import CButtonSecondary carbonkivy.uix.button.CButtonSecondary
+
 <DictionaryManagementScreen>:
     DictionaryManagementWidget:
         id: management_widget
 
-<DictionaryManagementWidget@BoxLayout>:
+<DictionaryManagementWidget@CBoxLayout>:
     orientation: "vertical"
 
     BoxLayout:
@@ -38,12 +42,12 @@
         padding: dp(12)
         spacing: dp(10)
 
-        Button:
+        CButtonSecondary:
             text: app._("button_cancel", app.locale)
             size_hint_x: 0.5
             on_release: root.go_back()
 
-        Button:
+        CButtonSecondary:
             text: app._("button_save", app.locale)
             size_hint_x: 0.5
             on_release: root.apply_selection()
@@ -77,4 +81,3 @@
         size_hint_x: None
         width: dp(50)
         on_active: app.root.get_screen('dictionary_management_screen').ids.management_widget.toggle_item_selection(root.item_id, self.active)
-

@@ -1,14 +1,20 @@
 # Copyright 2025 The terCAD team. All rights reserved.
 # Use of this source code is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
 
+#:kivy 2.0
+#:import CBoxLayout carbonkivy.uix.boxlayout.CBoxLayout
+#:import CScrollView carbonkivy.uix.scrollview.CScrollView
+#:import CButton carbonkivy.uix.button.CButtonPrimary
+#:import CButtonSecondary carbonkivy.uix.button.CButtonSecondary
+
 <CategoryAddScreen>:
-    BoxLayout:
+    CBoxLayout:
         orientation: 'vertical'
         padding: dp(10)
         spacing: dp(10)
 
         # Header
-        BoxLayout:
+        CBoxLayout:
             size_hint_y: None
             height: dp(50)
             Label:
@@ -17,10 +23,10 @@
                 bold: True
 
         # Form fields
-        ScrollView:
+        CScrollView:
             size_hint_y: 0.8
 
-            BoxLayout:
+            CBoxLayout:
                 orientation: 'vertical'
                 spacing: dp(10)
                 size_hint_y: None
@@ -28,7 +34,7 @@
                 padding: [dp(8), 0]
 
                 # Category Name - REQUIRED
-                BoxLayout:
+                CBoxLayout:
                     orientation: 'vertical'
                     size_hint_y: None
                     height: dp(105)
@@ -61,7 +67,7 @@
                         valign: 'top'
 
                 # Icon Path - Optional
-                BoxLayout:
+                CBoxLayout:
                     orientation: 'vertical'
                     size_hint_y: None
                     height: dp(85)
@@ -85,7 +91,7 @@
                         on_text: root.icon_path_text = self.text
 
                 # Display Order - Optional
-                BoxLayout:
+                CBoxLayout:
                     orientation: 'vertical'
                     size_hint_y: None
                     height: dp(85)
@@ -107,27 +113,26 @@
                         font_size: sp(18)
                         input_filter: 'int'
                         hint_text: "0"
+                        foreground_color: 0, 0, 0, 1
                         on_text: root.display_order_text = self.text
 
         # Buttons
-        BoxLayout:
+        CBoxLayout:
             orientation: 'horizontal'
             size_hint_y: None
             height: dp(50)
             spacing: dp(10)
             padding: [0, dp(5)]
 
-            Button:
+            CButtonSecondary:
                 text: app._("button_cancel", app.locale)
-                font_size: sp(18)
                 size_hint_x: 0.3
                 on_release: root.cancel()
 
             Widget:
                 size_hint_x: 0.4
 
-            Button:
+            CButton:
                 text: app._("button_save", app.locale)
-                font_size: sp(18)
                 size_hint_x: 0.3
                 on_release: root.save_category()

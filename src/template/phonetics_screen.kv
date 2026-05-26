@@ -1,17 +1,16 @@
 # Copyright 2025 The terCAD team. All rights reserved.
 # Use of this source code is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
 
+#:kivy 2.0
 #:import PhoneticsWidget component.phonetics_widget
+#:import CBoxLayout carbonkivy.uix.boxlayout.CBoxLayout
 
 <PhoneticsScreen>:
-    BoxLayout:
+    CBoxLayout:
         orientation: 'vertical'
 
         ActionBar:
-            hidden: app.is_mobile
-            # size_hint_y: 0 if app.is_mobile else None
-            opacity: 1.0 if not app.is_mobile else 0
-            height: '48dp' if not app.is_mobile else 0
+            height: dp(48)
             ActionView:
                 use_separator: True
                 ActionPrevious:
@@ -20,9 +19,11 @@
                     title: app._('game_phonetics', app.locale)
                 ActionButton:
                     text: app._('button_clear', app.locale)
+                    color: 1, 1, 1, 1
                     on_release: app.next_screen('phonetics_screen')
                 ActionButton:
                     text: app._('button_shuffle', app.locale)
+                    color: 1, 1, 1, 1
                     on_release:
                         app.init_store(force_shuffle=True)
                         app.refresh_widgets()
@@ -49,23 +50,3 @@
                     PhoneticsWidget:
                         origin: False
                         secondary: True
-
-        ActionBar:
-            hidden: False if app.is_mobile else True
-            # size_hint_y: None if app.is_mobile else 0
-            opacity: 1.0 if app.is_mobile else 0
-            height: '48dp' if app.is_mobile else 0
-            ActionView:
-                use_separator: True
-                ActionPrevious:
-                    with_previous: True
-                    on_release: app.next_screen('main_screen')
-                    title: app._('game_phonetics', app.locale)
-                ActionButton:
-                    text: app._('button_clear', app.locale)
-                    on_release: app.next_screen('phonetics_screen')
-                ActionButton:
-                    text: app._('button_shuffle', app.locale)
-                    on_release:
-                        app.init_store(force_shuffle=True)
-                        app.refresh_widgets()

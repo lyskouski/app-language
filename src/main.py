@@ -46,7 +46,7 @@ import component.phonetics_widget
 import component.recorder_widget
 import component.card_layout_widget
 
-from kivy.app import App
+from carbonkivy.app import CarbonApp
 from kivy.lang import Builder
 from kivy.properties import BooleanProperty, StringProperty, ListProperty
 from kivy.uix.screenmanager import ScreenManager
@@ -55,7 +55,11 @@ from kivy.utils import platform
 from kivy.base import EventLoop
 EventLoop.ensure_window()
 
-class MainApp(App):
+# Load global theme configuration
+theme_path = kivy.resources.resource_find('template/theme.kv')
+Builder.load_file(theme_path)
+
+class MainApp(CarbonApp):
     """
     Main Application class following SOLID principles.
 

@@ -1,8 +1,13 @@
 # Copyright 2025 The terCAD team. All rights reserved.
 # Use of this source code is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
 
+#:kivy 2.0
+#:import CBoxLayout carbonkivy.uix.boxlayout.CBoxLayout
+#:import CScrollView carbonkivy.uix.scrollview.CScrollView
+#:import CButtonSecondary carbonkivy.uix.button.CButtonSecondary
+
 <VocabularyAddScreen>:
-    BoxLayout:
+    CBoxLayout:
         orientation: 'vertical'
         padding: dp(10)
         spacing: dp(10)
@@ -17,7 +22,7 @@
                 bold: True
 
         # Form fields
-        ScrollView:
+        CScrollView:
             size_hint_y: 0.8
 
             BoxLayout:
@@ -179,7 +184,7 @@
             spacing: dp(10)
             padding: [0, dp(5)]
 
-            Button:
+            CButtonSecondary:
                 text: app._("button_cancel", app.locale) if hasattr(app, '_') else "Cancel"
                 font_size: sp(18)
                 size_hint_x: 0.3
@@ -188,7 +193,7 @@
             Widget:
                 size_hint_x: 0.4
 
-            Button:
+            CButtonSecondary:
                 text: app._("button_save", app.locale) if hasattr(app, '_') else "Save"
                 font_size: sp(18)
                 size_hint_x: 0.3
