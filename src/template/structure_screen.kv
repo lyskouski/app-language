@@ -66,7 +66,6 @@
         disabled: False if root.source else True
         opacity: 1.0 if root.source else 0
         size_hint_x: dp(0.5 if root.source else 0.01)
-        color: 0, 0, 0, 1
         on_release:
             root.collapse() if root.is_expanded else root.expand()
     Label:
@@ -78,7 +77,6 @@
     CButtonSecondary:
         text: app._('button_edit', app.locale)
         size_hint_x: dp(0.5)
-        color: 0, 0, 0, 1
         on_release:
             app.next_screen('structure_update_screen', root)
     CButtonSecondary:
@@ -86,7 +84,6 @@
         disabled: False if root.store_path else True
         opacity: 1.0 if root.store_path else 0
         size_hint_x: dp(0.5 if root.store_path else 0.01)
-        color: 0, 0, 0, 1
         on_release:
             app.next_screen('store_update_screen', root)
     Widget:

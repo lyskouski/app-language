@@ -4,6 +4,7 @@
 #:kivy 2.0
 #:import CBoxLayout carbonkivy.uix.boxlayout.CBoxLayout
 #:import CScrollView carbonkivy.uix.scrollview.CScrollView
+#:import CButtonSecondary carbonkivy.uix.button.CButtonSecondary
 
 <LanguagePairAddScreen>:
     CBoxLayout:
@@ -141,11 +142,11 @@
             size_hint_y: None
             height: dp(50)
             spacing: dp(10)
-            Button:
+            CButtonSecondary:
                 text: app._("button_cancel", app.locale)
                 font_size: sp(18)
                 on_release: root.cancel()
-            Button:
+            CButtonSecondary:
                 text: app._("button_save", app.locale)
                 font_size: sp(18)
                 on_release: root.save_language_pair()

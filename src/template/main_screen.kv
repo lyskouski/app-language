@@ -4,7 +4,7 @@
 #:kivy 2.0
 #:import CBoxLayout carbonkivy.uix.boxlayout.CBoxLayout
 #:import CButtonSecondary carbonkivy.uix.button.CButtonSecondary
-#:import Button kivy.uix.button.Button
+#:import CButtonGhost carbonkivy.uix.button.CButtonGhost
 
 <MainScreen>:
     RootWidget:
@@ -64,7 +64,6 @@
             opacity: 1.0 if (root.path == 'root') else 0
             disabled: False if (root.path == 'root') else True
             size_hint_x: 0.25 if (root.path == 'root') else 0.01
-            color: 0, 0, 0, 1
             on_release:
                 root.add_language_pair()
         CButtonSecondary:
@@ -73,7 +72,6 @@
             opacity: 1.0 if (root.path != 'root' and not root.path.startswith('assets/data/')) else 0
             disabled: False if (root.path != 'root' and not root.path.startswith('assets/data/')) else True
             size_hint_x: 0.25 if (root.path != 'root' and not root.path.startswith('assets/data/')) else 0.01
-            color: 0, 0, 0, 1
             on_release:
                 app.next_screen('dictionary_management_screen')
         CButtonSecondary:
@@ -82,7 +80,6 @@
             opacity: 1.0 if (root.path.startswith('assets/data/') and '/source.json' in root.path) else 0
             disabled: False if (root.path.startswith('assets/data/') and '/source.json' in root.path) else True
             size_hint_x: 0.25 if (root.path.startswith('assets/data/') and '/source.json' in root.path) else 0.01
-            color: 0, 0, 0, 1
             on_release:
                 root.add_category()
         Widget:
@@ -90,7 +87,6 @@
         CButtonSecondary:
             text: app._("button_settings", app.locale)
             size_hint_x: 0.3
-            color: 0, 0, 0, 1
             on_release:
                 app.next_screen('language_screen')
         Widget:
@@ -119,12 +115,11 @@
     Label:
         text: app._(root.text, app.locale) if root.text.startswith('game_') else root.text
         size_hint_x: 0.4
-    Button:
+    CButtonSecondary:
         text: app._('button_play', app.locale) if root.route_path else ""
         disabled: False if root.route_path else True
         opacity: 1.0 if root.route_path else 0
         size_hint_x: 0.4 if root.route_path else 0.01
-        color: 0, 0, 0, 1
         on_release:
             app.root.get_screen('main_screen').ids.root_widget.play_game(root)
     CButtonSecondary:
@@ -132,30 +127,28 @@
         opacity: 1.0 if (not root.route_path and root.category_id) else 0
         disabled: False if (not root.route_path and root.category_id) else True
         size_hint_x: 0.25 if (not root.route_path and root.category_id) else 0.01
-        color: 0, 0, 0, 1
         on_release:
             app.root.get_screen('main_screen').ids.root_widget.add_vocabulary(root)
     CButtonSecondary:
         text: app._('button_select', app.locale)
         opacity: 1.0 if not root.route_path else 0
         size_hint_x: 0.25 if not root.route_path else 0.01
-        color: 0, 0, 0, 1
         on_release:
             app.root.get_screen('main_screen').ids.root_widget.update_data(root)
     Widget:
         size_hint_x: 0.05
 
-<BreadcrumbWidget@Button>:
+<BreadcrumbWidget@CButtonGhost>:
     text: ""
     source: ""
     cursor: "hand"
-    width: self.texture_size[0] + dp(20)
+    dynamic_width: False
+    width: min(dp(220), self.parent.width * 0.45) if self.parent else dp(220)
     size_hint_x: None
-    background_normal: ""
-    background_color: 0,0,0,0
+    text_halign: "left"
     canvas.after:
         Color:
-            rgba: 1, 1, 1, 1
+            rgba: 0, 0, 0, 1
         Triangle:
             points: (self.right - dp(5), self.y + dp(6), self.right - dp(2), self.center_y, self.right - dp(5), self.top - dp(6))
         Line:
@@ -163,3 +156,9 @@
             width: 0.25
     on_release:
         app.root.get_screen('main_screen').ids.root_widget.load_breadcrumb(root.source)
+
+<CButtonLabel>:
+    shorten: True if self.base_button and self.base_button.__class__.__name__ == "BreadcrumbWidget" else False
+    shorten_from: "right"
+    max_lines: 1 if self.base_button and self.base_button.__class__.__name__ == "BreadcrumbWidget" else 0
+    text_size: (self.base_button.width - dp(24), self.texture_size[1]) if self.base_button and self.base_button.__class__.__name__ == "BreadcrumbWidget" else (None, self.texture_size[1])

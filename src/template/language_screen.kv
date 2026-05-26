@@ -3,6 +3,7 @@
 
 #:kivy 2.0
 #:import CBoxLayout carbonkivy.uix.boxlayout.CBoxLayout
+#:import CButtonSecondary carbonkivy.uix.button.CButtonSecondary
 
 <LanguageScreen@Screen>:
     LanguageWidget:
@@ -64,10 +65,9 @@
         valign: "middle"
         font_size: sp(16)
 
-    Button:
+    CButtonSecondary:
         text: "Select / Wybierz"
         size_hint_x: None
         width: dp(140)
-        background_color: 0.2, 0.7, 0.2, 1
         on_release:
             app.root.get_screen('language_screen').ids.language_widget.select_language(root.locale)

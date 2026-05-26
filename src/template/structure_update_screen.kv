@@ -4,6 +4,7 @@
 #:kivy 2.0
 #:import CBoxLayout carbonkivy.uix.boxlayout.CBoxLayout
 #:import CScrollView carbonkivy.uix.scrollview.CScrollView
+#:import CButtonSecondary carbonkivy.uix.button.CButtonSecondary
 
 <StructureUpdateScreen@Screen>:
     CBoxLayout:
@@ -124,12 +125,12 @@
         BoxLayout:
             size_hint_y: None
             height: dp(40)
-            Button:
+            CButtonSecondary:
                 text: app._('button_back', app.locale)
                 size_hint_x: dp(0.5)
                 on_release:
                     app.next_screen('structure_screen')
-            Button:
+            CButtonSecondary:
                 text: app._('button_save', app.locale)
                 size_hint_x: dp(0.5)
                 on_release:

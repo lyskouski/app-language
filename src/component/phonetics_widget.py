@@ -3,8 +3,8 @@
 
 from component.harmonica_widget import HarmonicaWidget
 from kivy.app import App
+from carbonkivy.uix.button import CButtonSecondary as Button
 from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
 from kivy.uix.widget import Widget
