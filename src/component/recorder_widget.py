@@ -9,6 +9,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
+from kivy.uix.progressbar import ProgressBar
 from kivy.uix.scrollview import ScrollView
 from kivy.clock import Clock
 
@@ -35,14 +36,17 @@ class RecorderWidget(BoxLayout):
         self.selected_file = None
         self.selected_sentence = ''
         self.comparison_result = []
+        self._comparison_animation_event = None
+        self._comparison_animation_direction = 1
         self.audio_files = self.load_audio_files()
 
         main_layout = BoxLayout(orientation='vertical')
-        scroll_view = ScrollView()
-        list_layout = GridLayout(cols=1, size_hint_y='1dp', minimum_height='0.8dp', spacing=5)
+        scroll_view = ScrollView(do_scroll_x=False, do_scroll_y=True)
+        list_layout = GridLayout(cols=1, size_hint_y=None, spacing=5, padding=[0, 0, 0, 5])
+        list_layout.bind(minimum_height=list_layout.setter('height'))
 
         for file_name, sentence in self.audio_files.items():
-            row = BoxLayout(orientation='horizontal', size_hint_min_y=30)
+            row = BoxLayout(orientation='horizontal', size_hint_y=None, height=36)
             row.add_widget(MultilineLabel(text=sentence))
             choose_button = Button(text=self._localization_service.translate('button_choose', app.locale), size_hint_x=0.2)
             choose_button.file_path = file_name
@@ -73,6 +77,7 @@ class RecorderWidget(BoxLayout):
             size_hint_y=None,
             height=28
         )
+        self.comparison_progress = ProgressBar(max=100, value=0, size_hint_y=None, height=8)
         self.comparison_scroll = ScrollView(size_hint_y=None, height=160)
         self.comparison_panel = GridLayout(cols=1, size_hint_y=None, spacing=4, padding=[4, 4, 4, 4])
         self.comparison_panel.bind(minimum_height=self.comparison_panel.setter('height'))
@@ -80,6 +85,7 @@ class RecorderWidget(BoxLayout):
 
         main_layout.add_widget(control_layout)
         main_layout.add_widget(comparison_header)
+        main_layout.add_widget(self.comparison_progress)
         main_layout.add_widget(self.comparison_scroll)
         self.clear_widgets()
         self.add_widget(main_layout)
@@ -162,12 +168,15 @@ class RecorderWidget(BoxLayout):
 
     def _compare_audio(self, original_path, recorded_path):
         app = App.get_running_app()
+        self._set_comparison_progress(0, 'status_comparison_preparing')
         if not self._audio_comparator or not self._audio_comparator.is_available():
-            self.status_label.text = self._localization_service.translate('status_comparison_unavailable', app.locale)
+            self._set_status(self._localization_service.translate('status_comparison_unavailable', app.locale))
+            self._stop_comparison_animation(completed=False)
             self._render_comparison_rows([])
             return
 
         try:
+            self._start_comparison_animation('status_comparison_processing')
             self.comparison_result = self._audio_comparator.compare_audio(
                 original_path,
                 recorded_path,
@@ -180,19 +189,77 @@ class RecorderWidget(BoxLayout):
             ]
 
             if not score_values:
-                self.status_label.text = self._localization_service.translate('status_comparison_error', app.locale)
+                self._set_status(self._localization_service.translate('status_comparison_error', app.locale))
+                self._stop_comparison_animation(completed=False)
                 self._render_comparison_rows([])
                 return
 
+            self._set_status(self._localization_service.translate('status_comparison_finalizing', app.locale))
+            self._stop_comparison_animation(completed=True)
             overall_score = mean(score_values)
             details = ', '.join([f"W{idx + 1}: {score:.0f}%" for idx, score in enumerate(score_values[:3])])
             score_label = self._localization_service.translate('status_comparison_result', app.locale)
-            self.status_label.text = f"{score_label}: {overall_score:.1f}% ({details})"
+            self._set_status(f"{score_label}: {overall_score:.1f}% ({details})")
             self._render_comparison_rows(self.comparison_result)
         except Exception as exc:
             print(f"Error running audio comparison: {exc}")
-            self.status_label.text = self._localization_service.translate('status_comparison_error', app.locale)
+            self._set_status(self._localization_service.translate('status_comparison_error', app.locale))
+            self._stop_comparison_animation(completed=False)
             self._render_comparison_rows([])
+
+    def _set_status(self, text):
+        """Set status text on the main UI thread."""
+        Clock.schedule_once(lambda dt: setattr(self.status_label, 'text', text), 0)
+
+    def _set_comparison_progress(self, value, status_key=None):
+        """Update comparison progress bar and optional status on the main UI thread."""
+        app = App.get_running_app()
+        progress_value = max(0, min(100, int(value)))
+
+        def update_ui(dt):
+            self.comparison_progress.value = progress_value
+            if status_key:
+                self.status_label.text = self._localization_service.translate(status_key, app.locale)
+
+        Clock.schedule_once(update_ui, 0)
+
+    def _start_comparison_animation(self, status_key=None):
+        """Start indeterminate progress animation while comparison is running."""
+        app = App.get_running_app()
+
+        def start_ui(dt):
+            if self._comparison_animation_event is not None:
+                self._comparison_animation_event.cancel()
+            self._comparison_animation_direction = 1
+            self.comparison_progress.value = 12
+            if status_key:
+                self.status_label.text = self._localization_service.translate(status_key, app.locale)
+            self._comparison_animation_event = Clock.schedule_interval(self._animate_comparison_progress, 0.08)
+
+        Clock.schedule_once(start_ui, 0)
+
+    def _stop_comparison_animation(self, completed):
+        """Stop progress animation and set terminal bar value."""
+        target = 100 if completed else 0
+
+        def stop_ui(dt):
+            if self._comparison_animation_event is not None:
+                self._comparison_animation_event.cancel()
+                self._comparison_animation_event = None
+            self.comparison_progress.value = target
+
+        Clock.schedule_once(stop_ui, 0)
+
+    def _animate_comparison_progress(self, dt):
+        """Animate progress bar back-and-forth in a bounded range."""
+        next_value = self.comparison_progress.value + (self._comparison_animation_direction * 4)
+        if next_value >= 90:
+            next_value = 90
+            self._comparison_animation_direction = -1
+        elif next_value <= 12:
+            next_value = 12
+            self._comparison_animation_direction = 1
+        self.comparison_progress.value = next_value
 
     def _render_comparison_rows(self, results):
         app = App.get_running_app()
