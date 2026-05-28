@@ -36,6 +36,11 @@ class RecorderWidget(BoxLayout):
         self.selected_file = None
         self.selected_sentence = ''
         self.comparison_result = []
+        self._last_recorded_path = None
+        self._auto_stop_event = None
+        self._stop_in_progress = False
+        self._record_thread = None
+        self._stop_thread = None
         self._comparison_animation_event = None
         self._comparison_animation_direction = 1
         self.audio_files = self.load_audio_files()
@@ -118,50 +123,81 @@ class RecorderWidget(BoxLayout):
         app = App.get_running_app()
         if not self.recording:
             self.recording = True
+            self._last_recorded_path = None
             self.status_label.text = self._localization_service.translate('status_recording', app.locale)
             self.record_button.text = self._localization_service.translate('button_stop_recording', app.locale)
             self.play_button.disabled = True
 
-            self.audio_thread = threading.Thread(target=self.record_audio)
-            self.audio_thread.start()
+            self._record_thread = threading.Thread(target=self.record_audio)
+            self._record_thread.start()
         else:
+            if self._stop_in_progress:
+                return
             self.recording = False
+            self._cancel_auto_stop()
             self.status_label.text = self._localization_service.translate('status_saving', app.locale)
             self.record_button.text = self._localization_service.translate('button_processing', app.locale)
             self.record_button.disabled = True
 
-            self.audio_thread = threading.Thread(target=self.stop_audio)
-            self.audio_thread.start()
+            self._stop_thread = threading.Thread(target=self.stop_audio)
+            self._stop_thread.start()
 
     def record_audio(self):
         path = self._recorder_service.start_recording()
         if path:
-            self.play_button.file_path = path
+            self._last_recorded_path = path
+            self._set_recorded_file_path(path)
             max_duration = 15
-            Clock.schedule_once(lambda dt: self.stop_audio(), max_duration)
+            self._auto_stop_event = Clock.schedule_once(lambda dt: self._trigger_auto_stop(), max_duration)
         else:
             app = App.get_running_app()
             self.recording = False
             self._set_recording_failed_ui(app.locale)
 
-    def stop_audio(self):
+    def _trigger_auto_stop(self):
+        """Auto-stop recording when max duration is reached."""
+        if not self.recording or self._stop_in_progress:
+            return
+
         app = App.get_running_app()
-        self._set_status(self._localization_service.translate('status_recording_stopped', app.locale))
-        self._recorder_service.stop_recording()
-        self._set_post_recording_controls()
+        self.recording = False
+        self._set_status(self._localization_service.translate('status_saving', app.locale))
+        self._set_record_button_processing()
+        self._stop_thread = threading.Thread(target=self.stop_audio)
+        self._stop_thread.start()
 
-        selected_file_path = getattr(self.listen_button, 'file_path', None)
-        recorded_file_path = getattr(self.play_button, 'file_path', None)
-        if not recorded_file_path:
-            self._set_status(self._localization_service.translate('error_not_found', app.locale))
+    def stop_audio(self):
+        if self._stop_in_progress:
             return
 
-        if not selected_file_path:
-            self._set_status(self._localization_service.translate('status_comparison_missing_reference', app.locale))
-            return
+        self._stop_in_progress = True
+        app = App.get_running_app()
+        try:
+            self._cancel_auto_stop()
+            self._set_status(self._localization_service.translate('status_recording_stopped', app.locale))
+            self._recorder_service.stop_recording()
 
-        self._set_status(self._localization_service.translate('status_comparing_audio', app.locale))
-        self._compare_audio(selected_file_path, recorded_file_path)
+            if self._record_thread and self._record_thread.is_alive() and self._record_thread != threading.current_thread():
+                self._record_thread.join(timeout=5.0)
+
+            self._set_post_recording_controls()
+
+            selected_file_path = getattr(self.listen_button, 'file_path', None)
+            recorded_file_path = self._last_recorded_path or getattr(self.play_button, 'file_path', None)
+            if not recorded_file_path:
+                self._set_status(self._localization_service.translate('error_not_found', app.locale))
+                self._set_comparison_progress(0)
+                return
+
+            if not selected_file_path:
+                self._set_status(self._localization_service.translate('status_comparison_missing_reference', app.locale))
+                self._set_comparison_progress(0)
+                return
+
+            self._set_status(self._localization_service.translate('status_comparing_audio', app.locale))
+            self._compare_audio(selected_file_path, recorded_file_path)
+        finally:
+            self._stop_in_progress = False
 
     def _compare_audio(self, original_path, recorded_path):
         app = App.get_running_app()
@@ -212,7 +248,21 @@ class RecorderWidget(BoxLayout):
         """Reset controls when recording could not be started."""
         def update_ui(dt):
             self.record_button.text = self._localization_service.translate('button_record', locale)
+            self.record_button.disabled = False
             self.play_button.disabled = True
+
+        Clock.schedule_once(update_ui, 0)
+
+    def _set_recorded_file_path(self, path):
+        """Store resulting recorded file path on the play button in UI thread."""
+        Clock.schedule_once(lambda dt: setattr(self.play_button, 'file_path', path), 0)
+
+    def _set_record_button_processing(self):
+        """Update recording button to processing state in UI thread."""
+        def update_ui(dt):
+            app = App.get_running_app()
+            self.record_button.text = self._localization_service.translate('button_processing', app.locale)
+            self.record_button.disabled = True
 
         Clock.schedule_once(update_ui, 0)
 
@@ -222,9 +272,16 @@ class RecorderWidget(BoxLayout):
             app = App.get_running_app()
             self.record_button.text = self._localization_service.translate('button_record', app.locale)
             self.record_button.disabled = False
-            self.play_button.disabled = not bool(getattr(self.play_button, 'file_path', None))
+            has_recording = bool(self._last_recorded_path or getattr(self.play_button, 'file_path', None))
+            self.play_button.disabled = not has_recording
 
         Clock.schedule_once(update_ui, 0)
+
+    def _cancel_auto_stop(self):
+        """Cancel pending auto-stop callback if recording was stopped manually."""
+        if self._auto_stop_event is not None:
+            self._auto_stop_event.cancel()
+            self._auto_stop_event = None
 
     def _set_comparison_progress(self, value, status_key=None):
         """Update comparison progress bar and optional status on the main UI thread."""
