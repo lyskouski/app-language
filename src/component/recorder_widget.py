@@ -2,6 +2,7 @@
 # Use of this source code is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
 
 import threading
+from statistics import mean
 
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
@@ -23,6 +24,7 @@ class RecorderWidget(BoxLayout):
         app = App.get_running_app()
         self._recorder_service = app._container.recorder_service()
         self._localization_service = app._container.localization_service()
+        self._audio_comparator = app._container.audio_comparator()
 
     def init_data(self, item):
         self.loading_widget = item
@@ -31,6 +33,7 @@ class RecorderWidget(BoxLayout):
         app = App.get_running_app()
         self.recording = False
         self.selected_file = None
+        self.comparison_result = []
         self.audio_files = self.load_audio_files()
 
         main_layout = BoxLayout(orientation='vertical')
@@ -128,9 +131,53 @@ class RecorderWidget(BoxLayout):
         self.record_button.text = self._localization_service.translate('button_record', app.locale)
         self.record_button.disabled = False
         self.play_button.disabled = not bool(getattr(self.play_button, 'file_path', None))
-        # print("Comparing:", self.listen_button.file_path, recorded_file_mp3)
-        # result = AudioComparator().compare_audio(self.listen_button.file_path, recorded_file_mp3)
-        # print("Comparison result:", result)
+
+        selected_file_path = getattr(self.listen_button, 'file_path', None)
+        recorded_file_path = getattr(self.play_button, 'file_path', None)
+        if not recorded_file_path:
+            self.status_label.text = self._localization_service.translate('error_not_found', app.locale)
+            return
+
+        if not selected_file_path:
+            self.status_label.text = self._localization_service.translate('status_comparison_missing_reference', app.locale)
+            return
+
+        self.status_label.text = self._localization_service.translate('status_comparing_audio', app.locale)
+        self._compare_audio(selected_file_path, recorded_file_path)
+
+    def _compare_audio(self, original_path, recorded_path):
+        app = App.get_running_app()
+        if not self._audio_comparator or not self._audio_comparator.is_available():
+            self.status_label.text = self._localization_service.translate('status_comparison_unavailable', app.locale)
+            return
+
+        try:
+            self.comparison_result = self._audio_comparator.compare_audio(original_path, recorded_path)
+            score_values = [
+                item.get('score', self._deviation_to_score(item.get('deviation', 100.0)))
+                for item in self.comparison_result
+                if isinstance(item, dict)
+            ]
+
+            if not score_values:
+                self.status_label.text = self._localization_service.translate('status_comparison_error', app.locale)
+                return
+
+            overall_score = mean(score_values)
+            details = ', '.join([f"S{idx + 1}: {score:.0f}%" for idx, score in enumerate(score_values[:3])])
+            score_label = self._localization_service.translate('status_comparison_result', app.locale)
+            self.status_label.text = f"{score_label}: {overall_score:.1f}% ({details})"
+        except Exception as exc:
+            print(f"Error running audio comparison: {exc}")
+            self.status_label.text = self._localization_service.translate('status_comparison_error', app.locale)
+
+    def _deviation_to_score(self, deviation):
+        """Convert MFCC distance value to 0-100 pronunciation score."""
+        try:
+            distance = max(float(deviation), 0.0)
+        except (TypeError, ValueError):
+            distance = 100.0
+        return max(0.0, min(100.0, 100.0 / (1.0 + (distance / 25.0))))
 
     def play_audio(self, instance):
         if not getattr(instance, 'file_path', None):

@@ -58,9 +58,12 @@ class LibrosaAudioComparator(IAudioComparator):
                 deviation = 100.0
                 if i < len(parts_recorded):
                     deviation = self._compare_features(part, parts_recorded[i])
+                score = self._deviation_to_score(deviation)
                 summary.append({
-                    "second": i,
-                    "deviation": float(deviation)
+                    "second": i + 1,
+                    "deviation": float(deviation),
+                    "score": score,
+                    "feedback": self._feedback_for_score(score)
                 })
 
             # Cleanup chunk files
@@ -75,6 +78,21 @@ class LibrosaAudioComparator(IAudioComparator):
         except Exception as e:
             print(f"Error comparing audio: {e}")
             return [{"score": 0.0, "feedback": f"Error: {str(e)}"}]
+
+    def _deviation_to_score(self, deviation: float) -> float:
+        """Convert MFCC distance to a 0-100 score (higher is better)."""
+        distance = max(float(deviation), 0.0)
+        return max(0.0, min(100.0, 100.0 / (1.0 + (distance / 25.0))))
+
+    def _feedback_for_score(self, score: float) -> str:
+        """Build a simple quality label for a segment score."""
+        if score >= 85.0:
+            return "Excellent"
+        if score >= 70.0:
+            return "Good"
+        if score >= 50.0:
+            return "Needs improvement"
+        return "Try again"
 
     def _chunk_audio(self, audio_path: str) -> List[str]:
         """Split audio into 1-second chunks."""
@@ -98,7 +116,7 @@ class LibrosaAudioComparator(IAudioComparator):
         features_recorded = self._extract_features(audio_recorded)
         return float(np.linalg.norm(features_original - features_recorded))
 
-    def _extract_features(self, file_path: str) -> np.ndarray:
+    def _extract_features(self, file_path: str) -> Any:
         """Extract MFCC features from audio file."""
         y, sr = librosa.load(file_path, sr=None)
         mfccs = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=13)
