@@ -33,6 +33,7 @@ class RecorderWidget(BoxLayout):
         app = App.get_running_app()
         self.recording = False
         self.selected_file = None
+        self.selected_sentence = ''
         self.comparison_result = []
         self.audio_files = self.load_audio_files()
 
@@ -67,9 +68,22 @@ class RecorderWidget(BoxLayout):
         control_layout.add_widget(self.record_button)
         control_layout.add_widget(self.play_button)
 
+        comparison_header = Label(
+            text=self._localization_service.translate('status_comparison_result', app.locale),
+            size_hint_y=None,
+            height=28
+        )
+        self.comparison_scroll = ScrollView(size_hint_y=None, height=160)
+        self.comparison_panel = GridLayout(cols=1, size_hint_y=None, spacing=4, padding=[4, 4, 4, 4])
+        self.comparison_panel.bind(minimum_height=self.comparison_panel.setter('height'))
+        self.comparison_scroll.add_widget(self.comparison_panel)
+
         main_layout.add_widget(control_layout)
+        main_layout.add_widget(comparison_header)
+        main_layout.add_widget(self.comparison_scroll)
         self.clear_widgets()
         self.add_widget(main_layout)
+        self._render_comparison_rows([])
 
     def load_audio_files(self):
         """Load audio files using vocabulary service."""
@@ -91,6 +105,7 @@ class RecorderWidget(BoxLayout):
     def choose_sentence(self, instance):
         self.listen_button.disabled = False
         self.listen_button.file_path = instance.file_path
+        self.selected_sentence = self.audio_files.get(instance.file_path, '')
         self.status_label.text = f"Selected: {self.audio_files.get(instance.file_path, '')}"
 
     def toggle_recording(self, instance):
@@ -149,10 +164,15 @@ class RecorderWidget(BoxLayout):
         app = App.get_running_app()
         if not self._audio_comparator or not self._audio_comparator.is_available():
             self.status_label.text = self._localization_service.translate('status_comparison_unavailable', app.locale)
+            self._render_comparison_rows([])
             return
 
         try:
-            self.comparison_result = self._audio_comparator.compare_audio(original_path, recorded_path)
+            self.comparison_result = self._audio_comparator.compare_audio(
+                original_path,
+                recorded_path,
+                getattr(self, 'selected_sentence', '')
+            )
             score_values = [
                 item.get('score', self._deviation_to_score(item.get('deviation', 100.0)))
                 for item in self.comparison_result
@@ -161,15 +181,50 @@ class RecorderWidget(BoxLayout):
 
             if not score_values:
                 self.status_label.text = self._localization_service.translate('status_comparison_error', app.locale)
+                self._render_comparison_rows([])
                 return
 
             overall_score = mean(score_values)
-            details = ', '.join([f"S{idx + 1}: {score:.0f}%" for idx, score in enumerate(score_values[:3])])
+            details = ', '.join([f"W{idx + 1}: {score:.0f}%" for idx, score in enumerate(score_values[:3])])
             score_label = self._localization_service.translate('status_comparison_result', app.locale)
             self.status_label.text = f"{score_label}: {overall_score:.1f}% ({details})"
+            self._render_comparison_rows(self.comparison_result)
         except Exception as exc:
             print(f"Error running audio comparison: {exc}")
             self.status_label.text = self._localization_service.translate('status_comparison_error', app.locale)
+            self._render_comparison_rows([])
+
+    def _render_comparison_rows(self, results):
+        app = App.get_running_app()
+        self.comparison_panel.clear_widgets()
+
+        if not results:
+            self.comparison_panel.add_widget(Label(
+                text=self._localization_service.translate('status_comparison_no_segments', app.locale),
+                size_hint_y=None,
+                height=28
+            ))
+            return
+
+        for item in results:
+            if not isinstance(item, dict):
+                continue
+
+            segment_no = int(item.get('word_index', item.get('second', 0)))
+            score = float(item.get('score', self._deviation_to_score(item.get('deviation', 100.0))))
+            feedback = item.get('feedback', '')
+            word_value = item.get('word', '')
+            if word_value:
+                row_text = f"{self._localization_service.translate('label_word_short', app.locale)} {segment_no} ({word_value}): {score:.1f}% - {feedback}"
+            else:
+                row_text = f"{self._localization_service.translate('label_segment_short', app.locale)} {segment_no}: {score:.1f}% - {feedback}"
+            self.comparison_panel.add_widget(Label(
+                text=row_text,
+                size_hint_y=None,
+                height=28,
+                halign='left',
+                text_size=(self.width - 20, None)
+            ))
 
     def _deviation_to_score(self, deviation):
         """Convert MFCC distance value to 0-100 pronunciation score."""

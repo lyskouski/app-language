@@ -15,7 +15,8 @@ class IAudioComparator(ABC):
     def compare_audio(
         self,
         original_path: str,
-        recorded_path: str
+        recorded_path: str,
+        reference_text: str = ""
     ) -> List[Dict[str, Any]]:
         """
         Compare two audio files and return similarity analysis.
@@ -23,6 +24,7 @@ class IAudioComparator(ABC):
         Args:
             original_path: Path to the reference audio file
             recorded_path: Path to the user's recorded audio file
+            reference_text: Expected spoken text used for word-level alignment
 
         Returns:
             List of comparison results with scores and feedback
