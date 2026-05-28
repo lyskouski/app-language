@@ -141,29 +141,26 @@ class RecorderWidget(BoxLayout):
             Clock.schedule_once(lambda dt: self.stop_audio(), max_duration)
         else:
             app = App.get_running_app()
-            self.record_button.text = self._localization_service.translate('button_record', app.locale)
             self.recording = False
-            self.play_button.disabled = True
+            self._set_recording_failed_ui(app.locale)
 
     def stop_audio(self):
         app = App.get_running_app()
-        self.status_label.text = self._localization_service.translate('status_recording_stopped', app.locale)
+        self._set_status(self._localization_service.translate('status_recording_stopped', app.locale))
         self._recorder_service.stop_recording()
-        self.record_button.text = self._localization_service.translate('button_record', app.locale)
-        self.record_button.disabled = False
-        self.play_button.disabled = not bool(getattr(self.play_button, 'file_path', None))
+        self._set_post_recording_controls()
 
         selected_file_path = getattr(self.listen_button, 'file_path', None)
         recorded_file_path = getattr(self.play_button, 'file_path', None)
         if not recorded_file_path:
-            self.status_label.text = self._localization_service.translate('error_not_found', app.locale)
+            self._set_status(self._localization_service.translate('error_not_found', app.locale))
             return
 
         if not selected_file_path:
-            self.status_label.text = self._localization_service.translate('status_comparison_missing_reference', app.locale)
+            self._set_status(self._localization_service.translate('status_comparison_missing_reference', app.locale))
             return
 
-        self.status_label.text = self._localization_service.translate('status_comparing_audio', app.locale)
+        self._set_status(self._localization_service.translate('status_comparing_audio', app.locale))
         self._compare_audio(selected_file_path, recorded_file_path)
 
     def _compare_audio(self, original_path, recorded_path):
@@ -210,6 +207,24 @@ class RecorderWidget(BoxLayout):
     def _set_status(self, text):
         """Set status text on the main UI thread."""
         Clock.schedule_once(lambda dt: setattr(self.status_label, 'text', text), 0)
+
+    def _set_recording_failed_ui(self, locale):
+        """Reset controls when recording could not be started."""
+        def update_ui(dt):
+            self.record_button.text = self._localization_service.translate('button_record', locale)
+            self.play_button.disabled = True
+
+        Clock.schedule_once(update_ui, 0)
+
+    def _set_post_recording_controls(self):
+        """Restore controls after recording stops."""
+        def update_ui(dt):
+            app = App.get_running_app()
+            self.record_button.text = self._localization_service.translate('button_record', app.locale)
+            self.record_button.disabled = False
+            self.play_button.disabled = not bool(getattr(self.play_button, 'file_path', None))
+
+        Clock.schedule_once(update_ui, 0)
 
     def _set_comparison_progress(self, value, status_key=None):
         """Update comparison progress bar and optional status on the main UI thread."""
@@ -262,36 +277,39 @@ class RecorderWidget(BoxLayout):
         self.comparison_progress.value = next_value
 
     def _render_comparison_rows(self, results):
-        app = App.get_running_app()
-        self.comparison_panel.clear_widgets()
+        def update_ui(dt):
+            app = App.get_running_app()
+            self.comparison_panel.clear_widgets()
 
-        if not results:
-            self.comparison_panel.add_widget(Label(
-                text=self._localization_service.translate('status_comparison_no_segments', app.locale),
-                size_hint_y=None,
-                height=28
-            ))
-            return
+            if not results:
+                self.comparison_panel.add_widget(Label(
+                    text=self._localization_service.translate('status_comparison_no_segments', app.locale),
+                    size_hint_y=None,
+                    height=28
+                ))
+                return
 
-        for item in results:
-            if not isinstance(item, dict):
-                continue
+            for item in results:
+                if not isinstance(item, dict):
+                    continue
 
-            segment_no = int(item.get('word_index', item.get('second', 0)))
-            score = float(item.get('score', self._deviation_to_score(item.get('deviation', 100.0))))
-            feedback = item.get('feedback', '')
-            word_value = item.get('word', '')
-            if word_value:
-                row_text = f"{self._localization_service.translate('label_word_short', app.locale)} {segment_no} ({word_value}): {score:.1f}% - {feedback}"
-            else:
-                row_text = f"{self._localization_service.translate('label_segment_short', app.locale)} {segment_no}: {score:.1f}% - {feedback}"
-            self.comparison_panel.add_widget(Label(
-                text=row_text,
-                size_hint_y=None,
-                height=28,
-                halign='left',
-                text_size=(self.width - 20, None)
-            ))
+                segment_no = int(item.get('word_index', item.get('second', 0)))
+                score = float(item.get('score', self._deviation_to_score(item.get('deviation', 100.0))))
+                feedback = item.get('feedback', '')
+                word_value = item.get('word', '')
+                if word_value:
+                    row_text = f"{self._localization_service.translate('label_word_short', app.locale)} {segment_no} ({word_value}): {score:.1f}% - {feedback}"
+                else:
+                    row_text = f"{self._localization_service.translate('label_segment_short', app.locale)} {segment_no}: {score:.1f}% - {feedback}"
+                self.comparison_panel.add_widget(Label(
+                    text=row_text,
+                    size_hint_y=None,
+                    height=28,
+                    halign='left',
+                    text_size=(self.width - 20, None)
+                ))
+
+        Clock.schedule_once(update_ui, 0)
 
     def _deviation_to_score(self, deviation):
         """Convert MFCC distance value to 0-100 pronunciation score."""
