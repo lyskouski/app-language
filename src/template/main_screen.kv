@@ -11,7 +11,7 @@
         id: breadcrumb_view
         viewclass: "BreadcrumbWidget"
         data: []
-        height: dp(30)
+        height: dp(30) if len(self.data) > 0 else 0
         size_hint_y: None
         RecycleBoxLayout:
             orientation: "horizontal"
