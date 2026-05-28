@@ -11,6 +11,12 @@
     bold: True
     outline_color: 0, 0, 0, 1
     outline_width: 2
+    canvas.after:
+        Color:
+            rgba: (0.20, 0.60, 1.0, 1.0) if self.state != 'down' else (0.10, 0.78, 0.35, 1.0)
+        Line:
+            rounded_rectangle: (self.x + dp(1), self.y + dp(1), self.width - dp(2), self.height - dp(2), dp(8))
+            width: dp(2)
 
 <CardScreen@Screen>:
     BoxLayout:

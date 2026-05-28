@@ -2,13 +2,14 @@
 # Use of this source code is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
 
 from kivy.app import App
-from kivy.properties import BooleanProperty, StringProperty
+from kivy.properties import BooleanProperty, StringProperty, ListProperty
 from kivy.uix.button import Button
 from kivy.uix.stacklayout import StackLayout
 
 class CardWidget(Button):
     text_init = StringProperty('')
     text_flip = StringProperty('')
+    fallback_background_color = ListProperty([0.16, 0.18, 0.22, 1])
 
 class CardLayoutWidget(StackLayout):
     flip = BooleanProperty(False)
@@ -32,7 +33,12 @@ class CardLayoutWidget(StackLayout):
             button.text_init = item.translation if self.flip else item.origin
             button.text_flip = item.origin if self.flip else item.translation
             path = app.get_image_dir()
-            image = self._resource_service.find_resource(f"{path}/{item.image}" if item.image else 'assets/images/error.png')
-            button.background_normal = image if image else self._resource_service.find_resource('assets/images/error.png')
-            button.background_down = self._resource_service.find_resource('assets/images/success.png')
+            image = self._resource_service.find_resource(f"{path}/{item.image}") if item.image else None
+            if image:
+                button.background_normal = image
+                button.background_down = image
+            else:
+                button.background_normal = ''
+                button.background_down = ''
+                button.background_color = button.fallback_background_color
             self.add_widget(button)
