@@ -243,9 +243,7 @@ class DataMigration:
                                 self.config_repo.add_game_category(
                                     locale_from,
                                     locale_to,
-                                    category_name,
-                                    game.get('icon'),
-                                    0
+                                    category_name
                                 )
                             except Exception:
                                 # Category might already exist, get it

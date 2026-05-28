@@ -49,9 +49,7 @@ class CategoryAddScreen(Screen):
                 app.locale_from,
                 app.locale_to,
                 self.category_name_text.strip(),
-                self.category_name_text.strip(),  # Use same name for vocabulary filtering
-                self.icon_path_text.strip() if self.icon_path_text else None,
-                int(self.display_order_text) if self.display_order_text else 0
+                self.category_name_text.strip()
             )
 
             # Clear form and return to main screen

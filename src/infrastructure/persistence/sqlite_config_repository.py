@@ -308,8 +308,6 @@ class SQLiteConfigRepository:
         locale_to: str,
         category_name: str,
         vocabulary_source: str,
-        icon_path: Optional[str] = None,
-        display_order: int = 0
     ) -> int:
         """
         Add a game category for a language pair.
@@ -319,8 +317,6 @@ class SQLiteConfigRepository:
             locale_to: Target language locale
             category_name: Category name (display name)
             vocabulary_source: Vocabulary category to load (e.g., 'verbs', 'dictionary')
-            icon_path: Optional icon path
-            display_order: Display order
 
         Returns:
             Category ID
@@ -339,9 +335,9 @@ class SQLiteConfigRepository:
         try:
             cursor = self._db.execute(
                 """INSERT INTO game_categories
-                   (language_pair_id, category_name, vocabulary_source, icon_path, display_order)
-                   VALUES (?, ?, ?, ?, ?)""",
-                (language_pair_id, category_name, vocabulary_source, icon_path, display_order)
+                   (language_pair_id, category_name, vocabulary_source)
+                   VALUES (?, ?, ?)""",
+                (language_pair_id, category_name, vocabulary_source)
             )
             self._db.get_connection().commit()
             return cursor.lastrowid

@@ -59,57 +59,6 @@
                         text_size: self.size
                         halign: 'left'
                         valign: 'top'
-
-                # Icon Path - Optional
-                BoxLayout:
-                    orientation: 'vertical'
-                    size_hint_y: None
-                    height: dp(85)
-                    spacing: dp(5)
-                    Label:
-                        text: app._("category_icon_label", app.locale)
-                        size_hint_y: None
-                        height: dp(36)
-                        font_size: sp(16)
-                        text_size: self.size
-                        halign: 'left'
-                        valign: 'middle'
-                    TextInput:
-                        id: icon_input
-                        text: root.icon_path_text
-                        multiline: False
-                        size_hint_y: None
-                        height: dp(48)
-                        font_size: sp(16)
-                        hint_text: "e.g., assets/images/category_icon.png"
-                        on_text: root.icon_path_text = self.text
-
-                # Display Order - Optional
-                BoxLayout:
-                    orientation: 'vertical'
-                    size_hint_y: None
-                    height: dp(85)
-                    spacing: dp(5)
-                    Label:
-                        text: app._("category_order_label", app.locale)
-                        size_hint_y: None
-                        height: dp(36)
-                        font_size: sp(16)
-                        text_size: self.size
-                        halign: 'left'
-                        valign: 'middle'
-                    TextInput:
-                        id: order_input
-                        text: root.display_order_text
-                        multiline: False
-                        size_hint_y: None
-                        height: dp(48)
-                        font_size: sp(18)
-                        input_filter: 'int'
-                        hint_text: "0"
-                        on_text: root.display_order_text = self.text
-
-        # Buttons
         BoxLayout:
             orientation: 'horizontal'
             size_hint_y: None
