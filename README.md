@@ -1,4 +1,4 @@
-# <img src="./docs/design-flow/logo/tlum.svg" alt="Tlum Logo" width="75"/> Language Learning Application
+# <img src="./assets/images/logo_44.png" alt="Tlum Logo" width="32px"/> Language Learning Application
 [![License: CC BY-NC-ND 4.0](https://img.shields.io/badge/License-CC_BY--NC--ND_4.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-nd/4.0/)
 [![Test Status](https://github.com/lyskouski/app-language/actions/workflows/verify.yml/badge.svg)](https://github.com/lyskouski/app-language/actions/workflows/verify.yml)
 [![Build Status](https://github.com/lyskouski/app-language/actions/workflows/build.yml/badge.svg)](https://github.com/lyskouski/app-language/actions/workflows/build.yml)
