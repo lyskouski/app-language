@@ -6,7 +6,6 @@ from kivy.properties import BooleanProperty, StringProperty
 from kivy.uix.button import Button
 from kivy.uix.stacklayout import StackLayout
 
-
 class CardWidget(Button):
     text_init = StringProperty('')
     text_flip = StringProperty('')

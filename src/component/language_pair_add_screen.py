@@ -5,7 +5,6 @@ from kivy.app import App
 from kivy.properties import StringProperty, ListProperty
 from kivy.uix.screenmanager import Screen
 
-
 class LanguagePairAddScreen(Screen):
     """
     Screen for adding new language pairs to the database.

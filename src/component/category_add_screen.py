@@ -5,15 +5,12 @@ from kivy.app import App
 from kivy.properties import StringProperty
 from kivy.uix.screenmanager import Screen
 
-
 class CategoryAddScreen(Screen):
     """
     Screen for adding new categories to the database.
     Follows Clean Architecture principles with dependency injection.
     """
     category_name_text = StringProperty('')
-    icon_path_text = StringProperty('')
-    display_order_text = StringProperty('0')
 
     def __init__(self, **kwargs):
         super(CategoryAddScreen, self).__init__(**kwargs)
@@ -21,8 +18,6 @@ class CategoryAddScreen(Screen):
     def clear_form(self):
         """Clear all form fields."""
         self.category_name_text = ''
-        self.icon_path_text = ''
-        self.display_order_text = '0'
 
     def save_category(self):
         """

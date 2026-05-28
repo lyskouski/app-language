@@ -6,7 +6,6 @@ from kivy.properties import StringProperty, ListProperty
 from kivy.uix.screenmanager import Screen
 from domain.entities.vocabulary_item import VocabularyItem
 
-
 class VocabularyAddScreen(Screen):
     """
     Screen for adding new vocabulary items to the database.

@@ -8,7 +8,6 @@ from kivy.properties import ObjectProperty, ListProperty, BooleanProperty, Strin
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.screenmanager import Screen
 
-
 class VocabularyItemWidget(BoxLayout):
     """Widget for displaying a vocabulary item with checkbox in RecycleView."""
     origin = StringProperty('')
@@ -50,7 +49,6 @@ class VocabularyItemWidget(BoxLayout):
             else:
                 self._bg_color.rgba = (0.9, 0.9, 0.9, 0.1)  # Light gray for not selected
 
-
 class DictionaryManagementScreen(Screen):
     """Screen for managing vocabulary items in the current study set."""
 
@@ -60,7 +58,6 @@ class DictionaryManagementScreen(Screen):
             widget = self.ids.management_widget
             widget.load_vocabulary_items()
             Clock.schedule_once(lambda dt: widget.populate_rv(), 0.1)
-
 
 class DictionaryManagementWidget(BoxLayout):
     data = ObjectProperty([])
@@ -297,4 +294,3 @@ class DictionaryManagementWidget(BoxLayout):
             print(f"ERROR in go_back: {e}")
             import traceback
             traceback.print_exc()
-
