@@ -27,6 +27,7 @@ labels_be = {
     "language_pair_logo_label": "Шлях да лагатыпу (Неабавязкова)",
     "language_pair_from_label": "Зыходная мова *",
     "language_pair_add_title": "Дадаць моўную пару",
+    "language_pair_select_language": "Выберыце мову",
     "item_new": "[Новы элемент]",
     "game_speaking": "Гаварэнне",
     "game_phonetics": "Фанетыка",

@@ -27,6 +27,7 @@ labels_ru = {
     "language_pair_logo_label": "Путь к логотипу (Необязательно)",
     "language_pair_from_label": "Исходный язык *",
     "language_pair_add_title": "Добавить языковую пару",
+    "language_pair_select_language": "Выберите язык",
     "item_new": "[Новый элемент]",
     "game_speaking": "Говорение",
     "game_phonetics": "Фонетика",

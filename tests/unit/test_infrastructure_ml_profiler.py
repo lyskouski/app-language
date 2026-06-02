@@ -6,7 +6,7 @@
 import pytest
 
 from domain.entities.vocabulary_item import VocabularyItem
-from domain.services import IVocabularyProfiler
+from domain.services.vocabulary_profiler import IVocabularyProfiler
 from infrastructure.persistence.database_connection import DatabaseConnection
 from infrastructure.persistence.sqlite_vocabulary_repository import SQLiteVocabularyRepository
 from infrastructure.ml.sqlite_ml_vocabulary_profiler import SQLiteMLVocabularyProfiler

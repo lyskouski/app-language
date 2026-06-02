@@ -31,68 +31,56 @@
                 BoxLayout:
                     orientation: 'vertical'
                     size_hint_y: None
-                    height: dp(160)
+                    height: dp(90)
                     spacing: dp(5)
                     Label:
                         text: app._("language_pair_from_label", app.locale)
                         size_hint_y: None
-                        height: dp(36)
+                        height: dp(30)
                         font_size: sp(16)
                         text_size: self.size
                         halign: 'left'
                         valign: 'middle'
-                    # Language selection tiles (dynamic)
-                    RecycleView:
-                        id: from_view
-                        viewclass: 'LanguageTileWidget'
-                        size_hint_y: None
-                        height: dp(130)
-                        RecycleGridLayout:
-                            cols: 4
-                            default_size: None, dp(70)
-                            default_size_hint: 1, None
-                            size_hint_y: None
-                            height: self.minimum_height
-                            spacing: dp(8)
+                    # Language selection dropdown
+                    Spinner:
+                        id: from_language
+                        text: root.from_language_text if root.from_language_text else app._('language_pair_select_language', app.locale)
+                        values: root.language_options
+                        size_hint_y: 1
+                        on_text: root.select_from_language(self.text)
 
                 # Target Language - REQUIRED
                 BoxLayout:
                     orientation: 'vertical'
                     size_hint_y: None
-                    height: dp(160)
+                    height: dp(90)
                     spacing: dp(5)
                     Label:
                         text: app._("language_pair_to_label", app.locale)
                         size_hint_y: None
-                        height: dp(36)
+                        height: dp(30)
                         font_size: sp(16)
                         text_size: self.size
                         halign: 'left'
                         valign: 'middle'
-                    # Language selection tiles (dynamic)
-                    RecycleView:
-                        id: to_view
-                        viewclass: 'LanguageTileWidget'
-                        size_hint_y: None
-                        height: dp(130)
-                        RecycleGridLayout:
-                            cols: 4
-                            default_size: None, dp(70)
-                            default_size_hint: 1, None
-                            size_hint_y: None
-                            height: self.minimum_height
-                            spacing: dp(8)
+                    # Language selection dropdown
+                    Spinner:
+                        id: to_language
+                        text: root.to_language_text if root.to_language_text else app._('language_pair_select_language', app.locale)
+                        values: root.language_options
+                        size_hint_y: 1
+                        on_text: root.select_to_language(self.text)
 
                 # Name - Auto-generated, but editable
                 BoxLayout:
                     orientation: 'vertical'
                     size_hint_y: None
-                    height: dp(85)
+                    height: dp(75)
                     spacing: dp(5)
                     Label:
                         text: app._("language_pair_name_label", app.locale)
                         size_hint_y: None
-                        height: dp(36)
+                        height: dp(30)
                         font_size: sp(16)
                         text_size: self.size
                         halign: 'left'
@@ -101,21 +89,20 @@
                         id: name_input
                         text: root.name_text
                         multiline: False
-                        size_hint_y: None
-                        height: dp(48)
-                        font_size: sp(18)
+                        size_hint_y: 1
+                        font_size: sp(16)
                         on_text: root.name_text = self.text
 
                 # Logo Path - Optional
                 BoxLayout:
                     orientation: 'vertical'
                     size_hint_y: None
-                    height: dp(85)
+                    height: dp(75)
                     spacing: dp(5)
                     Label:
                         text: app._("language_pair_logo_label", app.locale)
                         size_hint_y: None
-                        height: dp(36)
+                        height: dp(30)
                         font_size: sp(16)
                         text_size: self.size
                         halign: 'left'
@@ -124,9 +111,8 @@
                         id: logo_input
                         text: root.logo_path_text
                         multiline: False
-                        size_hint_y: None
-                        height: dp(48)
-                        font_size: sp(16)
+                        size_hint_y: 1
+                        font_size: sp(14)
                         hint_text: "e.g., assets/images/language/pair_logo.png"
                         on_text: root.logo_path_text = self.text
 
@@ -134,51 +120,13 @@
         BoxLayout:
             orientation: 'horizontal'
             size_hint_y: None
-            height: dp(50)
+            height: dp(45)
             spacing: dp(10)
             Button:
                 text: app._("button_cancel", app.locale)
-                font_size: sp(18)
+                font_size: sp(16)
                 on_release: root.cancel()
             Button:
                 text: app._("button_save", app.locale)
-                font_size: sp(18)
+                font_size: sp(16)
                 on_release: root.save_language_pair()
-
-
-<LanguageTileWidget@ButtonBehavior+BoxLayout>:
-    locale: ''
-    text: ''
-    logo: ''
-    selected: False
-    is_from: False
-    orientation: 'vertical'
-    padding: dp(8)
-    spacing: dp(4)
-
-    canvas.before:
-        Color:
-            rgba: (0.3, 0.7, 0.3, 1) if self.selected else (0.2, 0.2, 0.2, 0.8)
-        RoundedRectangle:
-            pos: self.pos
-            size: self.size
-            radius: [dp(10)]
-
-    on_release:
-        # Call appropriate selection method based on is_from flag
-        app.root.get_screen('language_pair_add_screen').select_from_language(self.locale) if self.is_from else app.root.get_screen('language_pair_add_screen').select_to_language(self.locale)
-
-    Label:
-        text: root.locale
-        font_size: sp(18)
-        bold: True
-        size_hint_y: 0.4
-        color: (1, 1, 1, 1)
-
-    Label:
-        text: root.text
-        font_size: sp(12)
-        size_hint_y: 0.6
-        text_size: self.width, None
-        halign: 'center'
-        color: (0.9, 0.9, 0.9, 1)

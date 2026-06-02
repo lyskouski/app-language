@@ -10,6 +10,8 @@ class LanguagePairAddScreen(Screen):
     Screen for adding new language pairs to the database.
     Follows Clean Architecture principles with dependency injection.
     """
+    from_language_text = StringProperty('')
+    to_language_text = StringProperty('')
     locale_from_text = StringProperty('')
     locale_to_text = StringProperty('')
     name_text = StringProperty('')
@@ -17,6 +19,7 @@ class LanguagePairAddScreen(Screen):
 
     # Available languages for dropdowns
     available_languages = ListProperty([])
+    language_options = ListProperty([])
 
     def __init__(self, **kwargs):
         super(LanguagePairAddScreen, self).__init__(**kwargs)
@@ -28,58 +31,29 @@ class LanguagePairAddScreen(Screen):
             config_repo = app._container.config_repository()
             languages = config_repo.get_all_languages()
             self.available_languages = [(lang['locale'], lang['text'], lang['logo']) for lang in languages]
-            self.populate_language_tiles()
+            # Populate spinner options with locale codes
+            self.language_options = [lang[0] for lang in self.available_languages]
         except Exception as e:
             print(f"ERROR loading languages: {e}")
             import traceback
             traceback.print_exc()
 
-    def populate_language_tiles(self):
-        """Populate RecycleView tiles with available languages."""
-        if not hasattr(self, 'ids') or 'from_view' not in self.ids:
-            return
-
-        # Prepare data for source language RecycleView
-        from_tiles_data = [
-            {
-                'locale': locale,
-                'text': name,
-                'logo': logo,
-                'selected': locale == self.locale_from_text,
-                'is_from': True  # Flag to identify which selection this is
-            }
-            for locale, name, logo in self.available_languages
-        ]
-
-        # Prepare data for target language RecycleView
-        to_tiles_data = [
-            {
-                'locale': locale,
-                'text': name,
-                'logo': logo,
-                'selected': locale == self.locale_to_text,
-                'is_from': False  # Flag to identify which selection this is
-            }
-            for locale, name, logo in self.available_languages
-        ]
-
-        self.ids.from_view.data = from_tiles_data
-        self.ids.to_view.data = to_tiles_data
-
     def select_from_language(self, locale):
         """Select source language."""
+        self.from_language_text = locale
         self.locale_from_text = locale
         self.update_name_automatically()
-        self.populate_language_tiles()
 
     def select_to_language(self, locale):
         """Select target language."""
+        self.to_language_text = locale
         self.locale_to_text = locale
         self.update_name_automatically()
-        self.populate_language_tiles()
 
     def clear_form(self):
         """Clear all form fields."""
+        self.from_language_text = ''
+        self.to_language_text = ''
         self.locale_from_text = ''
         self.locale_to_text = ''
         self.name_text = ''

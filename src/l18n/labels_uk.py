@@ -27,6 +27,7 @@ labels_uk = {
     "language_pair_logo_label": "Шлях до логотипу (Необов'язково)",
     "language_pair_from_label": "Вихідна мова *",
     "language_pair_add_title": "Додати мовну пару",
+    "language_pair_select_language": "Виберіть мову",
     "item_new": "[Новий елемент]",
     "game_speaking": "Мовлення",
     "game_phonetics": "Фонетика",

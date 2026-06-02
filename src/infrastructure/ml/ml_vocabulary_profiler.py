@@ -8,7 +8,8 @@ import time
 from pathlib import Path
 from typing import Dict, List
 from domain.entities.vocabulary_item import VocabularyItem
-from domain.services import IVocabularyProfiler
+from domain.services.vocabulary_profiler import IVocabularyProfiler
+from infrastructure.ml.ml_embeddings import MLEmbeddings
 
 
 class MLVocabularyProfiler(IVocabularyProfiler):

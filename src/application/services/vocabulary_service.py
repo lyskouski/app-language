@@ -3,7 +3,7 @@
 
 from typing import List, Optional
 from domain.entities.vocabulary_item import VocabularyItem
-from domain.services import IVocabularyProfiler
+from domain.services.vocabulary_profiler import IVocabularyProfiler
 from domain.use_cases.vocabulary_use_cases import LoadVocabularyUseCase, ShuffleVocabularyUseCase
 
 

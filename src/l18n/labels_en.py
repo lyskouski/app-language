@@ -27,6 +27,7 @@ labels_en = {
     "language_pair_logo_label": "Logo Path (Optional)",
     "language_pair_from_label": "Source Language *",
     "language_pair_add_title": "Add Language Pair",
+    "language_pair_select_language": "Select Language",
     "item_new": "[New Item]",
     "game_speaking": "Speaking",
     "game_phonetics": "Phonetics",

@@ -5,7 +5,7 @@ import numpy as np
 import pickle
 from typing import Dict, List, Optional
 from domain.entities.vocabulary_item import VocabularyItem
-from domain.services import IVocabularyProfiler
+from domain.services.vocabulary_profiler import IVocabularyProfiler
 from infrastructure.persistence.database_connection import DatabaseConnection
 
 

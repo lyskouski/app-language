@@ -13,7 +13,7 @@ from kivy.utils import platform
 from domain.repositories.vocabulary_repository import IVocabularyRepository
 from domain.repositories.settings_repository import ISettingsRepository
 from domain.repositories.resource_repository import IResourceRepository
-from domain.services import IVocabularyProfiler
+from domain.services.vocabulary_profiler import IVocabularyProfiler
 from domain.services.audio_comparator import IAudioComparator
 from domain.use_cases.vocabulary_use_cases import LoadVocabularyUseCase, ShuffleVocabularyUseCase
 from domain.use_cases.settings_use_cases import (
@@ -265,5 +265,3 @@ class DependencyContainer:
         kivy.resources.resource_add_path(persistence_dir)
         if getattr(sys, 'frozen', False):
             kivy.resources.resource_add_path(sys._MEIPASS)
-
-
