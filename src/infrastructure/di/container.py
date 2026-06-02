@@ -140,10 +140,7 @@ class DependencyContainer:
             return None
 
     def audio_comparator(self) -> Optional[IAudioComparator]:
-        """Get audio comparator instance (desktop only, requires numpy/librosa)."""
-        if platform in ['android', 'ios']:
-            return None
-
+        """Get audio comparator instance"""
         def create_audio_comparator():
             try:
                 from infrastructure.audio.librosa_audio_comparator import LibrosaAudioComparator
