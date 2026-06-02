@@ -43,23 +43,29 @@ class RecorderControllerAndroid(IRecorderController):
         except Exception as e:
             print(f"Error handling permission result: {e}")
 
+    def _set_status(self, status_label, message: str):
+        if hasattr(status_label, 'text'):
+            status_label.text = message
+        else:
+            print(message)
+
     def get_initial_status(self, status_label):
         self._on_permission_result()
         if self.is_available:
-            status_label.text = "Audio recording is ready"
+            self._set_status(status_label, "Audio recording is ready")
         else:
-            status_label.text = "[!] Audio recording is not available"
+            self._set_status(status_label, "[!] Audio recording is not available")
         return self.is_available
 
     def start_recording(self, status_label):
         if not self.is_available:
-            status_label.text = "[!] Audio recording is not available"
+            self._set_status(status_label, "[!] Audio recording is not available")
             return None
         app = App.get_running_app()
         recorded_file = app.get_with_home_dir(f'tmp_{int(time.time())}.3gp')
         with self._lock:
             if self.media_recorder is not None:
-                status_label.text = "[!] Recording is already in progress"
+                self._set_status(status_label, "[!] Recording is already in progress")
                 return None
             try:
                 recorder = self.MediaRecorder()
@@ -72,7 +78,7 @@ class RecorderControllerAndroid(IRecorderController):
                 self.media_recorder = recorder
             except Exception as e:
                 self.media_recorder = None
-                status_label.text = f"[!] Recording failed: {e}"
+                self._set_status(status_label, f"[!] Recording failed: {e}")
                 return None
         return recorded_file
 
@@ -82,7 +88,7 @@ class RecorderControllerAndroid(IRecorderController):
             self.media_recorder = None
 
         if recorder is None:
-            status_label.text = "[!] No active recording to stop"
+            self._set_status(status_label, "[!] No active recording to stop")
             return False
 
         try:
@@ -94,5 +100,5 @@ class RecorderControllerAndroid(IRecorderController):
                 recorder.release()
             except Exception:
                 pass
-            status_label.text = f"[!] Error stopping Android recording: {e}"
+            self._set_status(status_label, f"[!] Error stopping Android recording: {e}")
             return False

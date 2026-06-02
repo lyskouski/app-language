@@ -39,15 +39,22 @@ class RecorderControllerDesktop(IRecorderController):
     def __init__(self):
         self.recording = False
         self.audio_data = None
+
+    def _set_status(self, status_label, message: str):
+        if hasattr(status_label, 'text'):
+            status_label.text = message
+        else:
+            print(message)
+
     def get_initial_status(self, status_label):
         if not HAS_DESKTOP_AUDIO:
-            status_label.text = "[!] Desktop audio recording libraries are not available"
+            self._set_status(status_label, "[!] Desktop audio recording libraries are not available")
             return False
         return True
 
     def start_recording(self, status_label):
         if not HAS_DESKTOP_AUDIO:
-            status_label.text = "[!] Audio recording not available - PortAudio library required"
+            self._set_status(status_label, "[!] Audio recording not available - PortAudio library required")
             return None
 
         self.recording = True
@@ -66,7 +73,7 @@ class RecorderControllerDesktop(IRecorderController):
                     data, __ = stream.read(1024)
                     buffer.append(data)
         except (OSError, RuntimeError) as e:
-            status_label.text = f"[!] Recording error: {e}"
+            self._set_status(status_label, f"[!] Recording error: {e}")
             return None
 
         if buffer:

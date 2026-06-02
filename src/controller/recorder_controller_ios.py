@@ -67,25 +67,31 @@ class RecorderControllerIos(IRecorderController):
             print(f"Error setting up audio session: {e}")
             return False
 
+    def _set_status(self, status_label, message: str):
+        if hasattr(status_label, 'text'):
+            status_label.text = message
+        else:
+            print(message)
+
     def get_initial_status(self, status_label):
         if not HAS_IOS_AUDIO:
-            status_label.text = "[!] iOS audio recording libraries are not available"
+            self._set_status(status_label, "[!] iOS audio recording libraries are not available")
             return False
         if not self._request_microphone_permission():
-            status_label.text = "[!] Microphone permission denied"
+            self._set_status(status_label, "[!] Microphone permission denied")
             self.is_available = False
             return False
         if not self._setup_audio_session():
-            status_label.text = "[!] Failed to setup audio session"
+            self._set_status(status_label, "[!] Failed to setup audio session")
             self.is_available = False
             return False
-        status_label.text = "Audio recording is ready"
+        self._set_status(status_label, "Audio recording is ready")
         self.is_available = True
         return True
 
     def start_recording(self, status_label):
         if not self.is_available:
-            status_label.text = "[!] Audio recording is not available"
+            self._set_status(status_label, "[!] Audio recording is not available")
             return None
 
         try:
@@ -121,19 +127,19 @@ class RecorderControllerIos(IRecorderController):
                 file_url, settings, None
             )
             if not self.recorder:
-                status_label.text = "[!] Failed to create audio recorder"
+                self._set_status(status_label, "[!] Failed to create audio recorder")
                 return None
             if not self.recorder.prepareToRecord():
-                status_label.text = "[!] Failed to prepare recorder"
+                self._set_status(status_label, "[!] Failed to prepare recorder")
                 return None
             if not self.recorder.record():
-                status_label.text = "[!] Failed to start recording"
+                self._set_status(status_label, "[!] Failed to start recording")
                 return None
-            status_label.text = "Recording..."
+            self._set_status(status_label, "Recording...")
             return recorded_file
 
         except Exception as e:
-            status_label.text = f"[!] Recording failed: {e}"
+            self._set_status(status_label, f"[!] Recording failed: {e}")
             return None
 
     def stop_recording(self, status_label):
@@ -143,9 +149,9 @@ class RecorderControllerIos(IRecorderController):
                 self.recorder = None
             if HAS_IOS_AUDIO and self.audio_session:
                 self.audio_session.setActive_error_(False, None)
-            status_label.text = "Recording stopped"
+            self._set_status(status_label, "Recording stopped")
             return True
 
         except Exception as e:
-            status_label.text = f"[!] Error stopping iOS recording: {e}"
+            self._set_status(status_label, f"[!] Error stopping iOS recording: {e}")
             return False
