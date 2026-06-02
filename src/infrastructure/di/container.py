@@ -38,11 +38,6 @@ from infrastructure.persistence.ini_settings_repository import IniSettingsReposi
 from infrastructure.persistence.kivy_resource_repository import KivyResourceRepository
 from infrastructure.ml.sqlite_ml_vocabulary_profiler import SQLiteMLVocabularyProfiler
 
-# Audio comparator - conditionally import (desktop only, uses librosa)
-if platform not in ['android', 'ios']:
-    from infrastructure.audio.librosa_audio_comparator import LibrosaAudioComparator
-
-
 class DependencyContainer:
     """
     Dependency Injection Container - Composition Root.
@@ -148,9 +143,18 @@ class DependencyContainer:
         """Get audio comparator instance (desktop only, requires numpy/librosa)."""
         if platform in ['android', 'ios']:
             return None
+
+        def create_audio_comparator():
+            try:
+                from infrastructure.audio.librosa_audio_comparator import LibrosaAudioComparator
+                return LibrosaAudioComparator()
+            except Exception as e:
+                print(f"⚠️  Audio comparator disabled due to error: {e}")
+                return None
+
         return self._get_or_create(
             'audio_comparator',
-            lambda: LibrosaAudioComparator()
+            create_audio_comparator
         )
 
     def recorder_controller(self) -> IRecorderController:
