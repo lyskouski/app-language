@@ -5,10 +5,7 @@
     BoxLayout:
         orientation: "vertical"
         ActionBar:
-            hidden: app.is_mobile
-            # size_hint_y: 0 if app.is_mobile else None
-            opacity: 1.0 if not app.is_mobile else 0
-            height: '48dp' if not app.is_mobile else 0
+            height: dp(48)
             ActionView:
                 use_separator: True
                 ActionPrevious:
@@ -28,18 +25,6 @@
                 orientation: "vertical"
         Widget:
             size_hint_y: dp(0.08)
-
-        ActionBar:
-            hidden: False if app.is_mobile else True
-            # size_hint_y: None if app.is_mobile else 0
-            opacity: 1.0 if app.is_mobile else 0
-            height: '48dp' if app.is_mobile else 0
-            ActionView:
-                use_separator: True
-                ActionPrevious:
-                    with_previous: True
-                    on_release: app.next_screen('main_screen')
-                    title: app._('edit_structure', app.locale)
 
 <StructureWidget@BoxLayout>:
     orientation: "horizontal"
