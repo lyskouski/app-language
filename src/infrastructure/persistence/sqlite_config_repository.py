@@ -58,10 +58,10 @@ class SQLiteConfigRepository:
             List of language dictionaries
         """
         rows = self._db.fetchall(
-            """SELECT locale, name, logo_path, is_active, display_order
+            """SELECT locale, name, logo_path
                FROM languages
                WHERE is_active = 1
-               ORDER BY display_order, name"""
+               ORDER BY locale"""
         )
 
         return [

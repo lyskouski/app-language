@@ -11,6 +11,7 @@ import os
 from typing import Optional
 from contextlib import contextmanager
 import threading
+from infrastructure.persistence.database_patches import DatabasePatches
 
 
 def _find_schema_file() -> Optional[str]:
@@ -119,6 +120,38 @@ class DatabaseConnection:
                     conn.executescript(schema_sql)
             else:
                 print("Warning: Database schema file not found")
+
+        # Apply patches for existing installations
+        self._load_patches()
+
+        with self.get_connection() as conn:
+            DatabasePatches.apply_all(conn)
+
+    def _load_patches(self) -> None:
+        """Dynamically load all patch modules from the patches folder."""
+        import importlib
+        import sys
+        from pathlib import Path
+
+        # Find patches directory
+        patches_dir = Path(__file__).parent.parent.parent / 'patches'
+
+        if not patches_dir.exists():
+            return
+
+        # Get all .py files in patches directory (excluding __init__.py)
+        patch_files = sorted([
+            f.stem for f in patches_dir.glob('*.py')
+            if f.stem != '__init__' and not f.stem.startswith('_')
+        ])
+
+        # Dynamically import each patch file
+        for patch_file in patch_files:
+            try:
+                module_name = f'patches.{patch_file}'
+                importlib.import_module(module_name)
+            except Exception as e:
+                print(f"Warning: Failed to load patch '{patch_file}': {e}")
 
     def get_connection(self) -> sqlite3.Connection:
         """

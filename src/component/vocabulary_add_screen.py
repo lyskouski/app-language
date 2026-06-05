@@ -53,8 +53,8 @@ class VocabularyAddScreen(Screen):
 
             # Create vocabulary item entity
             new_item = VocabularyItem(
-                origin=self.origin_text.strip(),
-                translation=self.translation_text.strip(),
+                origin=self.translation_text.strip(),
+                translation=self.origin_text.strip(),
                 sound=self.sound_path_text.strip() if self.sound_path_text else None,
                 image=self.image_path_text.strip() if self.image_path_text else None,
                 category=self.category_text.strip() if self.category_text else None
