@@ -142,6 +142,24 @@ class DependencyContainer:
     def audio_comparator(self) -> Optional[IAudioComparator]:
         """Get audio comparator instance"""
         def create_audio_comparator():
+            if platform == 'ios':
+                try:
+                    from infrastructure.audio.ios_audio_comparator import IosAudioComparator
+                    ios_comparator = IosAudioComparator()
+                    if ios_comparator.is_available():
+                        return ios_comparator
+                except Exception as e:
+                    print(f"⚠️  iOS audio comparator disabled due to error: {e}")
+
+            if platform == 'android':
+                try:
+                    from infrastructure.audio.android_audio_comparator import AndroidAudioComparator
+                    android_comparator = AndroidAudioComparator()
+                    if android_comparator.is_available():
+                        return android_comparator
+                except Exception as e:
+                    print(f"⚠️  Android audio comparator disabled due to error: {e}")
+
             try:
                 from infrastructure.audio.librosa_audio_comparator import LibrosaAudioComparator
                 return LibrosaAudioComparator()
