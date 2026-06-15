@@ -73,6 +73,7 @@ labels_en = {
     "button_clear": "Clear",
     "button_choose": "Choose",
     "button_cancel": "Cancel",
+    "button_delete": "Delete",
     "button_back": "Back",
     "button_add": "Add",
     "search": "Search...",

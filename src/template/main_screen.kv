@@ -105,6 +105,13 @@
     category_name: ""
     Widget:
         size_hint_x: 0.05
+    Button:
+        text: app._('button_delete', app.locale)
+        opacity: 1.0 if (not root.route_path and root.category_id) else 0
+        disabled: False if (not root.route_path and root.category_id) else True
+        size_hint_x: 0.2 if (not root.route_path and root.category_id) else 0.01
+        on_release:
+            app.root.get_screen('main_screen').ids.root_widget.delete_category(root)
     Label:
         text: app._(root.text, app.locale) if root.text.startswith('game_') else root.text
         size_hint_x: 0.4
@@ -119,13 +126,13 @@
         text: app._('button_add', app.locale)
         opacity: 1.0 if (not root.route_path and root.category_id) else 0
         disabled: False if (not root.route_path and root.category_id) else True
-        size_hint_x: 0.25 if (not root.route_path and root.category_id) else 0.01
+        size_hint_x: 0.2 if (not root.route_path and root.category_id) else 0.01
         on_release:
             app.root.get_screen('main_screen').ids.root_widget.add_vocabulary(root)
     Button:
         text: app._('button_select', app.locale)
         opacity: 1.0 if not root.route_path else 0
-        size_hint_x: 0.25 if not root.route_path else 0.01
+        size_hint_x: 0.2 if not root.route_path else 0.01
         on_release:
             app.root.get_screen('main_screen').ids.root_widget.update_data(root)
     Widget:

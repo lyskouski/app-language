@@ -344,3 +344,42 @@ class SQLiteConfigRepository:
         except Exception as e:
             print(f"Error adding game category: {e}")
             raise
+
+    def delete_game_category(
+        self,
+        locale_from: str,
+        locale_to: str,
+        category_name: str,
+    ) -> int:
+        """
+        Delete a game category for a language pair by category name.
+
+        Args:
+            locale_from: Source language locale
+            locale_to: Target language locale
+            category_name: Category name to delete
+
+        Returns:
+            Number of deleted rows
+        """
+        row = self._db.fetchone(
+            "SELECT id FROM language_pairs WHERE locale_from = ? AND locale_to = ?",
+            (locale_from, locale_to)
+        )
+
+        if not row:
+            raise ValueError(f"Language pair not found: {locale_from}-{locale_to}")
+
+        language_pair_id = row['id']
+
+        try:
+            cursor = self._db.execute(
+                """DELETE FROM game_categories
+                   WHERE language_pair_id = ? AND category_name = ?""",
+                (language_pair_id, category_name)
+            )
+            self._db.get_connection().commit()
+            return cursor.rowcount
+        except Exception as e:
+            print(f"Error deleting game category: {e}")
+            raise

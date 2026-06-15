@@ -73,6 +73,7 @@ labels_pl = {
     "button_clear": "Wyczyść",
     "button_choose": "Wybierz",
     "button_cancel": "Anuluj",
+    "button_delete": "Usuń",
     "button_back": "Wstecz",
     "button_add": "Dodaj",
     "search": "Szukaj...",

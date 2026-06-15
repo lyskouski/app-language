@@ -194,6 +194,36 @@ class RootWidget(BoxLayout):
             import traceback
             traceback.print_exc()
 
+    def delete_category(self, info):
+        """Delete a category from current language pair and refresh list."""
+        try:
+            app = App.get_running_app()
+
+            category_name = getattr(info, 'category_name', '')
+            if not category_name:
+                print("ERROR: Category name is empty")
+                return
+
+            if not app.locale_from or not app.locale_to:
+                print("ERROR: locale_from or locale_to not set")
+                return
+
+            deleted = self._config_repo.delete_game_category(
+                app.locale_from,
+                app.locale_to,
+                category_name,
+            )
+
+            if deleted == 0:
+                print(f"WARNING: Category not found: {category_name}")
+
+            self.load_data()
+            self.populate_rv()
+        except Exception as e:
+            print(f"ERROR in delete_category: {e}")
+            import traceback
+            traceback.print_exc()
+
     def add_category(self):
         """Navigate to category add screen."""
         try:

@@ -73,6 +73,7 @@ labels_be = {
     "button_clear": "Ачысціць",
     "button_choose": "Выбраць",
     "button_cancel": "Адмена",
+    "button_delete": "Выдаліць",
     "button_back": "Вярнуцца",
     "button_add": "Дадаць",
     "search": "Пошук...",
