@@ -360,7 +360,7 @@ class SQLiteConfigRepository:
             category_name: Category name to delete
 
         Returns:
-            Number of deleted rows
+            Number of deleted category rows
         """
         row = self._db.fetchone(
             "SELECT id FROM language_pairs WHERE locale_from = ? AND locale_to = ?",
@@ -373,13 +373,32 @@ class SQLiteConfigRepository:
         language_pair_id = row['id']
 
         try:
-            cursor = self._db.execute(
-                """DELETE FROM game_categories
-                   WHERE language_pair_id = ? AND category_name = ?""",
-                (language_pair_id, category_name)
-            )
-            self._db.get_connection().commit()
-            return cursor.rowcount
+            with self._db.transaction() as conn:
+                category_row = conn.execute(
+                    """SELECT vocabulary_source
+                       FROM game_categories
+                       WHERE language_pair_id = ? AND category_name = ?""",
+                    (language_pair_id, category_name)
+                ).fetchone()
+
+                if not category_row:
+                    return 0
+
+                vocabulary_source = category_row['vocabulary_source']
+
+                conn.execute(
+                    """DELETE FROM vocabulary_items
+                       WHERE language_pair_id = ? AND category = ?""",
+                    (language_pair_id, vocabulary_source)
+                )
+
+                cursor = conn.execute(
+                    """DELETE FROM game_categories
+                       WHERE language_pair_id = ? AND category_name = ?""",
+                    (language_pair_id, category_name)
+                )
+
+                return cursor.rowcount
         except Exception as e:
             print(f"Error deleting game category: {e}")
             raise
