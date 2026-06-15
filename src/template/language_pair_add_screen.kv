@@ -48,7 +48,6 @@
                         id: from_language
                         text: root.from_language_text if root.from_language_text else app._('language_pair_select_language', app.locale)
                         values: root.language_options
-                        size_hint_y: 1
                         on_text: root.select_from_language(self.text)
 
                 # Target Language - REQUIRED
@@ -70,7 +69,6 @@
                         id: to_language
                         text: root.to_language_text if root.to_language_text else app._('language_pair_select_language', app.locale)
                         values: root.language_options
-                        size_hint_y: 1
                         on_text: root.select_to_language(self.text)
 
                 # Name - Auto-generated, but editable

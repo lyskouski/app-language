@@ -33,7 +33,7 @@
                 BoxLayout:
                     orientation: 'vertical'
                     size_hint_y: None
-                    height: dp(85)
+                    height: app.md3_textinput_height + dp(37)
                     spacing: dp(5)
                     Label:
                         text: app._("vocab_origin_label", app.locale)
@@ -48,7 +48,7 @@
                         text: root.origin_text
                         multiline: False
                         size_hint_y: None
-                        height: dp(48)
+                        height: app.md3_textinput_height
                         font_size: sp(18)
                         on_text: root.origin_text = self.text
 
@@ -56,7 +56,7 @@
                 BoxLayout:
                     orientation: 'vertical'
                     size_hint_y: None
-                    height: dp(85)
+                    height: app.md3_textinput_height + dp(37)
                     spacing: dp(5)
                     Label:
                         text: app._("vocab_translation_label", app.locale)
@@ -71,7 +71,7 @@
                         text: root.translation_text
                         multiline: False
                         size_hint_y: None
-                        height: dp(48)
+                        height: app.md3_textinput_height
                         font_size: sp(18)
                         on_text: root.translation_text = self.text
 
@@ -79,7 +79,7 @@
                 BoxLayout:
                     orientation: 'vertical'
                     size_hint_y: None
-                    height: dp(85)
+                    height: app.md3_textinput_height + dp(37)
                     spacing: dp(5)
                     Label:
                         text: app._("vocab_category_label", app.locale)
@@ -94,7 +94,7 @@
                         text: root.category_text
                         multiline: False
                         size_hint_y: None
-                        height: dp(48)
+                        height: app.md3_textinput_height
                         font_size: sp(16)
                         readonly: True
                         disabled: True
@@ -104,7 +104,7 @@
                 BoxLayout:
                     orientation: 'vertical'
                     size_hint_y: None
-                    height: dp(85)
+                    height: app.md3_textinput_height + dp(37)
                     spacing: dp(5)
                     Label:
                         text: app._("vocab_difficulty_label", app.locale)
@@ -119,7 +119,7 @@
                         text: root.difficulty_text
                         multiline: False
                         size_hint_y: None
-                        height: dp(48)
+                        height: app.md3_textinput_height
                         font_size: sp(18)
                         input_filter: 'int'
                         hint_text: "0"
@@ -129,7 +129,7 @@
                 BoxLayout:
                     orientation: 'vertical'
                     size_hint_y: None
-                    height: dp(85)
+                    height: app.md3_textinput_height + dp(37)
                     spacing: dp(5)
                     Label:
                         text: app._("vocab_sound_label", app.locale)
@@ -144,7 +144,7 @@
                         text: root.sound_path_text
                         multiline: False
                         size_hint_y: None
-                        height: dp(48)
+                        height: app.md3_textinput_height
                         font_size: sp(16)
                         hint_text: "e.g., assets/audio/word.mp3"
                         on_text: root.sound_path_text = self.text
@@ -153,7 +153,7 @@
                 BoxLayout:
                     orientation: 'vertical'
                     size_hint_y: None
-                    height: dp(85)
+                    height: app.md3_textinput_height + dp(37)
                     spacing: dp(5)
                     Label:
                         text: app._("vocab_image_label", app.locale)
@@ -168,7 +168,7 @@
                         text: root.image_path_text
                         multiline: False
                         size_hint_y: None
-                        height: dp(48)
+                        height: app.md3_textinput_height
                         font_size: sp(16)
                         hint_text: "e.g., assets/images/word.png"
                         on_text: root.image_path_text = self.text

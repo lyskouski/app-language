@@ -33,7 +33,7 @@
                 BoxLayout:
                     orientation: 'vertical'
                     size_hint_y: None
-                    height: dp(105)
+                    height: app.md3_textinput_height + dp(57)
                     spacing: dp(5)
                     Label:
                         text: app._("category_name_label", app.locale)
@@ -48,7 +48,7 @@
                         text: root.category_name_text
                         multiline: False
                         size_hint_y: None
-                        height: dp(48)
+                        height: app.md3_textinput_height
                         font_size: sp(18)
                         hint_text: "e.g., verbs, dictionary, numbers, articulation"
                         on_text: root.category_name_text = self.text

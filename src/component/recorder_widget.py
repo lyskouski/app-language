@@ -51,7 +51,7 @@ class RecorderWidget(BoxLayout):
         list_layout.bind(minimum_height=list_layout.setter('height'))
 
         for file_name, sentence in self.audio_files.items():
-            row = BoxLayout(orientation='horizontal', size_hint_y=None, height=36)
+            row = BoxLayout(orientation='horizontal', size_hint_y=None, height=app.md3_button_height + 8)
             row.add_widget(MultilineLabel(text=sentence))
             choose_button = Button(text=self._localization_service.translate('button_choose', app.locale), size_hint_x=0.2)
             choose_button.file_path = file_name
@@ -62,7 +62,7 @@ class RecorderWidget(BoxLayout):
         scroll_view.add_widget(list_layout)
         main_layout.add_widget(scroll_view)
 
-        control_layout = BoxLayout(size_hint_y=None, height=50)
+        control_layout = BoxLayout(size_hint_y=None, height=app.md3_button_height + 8)
         self.listen_button = Button(text=self._localization_service.translate('button_listen', app.locale), on_press=self.play_audio)
         self.listen_button.disabled = True
         self.status_label = Label(text=self._localization_service.translate('status_select_sentence', app.locale), size_hint_y='0.2dp')

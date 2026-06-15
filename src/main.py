@@ -48,7 +48,7 @@ import component.card_layout_widget
 
 from kivy.app import App
 from kivy.lang import Builder
-from kivy.properties import BooleanProperty, StringProperty, ListProperty
+from kivy.properties import BooleanProperty, StringProperty, ListProperty, NumericProperty
 from kivy.uix.screenmanager import ScreenManager
 from kivy.utils import platform
 
@@ -84,6 +84,8 @@ class MainApp(App):
     md3_on_secondary = ListProperty([0.20, 0.08, 0.18, 1.0])
     md3_on_surface = ListProperty([0.16, 0.10, 0.16, 1.0])
     md3_on_surface_variant = ListProperty([0.36, 0.28, 0.35, 1.0])
+    md3_button_height = NumericProperty(48)
+    md3_textinput_height = NumericProperty(48)
 
     def __init__(self, **kwargs):
         super(MainApp, self).__init__(**kwargs)

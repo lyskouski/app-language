@@ -15,6 +15,8 @@
     color: app.md3_on_surface
 
 <TextInput>:
+    size_hint_y: None
+    height: app.md3_textinput_height
     background_normal: ""
     background_active: ""
     background_disabled_normal: ""
@@ -25,12 +27,18 @@
     padding: [dp(12), dp(10), dp(12), dp(10)]
 
 <Button>:
+    size_hint_y: None
+    height: app.md3_button_height
     background_normal: ""
     background_down: ""
     background_disabled_normal: ""
     background_disabled_down: ""
     background_color: app.md3_primary if not self.disabled else app.md3_outline
     color: app.md3_on_primary if not self.disabled else app.md3_surface
+
+<Spinner>:
+    size_hint_y: None
+    height: app.md3_textinput_height
 
 <ActionButton>:
     background_normal: ""
