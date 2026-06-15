@@ -76,6 +76,7 @@ labels_en = {
     "button_delete": "Delete",
     "button_back": "Back",
     "button_add": "Add",
+    "button_add_word": "Add word",
     "search": "Search...",
     "dictionaries_manage_title": "Manage",
     "_": "Fatal Error"

@@ -76,6 +76,7 @@ labels_uk = {
     "button_delete": "Видалити",
     "button_back": "Назад",
     "button_add": "Додати",
+    "button_add_word": "Додати слово",
     "search": "Пошук...",
     "dictionaries_manage_title": "Керувати",
     "_": "Фатальна помилка"

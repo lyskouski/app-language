@@ -76,6 +76,7 @@ labels_ru = {
     "button_delete": "Удалить",
     "button_back": "Вернуться",
     "button_add": "Добавить",
+    "button_add_word": "Добавить слово",
     "search": "Поиск...",
     "dictionaries_manage_title": "Управлять",
     "_": "Фатальная ошибка"

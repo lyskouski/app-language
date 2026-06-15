@@ -76,6 +76,7 @@ labels_be = {
     "button_delete": "Выдаліць",
     "button_back": "Вярнуцца",
     "button_add": "Дадаць",
+    "button_add_word": "Дадаць слова",
     "search": "Пошук...",
     "dictionaries_manage_title": "Управляць",
     "_": "Фатальная памылка"
