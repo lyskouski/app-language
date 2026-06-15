@@ -40,6 +40,57 @@
     size_hint_y: None
     height: app.theme.md3_textinput_height
 
+<ToggleButton>:
+    size_hint_y: None
+    height: app.theme.md3_button_height
+    background_normal: ""
+    background_down: ""
+    background_disabled_normal: ""
+    background_disabled_down: ""
+    background_color: app.theme.md3_secondary if self.state == 'normal' else app.theme.md3_primary
+    color: app.theme.md3_on_secondary if self.state == 'normal' else app.theme.md3_on_primary
+
+<Accordion>:
+    canvas.before:
+        Color:
+            rgba: app.theme.md3_surface_container
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+<AccordionItem>:
+    background_normal: "atlas://data/images/defaulttheme/button"
+    background_selected: "atlas://data/images/defaulttheme/button_pressed"
+    canvas.before:
+        Color:
+            rgba: app.theme.md3_surface
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+[AccordionItemTitle@Label]:
+    text: ctx.title
+    color: app.theme.md3_on_secondary if ctx.item.collapse else app.theme.md3_on_primary
+    halign: 'center'
+    valign: 'middle'
+    text_size: None, None
+    canvas.before:
+        Color:
+            rgba: app.theme.md3_secondary if ctx.item.collapse else app.theme.md3_primary
+        Rectangle:
+            pos: self.pos
+            size: self.size
+        PushMatrix
+        Translate:
+            xy: self.center_x, self.center_y
+        Rotate:
+            angle: 90 if ctx.item.orientation == 'horizontal' else 0
+            axis: 0, 0, 1
+        Translate:
+            xy: -self.center_x, -self.center_y
+    canvas.after:
+        PopMatrix
+
 <ActionBar>:
     background_image: ""
     background_color: app.theme.md3_primary
