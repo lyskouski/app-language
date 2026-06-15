@@ -97,7 +97,7 @@ INSERT OR REPLACE INTO db_metadata (key, value) VALUES ('created_at', datetime('
 -- Seed default languages
 INSERT OR REPLACE INTO languages (locale, name, logo_path, is_active, display_order) VALUES
     ('EN', 'English', 'assets/images/language/en.png', 1, 1),
-    ('BY', 'Беларуская', 'assets/images/language/by.png', 1, 2),
+    ('BE', 'Беларуская', 'assets/images/language/be.png', 1, 2),
     ('RU', 'Русский', 'assets/images/language/ru.png', 1, 3),
     ('UK', 'Українська', 'assets/images/language/uk.png', 1, 4),
     ('PL', 'Polski', 'assets/images/language/pl.png', 1, 5);

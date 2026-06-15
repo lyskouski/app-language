@@ -129,8 +129,7 @@ class DatabaseConnection:
 
     def _load_patches(self) -> None:
         """Dynamically load all patch modules from the patches folder."""
-        import importlib
-        import sys
+        import importlib.util
         from pathlib import Path
 
         # Find patches directory
@@ -141,17 +140,21 @@ class DatabaseConnection:
 
         # Get all .py files in patches directory (excluding __init__.py)
         patch_files = sorted([
-            f.stem for f in patches_dir.glob('*.py')
+            f for f in patches_dir.glob('*.py')
             if f.stem != '__init__' and not f.stem.startswith('_')
         ])
 
-        # Dynamically import each patch file
+        # Load each patch file by absolute path, so numeric file names are supported.
         for patch_file in patch_files:
             try:
-                module_name = f'patches.{patch_file}'
-                importlib.import_module(module_name)
+                module_name = f'patches_runtime_{patch_file.stem}'
+                spec = importlib.util.spec_from_file_location(module_name, str(patch_file))
+                if not spec or not spec.loader:
+                    raise ImportError(f"Unable to create import spec for {patch_file.name}")
+                module = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(module)
             except Exception as e:
-                print(f"Warning: Failed to load patch '{patch_file}': {e}")
+                print(f"Warning: Failed to load patch '{patch_file.name}': {e}")
 
     def get_connection(self) -> sqlite3.Connection:
         """
