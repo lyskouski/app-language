@@ -48,7 +48,7 @@
         size_hint_y: dp(0.04)
     BoxLayout:
         orientation: "horizontal"
-        height: app.md3_button_height + dp(8)
+        height: app.theme.md3_button_height + dp(8)
         size_hint_y: None
         Widget:
             size_hint_x: 0.02
@@ -137,7 +137,7 @@
     background_color: 0,0,0,0
     canvas.after:
         Color:
-            rgba: app.md3_secondary
+            rgba: app.theme.md3_secondary
         Triangle:
             points: (self.right - dp(5), self.y + dp(6), self.right - dp(2), self.center_y, self.right - dp(5), self.top - dp(6))
         Line:

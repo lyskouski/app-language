@@ -36,7 +36,7 @@
         size_hint_x: dp(root.indent) if root.indent else dp(0.01)
         canvas.before:
             Color:
-                rgba: app.md3_outline
+                rgba: app.theme.md3_outline
             Line:
                 points: (self.right - dp(5), self.top - dp(20), self.right, self.top - dp(20))
                 width: 0.25

@@ -144,7 +144,7 @@
 
     canvas.before:
         Color:
-            rgba: app.md3_primary if self.selected else app.md3_secondary
+            rgba: app.theme.md3_primary if self.selected else app.theme.md3_secondary
         RoundedRectangle:
             pos: self.pos
             size: self.size
@@ -159,7 +159,7 @@
         font_size: sp(16)
         bold: True
         size_hint_y: 0.4
-        color: app.md3_on_primary if root.selected else app.md3_on_secondary
+        color: app.theme.md3_on_primary if root.selected else app.theme.md3_on_secondary
 
     Label:
         text: root.text
@@ -167,4 +167,4 @@
         size_hint_y: 0.6
         text_size: self.width, None
         halign: 'center'
-        color: app.md3_on_primary if root.selected else app.md3_on_secondary
+        color: app.theme.md3_on_primary if root.selected else app.theme.md3_on_secondary

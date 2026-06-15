@@ -30,7 +30,7 @@
                     hint_text: app._('field_text__hint', app.locale)
                     multiline: False
                     size_hint_y: None
-                    height: app.md3_textinput_height
+                    height: app.theme.md3_textinput_height
                 Label:
                     text: app._('field_source', app.locale)
                     size_hint_y: None
@@ -44,7 +44,7 @@
                     hint_text: app._('field_source__hint', app.locale)
                     multiline: False
                     size_hint_y: None
-                    height: app.md3_textinput_height
+                    height: app.theme.md3_textinput_height
                 Label:
                     text: app._('field_logo', app.locale)
                     size_hint_y: None
@@ -58,7 +58,7 @@
                     hint_text: app._('field_logo__hint', app.locale)
                     multiline: False
                     size_hint_y: None
-                    height: app.md3_textinput_height
+                    height: app.theme.md3_textinput_height
                 Label:
                     text: app._('field_store_path', app.locale)
                     size_hint_y: None
@@ -72,7 +72,7 @@
                     hint_text: app._('field_store_path__hint', app.locale)
                     multiline: False
                     size_hint_y: None
-                    height: app.md3_textinput_height
+                    height: app.theme.md3_textinput_height
                 Label:
                     text: app._('field_route_path', app.locale)
                     size_hint_y: None
@@ -86,7 +86,7 @@
                     hint_text: app._('field_route_path__hint', app.locale)
                     multiline: False
                     size_hint_y: None
-                    height: app.md3_textinput_height
+                    height: app.theme.md3_textinput_height
                 Label:
                     text: app._('field_locale', app.locale)
                     size_hint_y: None
@@ -100,7 +100,7 @@
                     hint_text: app._('field_locale__hint', app.locale)
                     multiline: False
                     size_hint_y: None
-                    height: app.md3_textinput_height
+                    height: app.theme.md3_textinput_height
                 Label:
                     text: app._('field_locale_to', app.locale)
                     size_hint_y: None
@@ -114,10 +114,10 @@
                     hint_text: app._('field_locale_to__hint', app.locale)
                     multiline: False
                     size_hint_y: None
-                    height: app.md3_textinput_height
+                    height: app.theme.md3_textinput_height
         BoxLayout:
             size_hint_y: None
-            height: app.md3_button_height + dp(8)
+            height: app.theme.md3_button_height + dp(8)
             Button:
                 text: app._('button_back', app.locale)
                 size_hint_x: dp(0.5)

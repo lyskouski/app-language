@@ -29,6 +29,7 @@ from application.services.resource_service import ResourceService
 from application.services.resource_service import LocalizationService
 from application.services.media_service import MediaService
 from application.services.recorder_service import RecorderService, IRecorderController
+from application.services.theme_service import ThemeService
 
 # Infrastructure - SQLite-based repositories
 from infrastructure.persistence.database_connection import get_database, DatabaseConnection
@@ -37,6 +38,7 @@ from infrastructure.persistence.sqlite_config_repository import SQLiteConfigRepo
 from infrastructure.persistence.ini_settings_repository import IniSettingsRepository
 from infrastructure.persistence.kivy_resource_repository import KivyResourceRepository
 from infrastructure.ml.sqlite_ml_vocabulary_profiler import SQLiteMLVocabularyProfiler
+from infrastructure.ui.material3_theme_provider import Material3ThemeProvider
 
 class DependencyContainer:
     """
@@ -267,6 +269,13 @@ class DependencyContainer:
         return self._get_or_create(
             'localization_service',
             lambda: LocalizationService()
+        )
+
+    def theme_service(self) -> ThemeService:
+        """Get theme service instance."""
+        return self._get_or_create(
+            'theme_service',
+            lambda: ThemeService(Material3ThemeProvider())
         )
 
     def setup_kivy_resources(self):

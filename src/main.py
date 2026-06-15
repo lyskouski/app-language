@@ -48,7 +48,7 @@ import component.card_layout_widget
 
 from kivy.app import App
 from kivy.lang import Builder
-from kivy.properties import BooleanProperty, StringProperty, ListProperty, NumericProperty
+from kivy.properties import BooleanProperty, StringProperty, ListProperty, ObjectProperty
 from kivy.uix.screenmanager import ScreenManager
 from kivy.utils import platform
 
@@ -72,20 +72,7 @@ class MainApp(App):
     locale = StringProperty('')
     locale_from = StringProperty('')
     locale_to = StringProperty('')
-
-    # Material Design 3 color tokens (from user-provided ARGB values)
-    md3_primary = ListProperty([0x91 / 255.0, 0x23 / 255.0, 0x91 / 255.0, 1.0])
-    md3_secondary = ListProperty([0xDC / 255.0, 0xA3 / 255.0, 0xBC / 255.0, 1.0])
-    md3_surface = ListProperty([0.98, 0.97, 0.98, 1.0])
-    md3_surface_container = ListProperty([0.94, 0.91, 0.94, 1.0])
-    md3_surface_variant = ListProperty([0.90, 0.86, 0.90, 1.0])
-    md3_outline = ListProperty([0.57, 0.46, 0.56, 1.0])
-    md3_on_primary = ListProperty([1.0, 1.0, 1.0, 1.0])
-    md3_on_secondary = ListProperty([0.20, 0.08, 0.18, 1.0])
-    md3_on_surface = ListProperty([0.16, 0.10, 0.16, 1.0])
-    md3_on_surface_variant = ListProperty([0.36, 0.28, 0.35, 1.0])
-    md3_button_height = NumericProperty(48)
-    md3_textinput_height = NumericProperty(48)
+    theme = ObjectProperty(None)
 
     def __init__(self, **kwargs):
         super(MainApp, self).__init__(**kwargs)
@@ -98,6 +85,8 @@ class MainApp(App):
         self._settings_service = self._container.settings_service()
         self._resource_service = self._container.resource_service()
         self._localization_service = self._container.localization_service()
+        self._theme_service = self._container.theme_service()
+        self.theme = self._theme_service.get_theme()
 
         # Initialize vocabulary service (will be created when needed)
         self._vocabulary_service = None

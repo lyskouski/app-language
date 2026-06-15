@@ -43,7 +43,7 @@
     locale: ""
     canvas.before:
         Color:
-            rgba: app.md3_surface_container
+            rgba: app.theme.md3_surface_container
         RoundedRectangle:
             pos: self.pos
             size: self.size
@@ -67,7 +67,7 @@
         text: "Select / Wybierz"
         size_hint_x: None
         width: dp(140)
-        background_color: app.md3_primary
-        color: app.md3_on_primary
+        background_color: app.theme.md3_primary
+        color: app.theme.md3_on_primary
         on_release:
             app.root.get_screen('language_screen').ids.language_widget.select_language(root.locale)
