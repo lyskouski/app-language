@@ -109,7 +109,8 @@
         text: app._('button_delete', app.locale)
         opacity: 1.0 if ((not root.route_path and root.category_id) or (root.locale_from and root.locale_to and not root.category_id and not root.route_path)) else 0
         disabled: False if ((not root.route_path and root.category_id) or (root.locale_from and root.locale_to and not root.category_id and not root.route_path)) else True
-        size_hint_x: 0.2 if ((not root.route_path and root.category_id) or (root.locale_from and root.locale_to and not root.category_id and not root.route_path)) else 0.01
+        size_hint_x: None
+        width: self.texture_size[0] + dp(18) if ((not root.route_path and root.category_id) or (root.locale_from and root.locale_to and not root.category_id and not root.route_path)) else 0
         on_release:
             app.root.get_screen('main_screen').ids.root_widget.delete_category(root) if root.category_id else app.root.get_screen('main_screen').ids.root_widget.delete_language_pair(root)
     Label:
@@ -126,13 +127,15 @@
         text: app._('button_add_word', app.locale)
         opacity: 1.0 if (not root.route_path and root.category_id) else 0
         disabled: False if (not root.route_path and root.category_id) else True
-        size_hint_x: 0.2 if (not root.route_path and root.category_id) else 0.01
+        size_hint_x: None
+        width: self.texture_size[0] + dp(18) if (not root.route_path and root.category_id) else 0
         on_release:
             app.root.get_screen('main_screen').ids.root_widget.add_vocabulary(root)
     Button:
         text: app._('button_select', app.locale)
         opacity: 1.0 if not root.route_path else 0
-        size_hint_x: 0.2 if not root.route_path else 0.01
+        size_hint_x: None
+        width: self.texture_size[0] + dp(18) if not root.route_path else 0
         on_release:
             app.root.get_screen('main_screen').ids.root_widget.update_data(root)
     Widget:
