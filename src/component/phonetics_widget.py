@@ -19,12 +19,10 @@ class PhoneticsWidget(HarmonicaWidget):
     def add_row(self, layout, origin, trans):
         app = App.get_running_app()
         # Use MediaService from container
-        media_service = app._container.media_service(app.locale_to, app.get_audio_dir())
         row = BoxLayout(orientation='horizontal', size_hint_y=None, height=app.theme.md3_button_height + 8, spacing=8)
 
         listen_button = Button(text=self._localization_service.translate('button_listen', app.locale), on_press=self.play_audio)
         listen_button.origin_value = origin
-        listen_button.file_path = media_service.get_audio_file(origin)
 
         if self.origin and self.secondary:
             row.add_widget(Label(text=origin))
@@ -48,5 +46,8 @@ class PhoneticsWidget(HarmonicaWidget):
 
     def play_audio(self, instance):
         app = App.get_running_app()
-        media_service = app._container.media_service()
-        media_service.play_audio(instance.file_path)
+        media_service = app._container.media_service(app.locale_to, app.get_audio_dir())
+        word = getattr(instance, 'origin_value', '')
+        file_path = media_service.get_audio_file(word)
+        if file_path:
+            media_service.play_audio(file_path)

@@ -51,10 +51,13 @@ class MediaService:
 
         filepath = os.path.join(self._audio_dir, filename)
 
-        if not os.path.exists(filepath):
+        # Regenerate when file is missing or empty/corrupted.
+        if (not os.path.exists(filepath)) or os.path.getsize(filepath) == 0:
             self._generate_tts_audio(word, filepath)
 
-        return filepath if os.path.exists(filepath) else None
+        if os.path.exists(filepath) and os.path.getsize(filepath) > 0:
+            return filepath
+        return None
 
     def play_audio(self, path: str) -> None:
         """
@@ -63,7 +66,11 @@ class MediaService:
         Args:
             path: Path to the audio file
         """
-        if not os.path.exists(path):
+        if not path:
+            print('[MediaService] Empty audio path')
+            return
+
+        if (not os.path.exists(path)) or os.path.getsize(path) == 0:
             print(f"[MediaService] File not found: {path}")
             return
 
