@@ -78,6 +78,7 @@ labels_ru = {
     "button_add": "Добавить",
     "button_add_word": "Добавить слово",
     "theme_dark_mode": "Темная тема",
+    "theme_light_mode": "Светлая тема",
     "search": "Поиск...",
     "dictionaries_manage_title": "Управление словарем",
     "_": "Фатальная ошибка"

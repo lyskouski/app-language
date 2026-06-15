@@ -78,6 +78,7 @@ labels_en = {
     "button_add": "Add",
     "button_add_word": "Add word",
     "theme_dark_mode": "Dark mode",
+    "theme_light_mode": "Light mode",
     "search": "Search...",
     "dictionaries_manage_title": "Manage dictionary",
     "_": "Fatal Error"

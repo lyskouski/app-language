@@ -81,7 +81,7 @@
             on_release:
                 root.add_category()
         ToggleButton:
-            text: app._('theme_dark_mode', app.locale)
+            text: app._('theme_light_mode', app.locale) if app.theme_mode == 'dark' else app._('theme_dark_mode', app.locale)
             state: 'down' if app.theme_mode == 'dark' else 'normal'
             size_hint_x: 0.18
             on_state:
