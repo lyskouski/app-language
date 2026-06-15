@@ -134,6 +134,15 @@ class MainApp(App):
         if platform in ['android', 'ios']:
             self.is_mobile = True
 
+        app_icon = kivy.resources.resource_find('assets/images/logo_44.png')
+        if app_icon:
+            self.icon = app_icon
+            try:
+                Window.set_icon(app_icon)
+            except Exception:
+                # Some platforms/backends may not support the chosen icon format.
+                pass
+
         # Use themed clear color so transition gaps never expose default black.
         Window.clearcolor = self.theme.md3_on_primary
 
