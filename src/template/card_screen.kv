@@ -9,11 +9,8 @@
     text: root.text_init if self.state == 'down' else root.text_flip
     size_hint: None, None
     size: max(dp(150), min(self.parent.width * 0.24, self.parent.height * 0.24)) if self.parent else dp(150), max(dp(150), min(self.parent.width * 0.24, self.parent.height * 0.24)) if self.parent else dp(150)
-    color: 1, 1, 1, 1
-    background_color: 1, 1, 1, 1
-    bold: True
-    outline_color: app.theme.md3_secondary
-    outline_width: 2
+    color: app.theme.md3_primary
+    background_color: app.theme.md3_on_primary
     canvas.after:
         Color:
             rgba: (0.20, 0.60, 1.0, 1.0) if self.state != 'down' else (0.10, 0.78, 0.35, 1.0)

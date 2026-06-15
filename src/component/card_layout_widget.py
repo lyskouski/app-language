@@ -9,7 +9,7 @@ from kivy.uix.stacklayout import StackLayout
 class CardWidget(Button):
     text_init = StringProperty('')
     text_flip = StringProperty('')
-    fallback_background_color = ListProperty([0.16, 0.18, 0.22, 1])
+    fallback_background_color = ListProperty([1.0, 1.0, 1.0, 1.0])
 
 class CardLayoutWidget(StackLayout):
     flip = BooleanProperty(False)
@@ -30,6 +30,7 @@ class CardLayoutWidget(StackLayout):
 
         for item in vocabulary_items:
             button = CardWidget()
+            button.fallback_background_color = app.theme.md3_on_primary
             button.text_init = item.translation if self.flip else item.origin
             button.text_flip = item.origin if self.flip else item.translation
             path = app.get_image_dir()
