@@ -185,6 +185,33 @@ class SQLiteConfigRepository:
             print(f"Error adding language pair: {e}")
             raise
 
+    def delete_language_pair(self, locale_from: str, locale_to: str) -> int:
+        """
+        Delete a language pair.
+
+        Cascading cleanup is handled by foreign keys:
+        - game_categories.language_pair_id -> language_pairs.id (ON DELETE CASCADE)
+        - vocabulary_items.language_pair_id -> language_pairs.id (ON DELETE CASCADE)
+
+        Args:
+            locale_from: Source language locale
+            locale_to: Target language locale
+
+        Returns:
+            Number of deleted language pair rows
+        """
+        try:
+            cursor = self._db.execute(
+                """DELETE FROM language_pairs
+                   WHERE locale_from = ? AND locale_to = ?""",
+                (locale_from, locale_to)
+            )
+            self._db.get_connection().commit()
+            return cursor.rowcount
+        except Exception as e:
+            print(f"Error deleting language pair: {e}")
+            raise
+
     # ===== Game Configuration Management =====
 
     def get_dictionaries_for_language_pair(self, locale_from: str, locale_to: str) -> List[Dict]:

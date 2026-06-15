@@ -224,6 +224,37 @@ class RootWidget(BoxLayout):
             import traceback
             traceback.print_exc()
 
+    def delete_language_pair(self, info):
+        """Delete a language pair and cascade-delete linked categories and vocabulary."""
+        try:
+            app = App.get_running_app()
+
+            locale_from = getattr(info, 'locale_from', '')
+            locale_to = getattr(info, 'locale_to', '')
+
+            if not locale_from or not locale_to:
+                print("ERROR: locale_from or locale_to is empty")
+                return
+
+            deleted = self._config_repo.delete_language_pair(locale_from, locale_to)
+            if deleted == 0:
+                print(f"WARNING: Language pair not found: {locale_from}-{locale_to}")
+
+            # If the deleted pair was selected in app state, clear it.
+            if app.locale_from == locale_from and app.locale_to == locale_to:
+                app.locale_from = ''
+                app.locale_to = ''
+
+            # Root list may have changed, force root view refresh.
+            self.path = 'root'
+            self.ids.breadcrumb_view.data = []
+            self.load_data('root')
+            self.populate_rv()
+        except Exception as e:
+            print(f"ERROR in delete_language_pair: {e}")
+            import traceback
+            traceback.print_exc()
+
     def add_category(self):
         """Navigate to category add screen."""
         try:
