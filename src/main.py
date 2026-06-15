@@ -20,6 +20,12 @@ import os
 import kivy
 import kivy.resources
 import sys
+from pathlib import Path
+from kivy.config import Config
+
+_PROJECT_ROOT = Path(__file__).resolve().parent.parent
+_BOOTSTRAP_ICON = _PROJECT_ROOT / 'assets' / 'images' / 'logo_44.png'
+Config.set('kivy', 'window_icon', str(_BOOTSTRAP_ICON))
 
 from component.card_screen import CardScreen
 from component.loading_screen import LoadingScreen
@@ -74,6 +80,7 @@ class MainApp(App):
     locale_from = StringProperty('')
     locale_to = StringProperty('')
     theme = ObjectProperty(None)
+    title = 'Tlum'
 
     def __init__(self, **kwargs):
         super(MainApp, self).__init__(**kwargs)
