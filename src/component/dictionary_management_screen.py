@@ -243,6 +243,62 @@ class DictionaryManagementWidget(BoxLayout):
             print(f"ERROR in toggle_item_selection: {e}")
             self._updating_checkbox = False
 
+    def delete_item(self, item_id):
+        """Delete a vocabulary item from database and refresh management list."""
+        try:
+            app = App.get_running_app()
+            item_index = int(item_id)
+            if item_index < 0 or item_index >= len(self.data):
+                return
+
+            item = self.data[item_index]
+            origin = item.get('origin', '') if isinstance(item, dict) else ''
+            translation = item.get('translation', '') if isinstance(item, dict) else ''
+            category = item.get('category') if isinstance(item, dict) else None
+
+            vocab_repo = app._container.vocabulary_repository()
+            if hasattr(vocab_repo, 'delete_vocabulary_item'):
+                vocab_repo.delete_vocabulary_item(
+                    app.locale_from,
+                    app.locale_to,
+                    origin,
+                    translation=translation,
+                    category=category,
+                )
+
+            # Remove from current list and update selection indices.
+            del self.data[item_index]
+
+            updated_selected = []
+            for selected_id in self.selected_items:
+                selected_index = int(selected_id)
+                if selected_index == item_index:
+                    continue
+                if selected_index > item_index:
+                    updated_selected.append(str(selected_index - 1))
+                else:
+                    updated_selected.append(selected_id)
+            self.selected_items = updated_selected
+
+            # Keep app.store in sync.
+            if app and hasattr(app, 'store'):
+                filtered_store = [
+                    store_item for store_item in app.store
+                    if not (
+                        getattr(store_item, 'origin', None) == origin
+                        and getattr(store_item, 'translation', None) == translation
+                        and getattr(store_item, 'category', None) == category
+                    )
+                ]
+                app.store.clear()
+                app.store.extend(filtered_store)
+
+            self.populate_rv()
+        except Exception as e:
+            print(f"ERROR in delete_item: {e}")
+            import traceback
+            traceback.print_exc()
+
     def apply_selection(self):
         """Apply the selected items to the app store."""
         try:

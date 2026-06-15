@@ -1,3 +1,5 @@
+#:kivy 2.1.0
+
 # Copyright 2025 The terCAD team. All rights reserved.
 # Use of this source code is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
 
@@ -55,6 +57,12 @@
     size_hint_y: None
     padding: [dp(10), dp(5)]
     spacing: dp(10)
+
+    Button:
+        text: "Delete"
+        size_hint_x: None
+        width: dp(88)
+        on_release: app.root.get_screen('dictionary_management_screen').ids.management_widget.delete_item(root.item_id)
 
     BoxLayout:
         orientation: "vertical"

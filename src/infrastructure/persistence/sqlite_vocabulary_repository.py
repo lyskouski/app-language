@@ -221,3 +221,37 @@ class SQLiteVocabularyRepository(IVocabularyRepository):
 
         row = self._db.fetchone(query, (locale_from, locale_to, origin))
         return row['id'] if row else None
+
+    def delete_vocabulary_item(
+        self,
+        locale_from: str,
+        locale_to: str,
+        origin: str,
+        translation: Optional[str] = None,
+        category: Optional[str] = None,
+    ) -> int:
+        """Delete vocabulary item(s) for language pair and return number of deleted rows."""
+        try:
+            with self._db.transaction() as conn:
+                conditions = [
+                    "language_pair_id = (SELECT id FROM language_pairs WHERE locale_from = ? AND locale_to = ?)",
+                    "origin = ?",
+                ]
+                params = [locale_from, locale_to, origin]
+
+                if translation is not None:
+                    conditions.append("translation = ?")
+                    params.append(translation)
+
+                if category is None:
+                    conditions.append("category IS NULL")
+                else:
+                    conditions.append("category = ?")
+                    params.append(category)
+
+                query = f"DELETE FROM vocabulary_items WHERE {' AND '.join(conditions)}"
+                cursor = conn.execute(query, tuple(params))
+                return cursor.rowcount
+        except Exception as e:
+            print(f"Error deleting vocabulary item: {e}")
+            raise
