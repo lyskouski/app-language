@@ -6,7 +6,7 @@
 <ScreenManager>:
     canvas.before:
         Color:
-            rgba: app.theme.md3_background
+            rgba: app.theme_color('md3_background', app.theme_version)
         Rectangle:
             pos: self.pos
             size: self.size
@@ -14,13 +14,13 @@
 <Screen>:
     canvas.before:
         Color:
-            rgba: app.theme.md3_surface
+            rgba: app.theme_color('md3_surface', app.theme_version)
         Rectangle:
             pos: self.pos
             size: self.size
 
 <Label>:
-    color: app.theme.md3_on_surface
+    color: app.theme_color('md3_on_surface', app.theme_version)
 
 <TextInput>:
     size_hint_y: None
@@ -28,10 +28,10 @@
     background_normal: ""
     background_active: ""
     background_disabled_normal: ""
-    background_color: app.theme.md3_surface_container if not self.disabled else app.theme.md3_surface_variant
-    foreground_color: app.theme.md3_on_surface
-    hint_text_color: app.theme.md3_on_surface_variant
-    cursor_color: app.theme.md3_primary
+    background_color: app.theme_color('md3_surface_container', app.theme_version) if not self.disabled else app.theme_color('md3_surface_variant', app.theme_version)
+    foreground_color: app.theme_color('md3_on_surface', app.theme_version)
+    hint_text_color: app.theme_color('md3_on_surface_variant', app.theme_version)
+    cursor_color: app.theme_color('md3_primary', app.theme_version)
     padding: [dp(12), dp(10), dp(12), dp(10)]
 
 <Button>:
@@ -41,8 +41,8 @@
     background_down: ""
     background_disabled_normal: ""
     background_disabled_down: ""
-    background_color: app.theme.md3_primary if not self.disabled else app.theme.md3_outline
-    color: app.theme.md3_on_primary if not self.disabled else app.theme.md3_surface
+    background_color: app.theme_color('md3_primary', app.theme_version) if not self.disabled else app.theme_color('md3_outline', app.theme_version)
+    color: app.theme_color('md3_on_primary', app.theme_version) if not self.disabled else app.theme_color('md3_surface', app.theme_version)
 
 <Spinner>:
     size_hint_y: None
@@ -55,13 +55,13 @@
     background_down: ""
     background_disabled_normal: ""
     background_disabled_down: ""
-    background_color: app.theme.md3_secondary if self.state == 'normal' else app.theme.md3_primary
-    color: app.theme.md3_on_secondary if self.state == 'normal' else app.theme.md3_on_primary
+    background_color: app.theme_color('md3_secondary', app.theme_version) if self.state == 'normal' else app.theme_color('md3_primary', app.theme_version)
+    color: app.theme_color('md3_on_secondary', app.theme_version) if self.state == 'normal' else app.theme_color('md3_on_primary', app.theme_version)
 
 <Accordion>:
     canvas.before:
         Color:
-            rgba: app.theme.md3_surface_container
+            rgba: app.theme_color('md3_surface_container', app.theme_version)
         Rectangle:
             pos: self.pos
             size: self.size
@@ -71,20 +71,20 @@
     background_selected: "atlas://data/images/defaulttheme/button_pressed"
     canvas.before:
         Color:
-            rgba: app.theme.md3_surface
+            rgba: app.theme_color('md3_surface', app.theme_version)
         Rectangle:
             pos: self.pos
             size: self.size
 
 [AccordionItemTitle@Label]:
     text: ctx.title
-    color: app.theme.md3_on_secondary if ctx.item.collapse else app.theme.md3_on_primary
+    color: app.theme_color('md3_on_secondary', app.theme_version) if ctx.item.collapse else app.theme_color('md3_on_primary', app.theme_version)
     halign: 'center'
     valign: 'middle'
     text_size: None, None
     canvas.before:
         Color:
-            rgba: app.theme.md3_secondary if ctx.item.collapse else app.theme.md3_primary
+            rgba: app.theme_color('md3_secondary', app.theme_version) if ctx.item.collapse else app.theme_color('md3_primary', app.theme_version)
         Rectangle:
             pos: self.pos
             size: self.size
@@ -101,11 +101,11 @@
 
 <ActionBar>:
     background_image: ""
-    background_color: app.theme.md3_primary
+    background_color: app.theme_color('md3_primary', app.theme_version)
 
 <ActionView>:
     background_image: ""
-    background_color: app.theme.md3_primary
+    background_color: app.theme_color('md3_primary', app.theme_version)
     spacing: dp(4)
     padding: [dp(4), dp(4), dp(4), dp(4)]
 
@@ -116,9 +116,9 @@
     background_down: ""
     background_disabled_normal: ""
     background_disabled_down: ""
-    background_color: app.theme.md3_secondary if not self.disabled else app.theme.md3_outline
-    color: app.theme.md3_on_secondary if not self.disabled else app.theme.md3_surface
+    background_color: app.theme_color('md3_secondary', app.theme_version) if not self.disabled else app.theme_color('md3_outline', app.theme_version)
+    color: app.theme_color('md3_on_secondary', app.theme_version) if not self.disabled else app.theme_color('md3_surface', app.theme_version)
 
 <ActionPrevious>:
     app_icon: "assets/images/logo_44.png"
-    color: app.theme.md3_on_primary
+    color: app.theme_color('md3_on_primary', app.theme_version)

@@ -55,7 +55,7 @@ import component.card_layout_widget
 from kivy.app import App
 from kivy.core.window import Window
 from kivy.lang import Builder
-from kivy.properties import BooleanProperty, StringProperty, ListProperty, ObjectProperty
+from kivy.properties import BooleanProperty, StringProperty, ListProperty, ObjectProperty, NumericProperty
 from kivy.uix.screenmanager import ScreenManager
 from kivy.utils import platform
 
@@ -81,6 +81,7 @@ class MainApp(App):
     locale_to = StringProperty('')
     theme_mode = StringProperty('light')
     theme = ObjectProperty(None)
+    theme_version = NumericProperty(0)
     title = 'Tlum'
 
     def __init__(self, **kwargs):
@@ -124,6 +125,14 @@ class MainApp(App):
         self.locale = locale
         self._settings_service.update_interface_locale(locale)
 
+    def theme_color(self, token_name: str, _theme_version: float = 0):
+        """Get a theme token value.
+
+        `_theme_version` is an explicit dependency used by KV bindings
+        to force live theme re-evaluation when mode changes.
+        """
+        return getattr(self.theme, token_name)
+
     def toggle_theme_mode(self, dark_enabled: bool):
         """Switch between light and dark theme and persist choice in database."""
         new_mode = 'dark' if dark_enabled else 'light'
@@ -133,8 +142,15 @@ class MainApp(App):
         self.theme_mode = new_mode
         self._theme_service.set_mode(new_mode)
         self.theme = self._theme_service.get_theme()
+        self.theme_version += 1
         Window.clearcolor = self.theme.md3_background
         self._config_repo.set_app_setting('theme_mode', new_mode)
+
+        if self.root:
+            self.root.canvas.ask_update()
+            for widget in self.root.walk():
+                if hasattr(widget, 'canvas') and widget.canvas:
+                    widget.canvas.ask_update()
 
     def find_resource(self, path):
         """Find a resource by path."""
