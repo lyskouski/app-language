@@ -78,6 +78,6 @@ labels_en = {
     "button_add": "Add",
     "button_add_word": "Add word",
     "search": "Search...",
-    "dictionaries_manage_title": "Manage",
+    "dictionaries_manage_title": "Manage dictionary",
     "_": "Fatal Error"
 }

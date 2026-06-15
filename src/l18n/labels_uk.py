@@ -78,6 +78,6 @@ labels_uk = {
     "button_add": "Додати",
     "button_add_word": "Додати слово",
     "search": "Пошук...",
-    "dictionaries_manage_title": "Керувати",
+    "dictionaries_manage_title": "Керування словником",
     "_": "Фатальна помилка"
 }

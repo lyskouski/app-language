@@ -78,6 +78,6 @@ labels_be = {
     "button_add": "Дадаць",
     "button_add_word": "Дадаць слова",
     "search": "Пошук...",
-    "dictionaries_manage_title": "Управляць",
+    "dictionaries_manage_title": "Кіраванне слоўнікам",
     "_": "Фатальная памылка"
 }

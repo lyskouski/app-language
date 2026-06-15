@@ -78,6 +78,6 @@ labels_pl = {
     "button_add": "Dodaj",
     "button_add_word": "Dodaj słowo",
     "search": "Szukaj...",
-    "dictionaries_manage_title": "Zarządzaj",
+    "dictionaries_manage_title": "Zarządzaj słownikiem",
     "_": "Błąd krytyczny"
 }
