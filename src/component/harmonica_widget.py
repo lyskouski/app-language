@@ -56,7 +56,13 @@ class HarmonicaWidget(ScrollView):
         self.add_widget(layout)
 
     def add_row(self, layout, origin, trans):
-        row = BoxLayout(orientation='horizontal', size_hint_min_y=30)
+        app = App.get_running_app()
+        row = BoxLayout(
+            orientation='horizontal',
+            size_hint_y=None,
+            height=app.theme.md3_button_height + 8,
+            spacing=8,
+        )
 
         if self.origin and self.secondary:
             row.add_widget(Label(text=origin))
