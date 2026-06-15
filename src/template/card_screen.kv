@@ -9,11 +9,11 @@
     text: root.text_init if self.state == 'down' else root.text_flip
     size_hint: None, None
     size: max(dp(150), min(self.parent.width * 0.24, self.parent.height * 0.24)) if self.parent else dp(150), max(dp(150), min(self.parent.width * 0.24, self.parent.height * 0.24)) if self.parent else dp(150)
-    color: app.theme.md3_primary
-    background_color: app.theme.md3_on_primary
+    color: app.theme_color('md3_on_surface', app.theme_version)
+    background_color: app.theme_color('md3_surface_container', app.theme_version)
     canvas.after:
         Color:
-            rgba: (0.20, 0.60, 1.0, 1.0) if self.state != 'down' else (0.10, 0.78, 0.35, 1.0)
+            rgba: app.theme_color('md3_outline', app.theme_version) if self.state != 'down' else app.theme_color('md3_primary', app.theme_version)
         Line:
             rounded_rectangle: (self.x + dp(1), self.y + dp(1), self.width - dp(2), self.height - dp(2), dp(8))
             width: dp(2)

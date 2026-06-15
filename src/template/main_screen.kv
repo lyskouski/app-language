@@ -32,7 +32,7 @@
             multiline: False
             hint_text: app._('search', app.locale)
             padding: [dp(10), dp(8)]
-            background_color: 0.95, 0.95, 0.95, 1
+            background_color: app.theme_color('md3_surface_container', app.theme_version)
             on_text: root.on_filter_text(self.text)
     RecycleView:
         id: recycle_view
@@ -164,7 +164,11 @@
     width: self.texture_size[0] + dp(20)
     size_hint_x: None
     background_normal: ""
-    background_color: 0,0,0,0
+    background_down: ""
+    background_disabled_normal: ""
+    background_disabled_down: ""
+    # hack to preserve transparent background in different modes
+    background_color: (0, 0, 0, 0) if app.theme_version >= 0 else (0, 0, 0, 0)
     canvas.after:
         Color:
             rgba: app.theme.md3_secondary

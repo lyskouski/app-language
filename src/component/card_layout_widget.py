@@ -30,7 +30,6 @@ class CardLayoutWidget(StackLayout):
 
         for item in vocabulary_items:
             button = CardWidget()
-            button.fallback_background_color = app.theme.md3_on_primary
             button.text_init = item.translation if self.flip else item.origin
             button.text_flip = item.origin if self.flip else item.translation
             path = app.get_image_dir()
@@ -41,5 +40,4 @@ class CardLayoutWidget(StackLayout):
             else:
                 button.background_normal = ''
                 button.background_down = ''
-                button.background_color = button.fallback_background_color
             self.add_widget(button)
