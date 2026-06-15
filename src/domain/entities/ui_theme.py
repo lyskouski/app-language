@@ -19,5 +19,6 @@ class UITheme:
     md3_on_secondary: List[float]
     md3_on_surface: List[float]
     md3_on_surface_variant: List[float]
+    md3_background: List[float]
     md3_button_height: float
     md3_textinput_height: float

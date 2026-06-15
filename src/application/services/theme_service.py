@@ -11,5 +11,11 @@ class ThemeService:
     def __init__(self, theme_provider: IThemeProvider):
         self._theme_provider = theme_provider
 
+    def set_mode(self, mode: str) -> None:
+        self._theme_provider.set_mode(mode)
+
+    def get_mode(self) -> str:
+        return self._theme_provider.get_mode()
+
     def get_theme(self) -> UITheme:
         return self._theme_provider.get_theme()

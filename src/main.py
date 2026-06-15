@@ -79,6 +79,7 @@ class MainApp(App):
     locale = StringProperty('')
     locale_from = StringProperty('')
     locale_to = StringProperty('')
+    theme_mode = StringProperty('light')
     theme = ObjectProperty(None)
     title = 'Tlum'
 
@@ -91,9 +92,15 @@ class MainApp(App):
 
         # Get services through dependency injection
         self._settings_service = self._container.settings_service()
+        self._config_repo = self._container.config_repository()
         self._resource_service = self._container.resource_service()
         self._localization_service = self._container.localization_service()
         self._theme_service = self._container.theme_service()
+
+        # Load persisted theme mode from database.
+        saved_theme_mode = self._config_repo.get_app_setting('theme_mode', 'light')
+        self.theme_mode = 'dark' if saved_theme_mode == 'dark' else 'light'
+        self._theme_service.set_mode(self.theme_mode)
         self.theme = self._theme_service.get_theme()
 
         # Initialize vocabulary service (will be created when needed)
@@ -116,6 +123,18 @@ class MainApp(App):
         """Update the interface locale."""
         self.locale = locale
         self._settings_service.update_interface_locale(locale)
+
+    def toggle_theme_mode(self, dark_enabled: bool):
+        """Switch between light and dark theme and persist choice in database."""
+        new_mode = 'dark' if dark_enabled else 'light'
+        if self.theme_mode == new_mode:
+            return
+
+        self.theme_mode = new_mode
+        self._theme_service.set_mode(new_mode)
+        self.theme = self._theme_service.get_theme()
+        Window.clearcolor = self.theme.md3_background
+        self._config_repo.set_app_setting('theme_mode', new_mode)
 
     def find_resource(self, path):
         """Find a resource by path."""
@@ -151,7 +170,7 @@ class MainApp(App):
                 pass
 
         # Use themed clear color so transition gaps never expose default black.
-        Window.clearcolor = self.theme.md3_on_primary
+        Window.clearcolor = self.theme.md3_background
 
         # Load shared Material 3 styling rules first so all subsequent widgets inherit them.
         theme_path = kivy.resources.resource_find('template/theme.kv')

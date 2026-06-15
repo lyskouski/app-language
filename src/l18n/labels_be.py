@@ -77,6 +77,7 @@ labels_be = {
     "button_back": "Вярнуцца",
     "button_add": "Дадаць",
     "button_add_word": "Дадаць слова",
+    "theme_dark_mode": "Цёмная тэма",
     "search": "Пошук...",
     "dictionaries_manage_title": "Кіраванне слоўнікам",
     "_": "Фатальная памылка"

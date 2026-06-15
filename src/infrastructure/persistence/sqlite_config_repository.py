@@ -48,6 +48,25 @@ class SQLiteConfigRepository:
     def __init__(self, db_connection: DatabaseConnection):
         self._db = db_connection
 
+    def get_app_setting(self, key: str, default: str = '') -> str:
+        """Get app-level setting from db_metadata table."""
+        row = self._db.fetchone(
+            "SELECT value FROM db_metadata WHERE key = ?",
+            (key,)
+        )
+        if not row:
+            return default
+        return row['value']
+
+    def set_app_setting(self, key: str, value: str) -> None:
+        """Set app-level setting in db_metadata table."""
+        self._db.execute(
+            """INSERT OR REPLACE INTO db_metadata (key, value, updated_at)
+               VALUES (?, ?, CURRENT_TIMESTAMP)""",
+            (key, value)
+        )
+        self._db.get_connection().commit()
+
     # ===== Language Management =====
 
     def get_all_languages(self) -> List[Dict]:

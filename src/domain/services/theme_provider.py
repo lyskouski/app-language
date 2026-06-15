@@ -10,6 +10,16 @@ class IThemeProvider(ABC):
     """Domain port for obtaining the active UI theme."""
 
     @abstractmethod
+    def set_mode(self, mode: str) -> None:
+        """Set active theme mode ('light' or 'dark')."""
+        raise NotImplementedError
+
+    @abstractmethod
+    def get_mode(self) -> str:
+        """Get active theme mode."""
+        raise NotImplementedError
+
+    @abstractmethod
     def get_theme(self) -> UITheme:
         """Return active theme tokens."""
         raise NotImplementedError
