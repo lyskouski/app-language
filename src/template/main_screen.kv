@@ -39,7 +39,7 @@
         viewclass: "RootItemWidget"
         size_hint_y: 1
         RecycleBoxLayout:
-            default_size: None, dp(48)
+            default_size: None, app.theme.md3_button_height + dp(8)
             default_size_hint: 1, None
             size_hint_y: None
             height: self.minimum_height
@@ -50,6 +50,8 @@
         orientation: "horizontal"
         height: app.theme.md3_button_height + dp(8)
         size_hint_y: None
+        spacing: dp(8)
+        padding: [dp(8), 0, dp(8), 0]
         Widget:
             size_hint_x: 0.02
         Button:
@@ -90,6 +92,8 @@
 
 <RootItemWidget@BoxLayout>:
     orientation: "horizontal"
+    spacing: dp(8)
+    padding: [0, dp(4), 0, dp(4)]
     text: ""
     source: ""
     logo: ""
