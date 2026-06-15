@@ -56,7 +56,8 @@
             size_hint_x: 0.02
         Button:
             # Show "Add Language Pair" button when at root level
-            text: app._("language_pair_add_title", app.locale) if (root.path == 'root') else ""
+            markup: True
+            text: "[font=assets/fonts/materialdesignicons-webfont.ttf]{}[/font] {}".format(chr(0xF0415), app._("language_pair_add_title", app.locale)) if (root.path == 'root') else ""
             opacity: 1.0 if (root.path == 'root') else 0
             disabled: False if (root.path == 'root') else True
             size_hint_x: 0.25 if (root.path == 'root') else 0.01
@@ -72,7 +73,8 @@
                 app.next_screen('dictionary_management_screen')
         Button:
             # Show "Add Category" button when viewing dictionaries (after language pair selected)
-            text: app._("category_add_title", app.locale) if (root.path.startswith('assets/data/') and '/source.json' in root.path) else ""
+            markup: True
+            text: "[font=assets/fonts/materialdesignicons-webfont.ttf]{}[/font] {}".format(chr(0xF0415), app._("category_add_title", app.locale)) if (root.path.startswith('assets/data/') and '/source.json' in root.path) else ""
             opacity: 1.0 if (root.path.startswith('assets/data/') and '/source.json' in root.path) else 0
             disabled: False if (root.path.startswith('assets/data/') and '/source.json' in root.path) else True
             size_hint_x: 0.25 if (root.path.startswith('assets/data/') and '/source.json' in root.path) else 0.01
@@ -106,7 +108,8 @@
     Widget:
         size_hint_x: 0.05
     Button:
-        text: app._('button_delete', app.locale)
+        markup: True
+        text: "[font=assets/fonts/materialdesignicons-webfont.ttf]{}[/font] {}".format(chr(0xF01B4), app._('button_delete', app.locale))
         opacity: 1.0 if ((not root.route_path and root.category_id) or (root.locale_from and root.locale_to and not root.category_id and not root.route_path)) else 0
         disabled: False if ((not root.route_path and root.category_id) or (root.locale_from and root.locale_to and not root.category_id and not root.route_path)) else True
         size_hint_x: None
@@ -124,7 +127,8 @@
         on_release:
             app.root.get_screen('main_screen').ids.root_widget.play_game(root)
     Button:
-        text: app._('button_add_word', app.locale)
+        markup: True
+        text: "[font=assets/fonts/materialdesignicons-webfont.ttf]{}[/font] {}".format(chr(0xF0415), app._('button_add_word', app.locale))
         opacity: 1.0 if (not root.route_path and root.category_id) else 0
         disabled: False if (not root.route_path and root.category_id) else True
         size_hint_x: None
@@ -132,7 +136,8 @@
         on_release:
             app.root.get_screen('main_screen').ids.root_widget.add_vocabulary(root)
     Button:
-        text: app._('button_select', app.locale)
+        markup: True
+        text: "[font=assets/fonts/materialdesignicons-webfont.ttf]{}[/font] {}".format(chr(0xF012C), app._('button_select', app.locale))
         opacity: 1.0 if not root.route_path else 0
         size_hint_x: None
         width: self.texture_size[0] + dp(18) if not root.route_path else 0
