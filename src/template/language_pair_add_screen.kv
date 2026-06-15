@@ -130,3 +130,41 @@
                 text: app._("button_save", app.locale)
                 font_size: sp(16)
                 on_release: root.save_language_pair()
+
+
+<LanguageTileWidget@ButtonBehavior+BoxLayout>:
+    locale: ''
+    text: ''
+    logo: ''
+    selected: False
+    is_from: False
+    orientation: 'vertical'
+    padding: dp(5)
+    spacing: dp(2)
+
+    canvas.before:
+        Color:
+            rgba: app.md3_primary if self.selected else app.md3_secondary
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [dp(8)]
+
+    on_release:
+        # Call appropriate selection method based on is_from flag
+        app.root.get_screen('language_pair_add_screen').select_from_language(self.locale) if self.is_from else app.root.get_screen('language_pair_add_screen').select_to_language(self.locale)
+
+    Label:
+        text: root.locale
+        font_size: sp(16)
+        bold: True
+        size_hint_y: 0.4
+        color: app.md3_on_primary if root.selected else app.md3_on_secondary
+
+    Label:
+        text: root.text
+        font_size: sp(10)
+        size_hint_y: 0.6
+        text_size: self.width, None
+        halign: 'center'
+        color: app.md3_on_primary if root.selected else app.md3_on_secondary

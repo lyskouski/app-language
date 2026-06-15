@@ -1,0 +1,44 @@
+#:kivy 2.1.0
+
+# Copyright 2026 The terCAD team. All rights reserved.
+# Use of this source code is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
+
+<Screen>:
+    canvas.before:
+        Color:
+            rgba: app.md3_surface
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+<Label>:
+    color: app.md3_on_surface
+
+<TextInput>:
+    background_normal: ""
+    background_active: ""
+    background_disabled_normal: ""
+    background_color: app.md3_surface_container if not self.disabled else app.md3_surface_variant
+    foreground_color: app.md3_on_surface
+    hint_text_color: app.md3_on_surface_variant
+    cursor_color: app.md3_primary
+    padding: [dp(12), dp(10), dp(12), dp(10)]
+
+<Button>:
+    background_normal: ""
+    background_down: ""
+    background_disabled_normal: ""
+    background_disabled_down: ""
+    background_color: app.md3_primary if not self.disabled else app.md3_outline
+    color: app.md3_on_primary if not self.disabled else app.md3_surface
+
+<ActionButton>:
+    background_normal: ""
+    background_down: ""
+    background_disabled_normal: ""
+    background_disabled_down: ""
+    background_color: app.md3_secondary if not self.disabled else app.md3_outline
+    color: app.md3_on_secondary if not self.disabled else app.md3_surface
+
+<ActionPrevious>:
+    color: app.md3_on_surface

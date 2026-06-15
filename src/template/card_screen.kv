@@ -8,8 +8,9 @@
     size_hint: None, None
     size: max(dp(150), min(self.parent.width * 0.24, self.parent.height * 0.24)) if self.parent else dp(150), max(dp(150), min(self.parent.width * 0.24, self.parent.height * 0.24)) if self.parent else dp(150)
     color: 1, 1, 1, 1
+    background_color: 1, 1, 1, 1
     bold: True
-    outline_color: 0, 0, 0, 1
+    outline_color: app.md3_secondary
     outline_width: 2
     canvas.after:
         Color:

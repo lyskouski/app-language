@@ -73,6 +73,18 @@ class MainApp(App):
     locale_from = StringProperty('')
     locale_to = StringProperty('')
 
+    # Material Design 3 color tokens (from user-provided ARGB values)
+    md3_primary = ListProperty([0x91 / 255.0, 0x23 / 255.0, 0x91 / 255.0, 1.0])
+    md3_secondary = ListProperty([0xDC / 255.0, 0xA3 / 255.0, 0xBC / 255.0, 1.0])
+    md3_surface = ListProperty([0.98, 0.97, 0.98, 1.0])
+    md3_surface_container = ListProperty([0.94, 0.91, 0.94, 1.0])
+    md3_surface_variant = ListProperty([0.90, 0.86, 0.90, 1.0])
+    md3_outline = ListProperty([0.57, 0.46, 0.56, 1.0])
+    md3_on_primary = ListProperty([1.0, 1.0, 1.0, 1.0])
+    md3_on_secondary = ListProperty([0.20, 0.08, 0.18, 1.0])
+    md3_on_surface = ListProperty([0.16, 0.10, 0.16, 1.0])
+    md3_on_surface_variant = ListProperty([0.36, 0.28, 0.35, 1.0])
+
     def __init__(self, **kwargs):
         super(MainApp, self).__init__(**kwargs)
 
@@ -129,6 +141,12 @@ class MainApp(App):
     def build(self):
         if platform in ['android', 'ios']:
             self.is_mobile = True
+
+        # Load shared Material 3 styling rules first so all subsequent widgets inherit them.
+        theme_path = kivy.resources.resource_find('template/theme.kv')
+        if theme_path:
+            Builder.load_file(theme_path)
+
         sm = ScreenManager()
         screens = [
             (MainScreen, 'main_screen'),
