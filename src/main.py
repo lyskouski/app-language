@@ -47,6 +47,7 @@ import component.recorder_widget
 import component.card_layout_widget
 
 from kivy.app import App
+from kivy.core.window import Window
 from kivy.lang import Builder
 from kivy.properties import BooleanProperty, StringProperty, ListProperty, ObjectProperty
 from kivy.uix.screenmanager import ScreenManager
@@ -132,6 +133,9 @@ class MainApp(App):
     def build(self):
         if platform in ['android', 'ios']:
             self.is_mobile = True
+
+        # Use themed clear color so transition gaps never expose default black.
+        Window.clearcolor = self.theme.md3_on_primary
 
         # Load shared Material 3 styling rules first so all subsequent widgets inherit them.
         theme_path = kivy.resources.resource_find('template/theme.kv')

@@ -3,6 +3,14 @@
 # Copyright 2026 The terCAD team. All rights reserved.
 # Use of this source code is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
 
+<ScreenManager>:
+    canvas.before:
+        Color:
+            rgba: app.theme.md3_on_primary
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
 <Screen>:
     canvas.before:
         Color:
