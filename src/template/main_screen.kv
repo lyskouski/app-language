@@ -83,14 +83,18 @@
         ToggleButton:
             text: app._('theme_light_mode', app.locale) if app.theme_mode == 'dark' else app._('theme_dark_mode', app.locale)
             state: 'down' if app.theme_mode == 'dark' else 'normal'
-            size_hint_x: 0.18
+            opacity: 1.0 if (root.path == 'root') else 0
+            disabled: False if (root.path == 'root') else True
+            size_hint_x: 0.18 if (root.path == 'root') else 0.01
             on_state:
                 app.toggle_theme_mode(self.state == 'down')
         Widget:
             size_hint_x: 0.02
         Button:
             text: app._("button_settings", app.locale)
-            size_hint_x: 0.2
+            opacity: 1.0 if (root.path == 'root') else 0
+            disabled: False if (root.path == 'root') else True
+            size_hint_x: 0.18 if (root.path == 'root') else 0.01
             on_release:
                 app.next_screen('language_screen')
         Widget:
