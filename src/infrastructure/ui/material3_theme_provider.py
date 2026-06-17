@@ -3,6 +3,7 @@
 
 from domain.entities.ui_theme import UITheme
 from domain.services.theme_provider import IThemeProvider
+from kivy.metrics import dp
 
 
 class Material3ThemeProvider(IThemeProvider):
@@ -42,8 +43,8 @@ class Material3ThemeProvider(IThemeProvider):
                 md3_on_surface=[0.94, 0.90, 0.94, 1.0],
                 md3_on_surface_variant=[0.77, 0.70, 0.76, 1.0],
                 md3_background=[0.06, 0.05, 0.07, 1.0],
-                md3_button_height=48,
-                md3_textinput_height=48,
+                md3_button_height=dp(48),
+                md3_textinput_height=dp(48),
             )
 
         return UITheme(
@@ -58,6 +59,6 @@ class Material3ThemeProvider(IThemeProvider):
             md3_on_surface=[0.16, 0.10, 0.16, 1.0],
             md3_on_surface_variant=[0.36, 0.28, 0.35, 1.0],
             md3_background=[1.0, 1.0, 1.0, 1.0],
-            md3_button_height=48,
-            md3_textinput_height=48,
+            md3_button_height=dp(48),
+            md3_textinput_height=dp(48),
         )
