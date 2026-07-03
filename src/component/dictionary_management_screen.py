@@ -3,51 +3,86 @@
 
 from kivy.app import App
 from kivy.clock import Clock
+from kivy.factory import Factory
 from kivy.graphics import Color, Rectangle
 from kivy.properties import ObjectProperty, ListProperty, BooleanProperty, StringProperty, NumericProperty
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.screenmanager import Screen
+from kivy.uix.behaviors import FocusBehavior, ButtonBehavior
+from kivy.uix.recycleboxlayout import RecycleBoxLayout
 
-class VocabularyItemWidget(BoxLayout):
-    """Widget for displaying a vocabulary item with checkbox in RecycleView."""
+
+class SelectableRecycleBoxLayout(FocusBehavior, RecycleBoxLayout):
+    """RecycleBoxLayout with selection support."""
+    pass
+
+
+# Register with Factory so KV can find it
+Factory.register('SelectableRecycleBoxLayout', cls=SelectableRecycleBoxLayout)
+
+
+class VocabularyItemWidget(ButtonBehavior, BoxLayout):
+    """Widget for displaying a vocabulary item in RecycleView. ButtonBehavior enables touch events."""
     origin = StringProperty('')
     translation = StringProperty('')
     item_id = StringProperty('')
     item_index = NumericProperty(0)
-    selected = BooleanProperty(False)
+    selected = BooleanProperty(False)  # Directly from data dict, not computed
+
+    # Bind to selected property changes to redraw canvas
+    def _redraw_background(self):
+        """Redraw the background based on current selection state."""
+        self.canvas.before.clear()
+        with self.canvas.before:
+            if self.selected:
+                Color(0.2, 0.8, 0.2, 0.3)  # Light green
+            else:
+                Color(0.6, 0.6, 0.6, 0.2)  # Light grey
+            Rectangle(pos=self.pos, size=self.size)
+        # Also update the checkbox visual
+        self._update_checkbox()
+
+    def _update_checkbox(self):
+        """Update the CheckBox widget visual state when selected changes."""
+        try:
+            # Find the CheckBox child widget by traversing children
+            from kivy.uix.checkbox import CheckBox
+            for child in self.children:
+                if isinstance(child, CheckBox):
+                    child.active = self.selected
+                    return
+                # Recursively check nested layouts
+                if hasattr(child, 'children'):
+                    for subchild in child.children:
+                        if isinstance(subchild, CheckBox):
+                            subchild.active = self.selected
+                            return
+        except Exception as e:
+            pass
 
     def __init__(self, **kwargs):
         super(VocabularyItemWidget, self).__init__(**kwargs)
-        # Create canvas instructions that we'll update
-        with self.canvas.before:
-            self._bg_color = Color(0.9, 0.9, 0.9, 0.1)  # Initial light gray
-            self._bg_rect = Rectangle(pos=self.pos, size=self.size)
+        # Bind to all relevant properties that affect the background
+        self.bind(selected=lambda *args: self._redraw_background(),
+                  pos=lambda *args: self._redraw_background(),
+                  size=lambda *args: self._redraw_background())
+        # Initial draw
+        Clock.schedule_once(lambda dt: self._redraw_background(), 0)
 
-        # Bind selected property to canvas update for visual change
-        self.bind(selected=self._on_selected_changed, pos=self._on_pos_changed, size=self._on_size_changed)
+    def on_release(self):
+        """Handle widget click to toggle selection. Called by ButtonBehavior."""
+        # Don't toggle if a child widget (like Delete button) was clicked
+        if hasattr(self, '_button_clicked') and self._button_clicked:
+            self._button_clicked = False
+            return
 
-    def _on_selected_changed(self, instance, value):
-        """Called when selected property changes - update background color."""
-        print(f"DEBUG: VocabularyItemWidget {self.item_id} selected changed to {value}")
-        self._update_background_color()
+        try:
+            app = App.get_running_app()
+            management_widget = app.root.get_screen('dictionary_management_screen').ids.management_widget
+            management_widget.toggle_item_selection(self.item_id)
+        except Exception as e:
+            print(f"ERROR in VocabularyItemWidget.on_release: {e}")
 
-    def _on_pos_changed(self, instance, value):
-        """Called when position changes - update rectangle position."""
-        if hasattr(self, '_bg_rect'):
-            self._bg_rect.pos = self.pos
-
-    def _on_size_changed(self, instance, value):
-        """Called when size changes - update rectangle size."""
-        if hasattr(self, '_bg_rect'):
-            self._bg_rect.size = self.size
-
-    def _update_background_color(self):
-        """Update background color based on selected state."""
-        if hasattr(self, '_bg_color'):
-            if self.selected:
-                self._bg_color.rgba = (0.2, 0.8, 0.2, 0.2)  # Green for selected
-            else:
-                self._bg_color.rgba = (0.9, 0.9, 0.9, 0.1)  # Light gray for not selected
 
 class DictionaryManagementScreen(Screen):
     """Screen for managing vocabulary items in the current study set."""
@@ -59,15 +94,13 @@ class DictionaryManagementScreen(Screen):
             widget.load_vocabulary_items()
             Clock.schedule_once(lambda dt: widget.populate_rv(), 0.1)
 
+
 class DictionaryManagementWidget(BoxLayout):
     data = ObjectProperty([])
-    selected_items = ListProperty([])
-    _populating = False  # Guard against recursive calls
-    _updating_checkbox = False  # Guard against circular checkbox binding
+    selected_indices = ListProperty([])  # Track selected indices, not item_ids
 
     def __init__(self, **kwargs):
         super(DictionaryManagementWidget, self).__init__(**kwargs)
-        # Defer initialization until app is fully ready
         Clock.schedule_once(lambda dt: self._init_widget(), 0.1)
 
     def _init_widget(self):
@@ -77,17 +110,6 @@ class DictionaryManagementWidget(BoxLayout):
             if not app:
                 print("ERROR: No running app found!")
                 return
-
-            # Get main screen context to know which category/path we're on
-            if hasattr(app, 'root') and app.root and 'main_screen' in app.root.screen_names:
-                main_screen = app.root.get_screen('main_screen')
-                if hasattr(main_screen, 'ids') and 'root_widget' in main_screen.ids:
-                    root_widget = main_screen.ids.root_widget
-                    # Store reference to root widget for context
-                    self._root_widget = root_widget
-
-            # Don't load data here - app.store is empty during initialization
-            # Data will be loaded in on_enter() when the screen is actually shown
         except Exception as e:
             print(f"ERROR in DictionaryManagementWidget._init_widget: {e}")
             import traceback
@@ -98,77 +120,55 @@ class DictionaryManagementWidget(BoxLayout):
         try:
             app = App.get_running_app()
             self.data = []
+            self.selected_indices = []  # Reset selection
 
-            # Get main screen context to extract category ID
             if hasattr(app, 'root') and app.root and 'main_screen' in app.root.screen_names:
                 main_screen = app.root.get_screen('main_screen')
                 if hasattr(main_screen, 'ids') and 'root_widget' in main_screen.ids:
                     root_widget = main_screen.ids.root_widget
                     path = root_widget.path
 
-                    # Extract category ID from path like "category_5"
                     if path and path.startswith('category_'):
                         try:
                             category_id = int(path.split('_')[1])
-
-                            # Get config repository to find category vocabulary_source
                             config_repo = app._container.config_repository()
-
-                            # Query the database to get vocabulary_source for this category_id
-                            # This is the actual category name used in vocabulary_items table
                             games = config_repo.get_games_for_category(category_id)
 
-                            # Extract vocabulary_source from category info
                             vocabulary_source = None
                             if games and len(games) > 0:
-                                # games is a list, extract source from first game
                                 vocabulary_source = games[0].get('source', '')
 
                             if not vocabulary_source:
                                 print(f"ERROR: Could not find vocabulary_source for category_id {category_id}")
                                 return
 
-                            # Load vocabulary filtered by category
                             vocab_repo = app._container.vocabulary_repository()
                             all_vocab = vocab_repo.load_by_language_pair(app.locale_from, app.locale_to, vocabulary_source)
 
-                            # Convert to dicts
-                            vocab_dicts = []
-                            for item in all_vocab:
-                                vocab_dicts.append({
+                            # Build data list with origin/translation
+                            self.data = [
+                                {
                                     'origin': item.origin,
                                     'translation': item.translation,
-                                    'sound': getattr(item, 'sound', ''),
-                                    'image': getattr(item, 'image', ''),
-                                    'category': getattr(item, 'category', '')
-                                })
+                                    'item_id': str(idx),
+                                    'item_index': idx,
+                                }
+                                for idx, item in enumerate(all_vocab)
+                            ]
 
-                            self.data = vocab_dicts
-                            print(f"DEBUG: Loaded {len(self.data)} vocabulary items for category '{vocabulary_source}' ({app.locale_from}-{app.locale_to})")
+                            # Populate selected_indices based on app.store
+                            if app and app.store and len(app.store) > 0:
+                                store_origins = {item.origin for item in app.store if hasattr(item, 'origin')}
+                                self.selected_indices = [
+                                    idx for idx, item in enumerate(self.data)
+                                    if item.get('origin', '') in store_origins
+                                ]
+
+                            print(f"Loaded {len(self.data)} items, {len(self.selected_indices)} selected")
                         except (IndexError, ValueError) as e:
                             print(f"ERROR: Could not parse category from path '{path}': {e}")
                             import traceback
                             traceback.print_exc()
-
-            # Initialize selected items based on what's in app.store
-            # app.store contains VocabularyItem objects (domain entities)
-            # self.data contains dictionaries loaded from the database
-            # We match these against the full category vocabulary list
-            self.selected_items = []
-
-            if app and app.store and len(app.store) > 0:
-                # Build a set of origins from app.store for quick lookup
-                store_origins = set()
-                for store_item in app.store:
-                    # app.store contains VocabularyItem domain entities
-                    origin = store_item.origin if hasattr(store_item, 'origin') else str(store_item)
-                    store_origins.add(origin)
-
-                # Find indices in self.data that match store origins
-                for idx, item in enumerate(self.data):
-                    item_origin = item.get('origin', '') if isinstance(item, dict) else str(item)
-                    if item_origin in store_origins:
-                        self.selected_items.append(str(idx))
         except Exception as e:
             print(f"ERROR in load_vocabulary_items: {e}")
             import traceback
@@ -176,75 +176,66 @@ class DictionaryManagementWidget(BoxLayout):
 
     def populate_rv(self):
         """Populate the RecycleView with vocabulary item data."""
-        if self._populating:
-            return
-
-        self._populating = True
         try:
             if not hasattr(self, 'ids') or 'item_view' not in self.ids:
                 print("ERROR: item_view not found in ids, retrying...")
                 Clock.schedule_once(lambda dt: self.populate_rv(), 0.2)
                 return
 
-            # Prepare data for RecycleView
-            item_data = []
-            for idx, item in enumerate(self.data):
-                item_id = str(idx)
-                if isinstance(item, dict):
-                    origin = item.get('origin', '')
-                    translation = item.get('translation', '')
-                else:
-                    origin = str(item)
-                    translation = ''
-
-                item_data.append({
-                    'origin': origin,
-                    'translation': translation,
-                    'item_id': item_id,
+            # Create data list with selection state stored in each dict
+            # This ensures selection is updated ATOMICALLY with all other properties during RecycleView recycling
+            data = [
+                {
+                    'origin': item['origin'],
+                    'translation': item['translation'],
+                    'item_id': str(idx),
                     'item_index': idx,
-                    'selected': item_id in self.selected_items
-                })
+                    'selected': idx in self.selected_indices  # Store selected state in data dict
+                }
+                for idx, item in enumerate(self.data)
+            ]
 
-            self.ids.item_view.data = item_data
+            print(f"  populate_rv: creating {len(data)} items")
+            for i in range(min(3, len(data))):
+                print(f"    item[{i}]: selected={data[i]['selected']}, origin={data[i]['origin'][:20]}")
+
+            # Set data which triggers RecycleView to rebind widgets
+            self.ids.item_view.data = data
+            print(f"  populate_rv: RecycleView.data set successfully")
         except Exception as e:
             print(f"ERROR in populate_rv: {e}")
             import traceback
             traceback.print_exc()
-        finally:
-            self._populating = False
 
-    def toggle_item_selection(self, item_id, checkbox_active):
-        """Toggle selection state of a vocabulary item."""
-        # Guard against circular checkbox binding updates
-        if self._updating_checkbox:
-            return
-
-        # The checkbox state is passed from the on_active binding
-        if checkbox_active:
-            if item_id not in self.selected_items:
-                self.selected_items.append(item_id)
-        else:
-            if item_id in self.selected_items:
-                self.selected_items.remove(item_id)
-
-        # Update the RecycleView data for this specific item without triggering on_active
+    def toggle_item_selection(self, item_id):
+        """Toggle selection of a vocabulary item by ID."""
         try:
-            if hasattr(self, 'ids') and 'item_view' in self.ids:
-                current_data = list(self.ids.item_view.data)
-                item_index = int(item_id)
-                if 0 <= item_index < len(current_data):
-                    # Update the selected state based on current selected_items
-                    current_data[item_index]['selected'] = item_id in self.selected_items
-                    # Set flag to prevent on_active from firing when we update the checkbox
-                    self._updating_checkbox = True
-                    self.ids.item_view.data = current_data
-                    self._updating_checkbox = False
+            item_index = int(item_id)
+            # Create new list instead of mutating to force ListProperty update
+            if item_index in self.selected_indices:
+                new_indices = [idx for idx in self.selected_indices if idx != item_index]
+            else:
+                new_indices = list(self.selected_indices) + [item_index]
+
+            self.selected_indices = new_indices  # Replace entire list
+
+            # Update data dict to include new selected state
+            # This is critical: selection state must be in data dict so it updates atomically
+            if item_index < len(self.data):
+                # Create completely new data list to force RecycleView to rebind
+                self.data = [
+                    dict(item) if idx != item_index else {**dict(item)}
+                    for idx, item in enumerate(self.data)
+                ]
+
+            self.populate_rv()  # Refresh visual state with new selected values in data
         except Exception as e:
             print(f"ERROR in toggle_item_selection: {e}")
-            self._updating_checkbox = False
+            import traceback
+            traceback.print_exc()
 
     def delete_item(self, item_id):
-        """Delete a vocabulary item from database and refresh management list."""
+        """Delete a vocabulary item from database and refresh list."""
         try:
             app = App.get_running_app()
             item_index = int(item_id)
@@ -252,9 +243,8 @@ class DictionaryManagementWidget(BoxLayout):
                 return
 
             item = self.data[item_index]
-            origin = item.get('origin', '') if isinstance(item, dict) else ''
-            translation = item.get('translation', '') if isinstance(item, dict) else ''
-            category = item.get('category') if isinstance(item, dict) else None
+            origin = item.get('origin', '')
+            translation = item.get('translation', '')
 
             vocab_repo = app._container.vocabulary_repository()
             if hasattr(vocab_repo, 'delete_vocabulary_item'):
@@ -263,35 +253,28 @@ class DictionaryManagementWidget(BoxLayout):
                     app.locale_to,
                     origin,
                     translation=translation,
-                    category=category,
                 )
 
-            # Remove from current list and update selection indices.
+            # Remove from data list
             del self.data[item_index]
 
+            # Update selected_indices: remove deleted index, shift higher indices down
             updated_selected = []
-            for selected_id in self.selected_items:
-                selected_index = int(selected_id)
-                if selected_index == item_index:
-                    continue
-                if selected_index > item_index:
-                    updated_selected.append(str(selected_index - 1))
+            for idx in self.selected_indices:
+                if idx == item_index:
+                    continue  # Remove selection for deleted item
+                elif idx > item_index:
+                    updated_selected.append(idx - 1)  # Shift down
                 else:
-                    updated_selected.append(selected_id)
-            self.selected_items = updated_selected
+                    updated_selected.append(idx)
+            self.selected_indices = updated_selected  # Replace entire list
 
-            # Keep app.store in sync.
+            # Keep app.store in sync
             if app and hasattr(app, 'store'):
-                filtered_store = [
-                    store_item for store_item in app.store
-                    if not (
-                        getattr(store_item, 'origin', None) == origin
-                        and getattr(store_item, 'translation', None) == translation
-                        and getattr(store_item, 'category', None) == category
-                    )
+                app.store = [
+                    s for s in app.store
+                    if not (getattr(s, 'origin', None) == origin and getattr(s, 'translation', None) == translation)
                 ]
-                app.store.clear()
-                app.store.extend(filtered_store)
 
             self.populate_rv()
         except Exception as e:
@@ -305,36 +288,30 @@ class DictionaryManagementWidget(BoxLayout):
             from domain.entities.vocabulary_item import VocabularyItem
             app = App.get_running_app()
 
-            # Filter data based on selected items
-            selected_indices = sorted([int(item_id) for item_id in self.selected_items])
-            selected_dicts = [self.data[i] for i in selected_indices if i < len(self.data)]
-
-            # Convert back to VocabularyItem objects to match app.store format
+            # Build selected items from indices
             selected_items = [
                 VocabularyItem(
-                    origin=item['origin'],
-                    translation=item['translation'],
-                    sound=item.get('sound'),
-                    image=item.get('image'),
-                    category=item.get('category')
+                    origin=self.data[idx]['origin'],
+                    translation=self.data[idx]['translation'],
+                    sound=self.data[idx].get('sound'),
+                    image=self.data[idx].get('image'),
+                    category=self.data[idx].get('category')
                 )
-                for item in selected_dicts
+                for idx in sorted(self.selected_indices)
+                if idx < len(self.data)
             ]
 
-            # Update app store with selected items (must be VocabularyItem objects, not dicts)
+            # Update app store
             app.store.clear()
             app.store.extend(selected_items)
 
-            # If vocabulary service exists, update its study set too
+            # Update vocabulary service if it exists
             if hasattr(app, '_vocabulary_service') and app._vocabulary_service:
                 app._vocabulary_service._current_items = selected_items
                 app._vocabulary_service.prepare_study_set(len(selected_items), force_shuffle=False)
 
-            # Mark that custom selection is now active - prevents reinitializing when game is played
             app._custom_selection_active = True
-            print(f"DEBUG: Custom selection active - app.store will be preserved during gameplay")
-
-            print(f"DEBUG: Saved {len(selected_items)} selected items to app.store")
+            print(f"Saved {len(selected_items)} selected items to app.store")
             self.go_back()
         except Exception as e:
             print(f"ERROR in apply_selection: {e}")

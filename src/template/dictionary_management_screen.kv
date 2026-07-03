@@ -24,7 +24,7 @@
     RecycleView:
         id: item_view
         viewclass: "VocabularyItemWidget"
-        RecycleBoxLayout:
+        SelectableRecycleBoxLayout:
             default_size: None, dp(70)
             default_size_hint: 1, None
             size_hint_y: None
@@ -57,12 +57,15 @@
     size_hint_y: None
     padding: [dp(10), dp(5)]
     spacing: dp(10)
+    # Canvas is drawn dynamically by _redraw_background() callback in Python
 
     Button:
         text: "Delete"
         size_hint_x: None
         width: dp(88)
-        on_release: app.root.get_screen('dictionary_management_screen').ids.management_widget.delete_item(root.item_id)
+        on_release:
+            root._button_clicked = True
+            app.root.get_screen('dictionary_management_screen').ids.management_widget.delete_item(root.item_id)
 
     BoxLayout:
         orientation: "vertical"
@@ -81,8 +84,8 @@
             opacity: 0.7
 
     CheckBox:
+        id: checkbox
         active: root.selected
         size_hint_x: None
         width: dp(50)
-        on_active: app.root.get_screen('dictionary_management_screen').ids.management_widget.toggle_item_selection(root.item_id, self.active)
 
