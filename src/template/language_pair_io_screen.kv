@@ -60,6 +60,11 @@
                 multiline: False
                 on_text: root.file_path = self.text
                 hint_text: '/path/to/language_pair.json'
+            Button:
+                text: app._('lang_pair_browse_btn', app.locale)
+                size_hint_x: None
+                width: dp(88)
+                on_release: root.open_file_chooser()
 
         # Import-only: merge option
         BoxLayout:

@@ -3,6 +3,7 @@ labels_uk = {
     "lang_pair_export_btn": "Експорт",
     "lang_pair_import_btn": "Імпорт",
     "lang_pair_file_path": "Файл",
+    "lang_pair_browse_btn": "Огляд…",
     "lang_pair_merge_import": "Злиття (додати слова, зберегти наявні)",
     "vocab_translation_label": "Переклад (Цільова мова) *",
     "vocab_sound_label": "Шлях до аудіо файлу (Необов'язково)",

@@ -3,6 +3,7 @@ labels_ru = {
     "lang_pair_export_btn": "Экспорт",
     "lang_pair_import_btn": "Импорт",
     "lang_pair_file_path": "Файл",
+    "lang_pair_browse_btn": "Обзор…",
     "lang_pair_merge_import": "Слияние (добавить слова, сохранить существующие)",
     "vocab_translation_label": "Перевод (Целевой язык) *",
     "vocab_sound_label": "Путь к аудио файлу (Необязательно)",

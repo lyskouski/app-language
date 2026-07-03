@@ -3,6 +3,7 @@ labels_en = {
     "lang_pair_export_btn": "Export",
     "lang_pair_import_btn": "Import",
     "lang_pair_file_path": "File",
+    "lang_pair_browse_btn": "Browse…",
     "lang_pair_merge_import": "Merge (append words, keep existing)",
     "vocab_translation_label": "Translation (Target Language) *",
     "vocab_sound_label": "Sound File Path (Optional)",

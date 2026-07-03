@@ -5,6 +5,10 @@ import os
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.properties import StringProperty, BooleanProperty
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.button import Button
+from kivy.uix.filechooser import FileChooserListView
+from kivy.uix.popup import Popup
 from kivy.uix.screenmanager import Screen
 
 from application.services.language_pair_io_service import LanguagePairIOService
@@ -43,6 +47,55 @@ class LanguagePairIOScreen(Screen):
         vocab_repo = app._container.vocabulary_repository()
         config_repo = app._container.config_repository()
         return LanguagePairIOService(vocab_repo, config_repo)
+
+    # ------------------------------------------------------------------
+    # File chooser
+    # ------------------------------------------------------------------
+
+    def open_file_chooser(self):
+        """Open a file-chooser popup. In export mode the user picks a directory
+        and the default filename is appended; in import mode the user picks a file."""
+        start_dir = os.path.dirname(self.file_path) if self.file_path else os.path.expanduser('~')
+        if not os.path.isdir(start_dir):
+            start_dir = os.path.expanduser('~')
+
+        chooser = FileChooserListView(
+            path=start_dir,
+            dirselect=self.export_mode,  # export: pick dir; import: pick file
+            filters=['*.json'] if not self.export_mode else [],
+        )
+
+        box = BoxLayout(orientation='vertical', spacing=4, padding=8)
+        box.add_widget(chooser)
+
+        btn_row = BoxLayout(size_hint_y=None, height=44, spacing=8)
+        btn_cancel = Button(text='Cancel')
+        btn_select = Button(text='Select')
+        btn_row.add_widget(btn_cancel)
+        btn_row.add_widget(btn_select)
+        box.add_widget(btn_row)
+
+        popup = Popup(
+            title='Choose file' if not self.export_mode else 'Choose folder',
+            content=box,
+            size_hint=(0.9, 0.85),
+        )
+
+        def on_select(_btn):
+            selection = chooser.selection
+            if selection:
+                chosen = selection[0]
+                if self.export_mode:
+                    # User picked a directory — append the default filename
+                    default_name = os.path.basename(self.file_path) or 'language_pair.json'
+                    self.file_path = os.path.join(chosen if os.path.isdir(chosen) else os.path.dirname(chosen), default_name)
+                else:
+                    self.file_path = chosen
+            popup.dismiss()
+
+        btn_cancel.bind(on_release=lambda _: popup.dismiss())
+        btn_select.bind(on_release=on_select)
+        popup.open()
 
     # ------------------------------------------------------------------
     # Export
