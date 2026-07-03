@@ -1,4 +1,6 @@
 labels_ru = {
+    "lang_pair_export_title": "Экспорт языковой пары",
+    "lang_pair_import_title": "Импорт языковой пары",
     "lang_pair_io_title": "Импорт / Экспорт языковой пары",
     "lang_pair_export_btn": "Экспорт",
     "lang_pair_import_btn": "Импорт",

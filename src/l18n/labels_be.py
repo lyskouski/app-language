@@ -1,4 +1,6 @@
 labels_be = {
+    "lang_pair_export_title": "Экспарт моўнай пары",
+    "lang_pair_import_title": "Імпарт моўнай пары",
     "lang_pair_io_title": "Імпарт / Экспарт моўнай пары",
     "lang_pair_export_btn": "Экспарт",
     "lang_pair_import_btn": "Імпарт",

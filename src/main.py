@@ -41,7 +41,7 @@ from component.language_screen import LanguageScreen
 from component.vocabulary_add_screen import VocabularyAddScreen
 from component.category_add_screen import CategoryAddScreen
 from component.language_pair_add_screen import LanguagePairAddScreen
-from component.language_pair_io_screen import LanguagePairIOScreen
+from component.language_pair_io_screen import LanguagePairExportScreen, LanguagePairImportScreen
 
 # Clean Architecture imports
 from infrastructure.di.container import DependencyContainer
@@ -210,7 +210,8 @@ class MainApp(App):
             (VocabularyAddScreen, 'vocabulary_add_screen'),
             (CategoryAddScreen, 'category_add_screen'),
             (LanguagePairAddScreen, 'language_pair_add_screen'),
-            (LanguagePairIOScreen, 'language_pair_io_screen')
+            (LanguagePairExportScreen, 'language_pair_export_screen'),
+            (LanguagePairImportScreen, 'language_pair_import_screen')
         ]
         for cls, name in screens:
             path = kivy.resources.resource_find(f'template/{name}.kv')

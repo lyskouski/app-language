@@ -3,7 +3,7 @@
 # Copyright 2026 The terCAD team. All rights reserved.
 # Use of this source code is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
 
-<LanguagePairIOScreen>:
+<LanguagePairImportScreen>:
     BoxLayout:
         orientation: 'vertical'
         padding: dp(12)
@@ -20,30 +20,14 @@
                 width: dp(80)
                 on_release: root.go_back()
             Label:
-                text: app._('lang_pair_io_title', app.locale) + (' — ' + root.pair_name if root.pair_name else '')
+                text: app._('lang_pair_import_title', app.locale)
                 font_size: sp(18)
                 bold: True
                 halign: 'left'
                 valign: 'middle'
                 text_size: self.size
 
-        # Mode toggle
-        BoxLayout:
-            size_hint_y: None
-            height: app.theme.md3_button_height
-            spacing: dp(8)
-            ToggleButton:
-                text: app._('lang_pair_export_btn', app.locale)
-                group: 'io_mode'
-                state: 'down' if root.export_mode else 'normal'
-                on_release: root.export_mode = True
-            ToggleButton:
-                text: app._('lang_pair_import_btn', app.locale)
-                group: 'io_mode'
-                state: 'down' if not root.export_mode else 'normal'
-                on_release: root.export_mode = False
-
-        # File path input
+        # File path row
         BoxLayout:
             size_hint_y: None
             height: dp(40)
@@ -66,12 +50,10 @@
                 width: dp(88)
                 on_release: root.open_file_chooser()
 
-        # Import-only: merge option
+        # Merge option
         BoxLayout:
             size_hint_y: None
             height: dp(40)
-            opacity: 0 if root.export_mode else 1
-            disabled: root.export_mode
             spacing: dp(8)
             CheckBox:
                 active: root.merge_import
@@ -88,10 +70,9 @@
         Button:
             size_hint_y: None
             height: app.theme.md3_button_height
-            text: app._('lang_pair_export_btn', app.locale) if root.export_mode else app._('lang_pair_import_btn', app.locale)
+            text: app._('lang_pair_import_btn', app.locale)
             disabled: root.is_busy
-            on_release:
-                root.do_export() if root.export_mode else root.do_import()
+            on_release: root.do_import()
 
         # Status label
         Label:

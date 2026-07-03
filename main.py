@@ -23,7 +23,7 @@ try:
     import component.store_update_screen
     import component.structure_screen
     import component.structure_update_screen
-    import component.language_pair_io_screen
+    import component.language_pair_io_screen  # exports LanguagePairExportScreen, LanguagePairImportScreen
     print("Successfully imported screen components")
 except Exception as e:
     print(f"Warning: Failed to import screen components: {e}")

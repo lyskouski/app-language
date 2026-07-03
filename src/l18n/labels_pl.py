@@ -1,4 +1,6 @@
 labels_pl = {
+    "lang_pair_export_title": "Eksport pary językowej",
+    "lang_pair_import_title": "Import pary językowej",
     "lang_pair_io_title": "Import / Eksport pary językowej",
     "lang_pair_export_btn": "Eksport",
     "lang_pair_import_btn": "Import",

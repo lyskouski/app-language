@@ -1,0 +1,71 @@
+#:kivy 2.1.0
+
+# Copyright 2026 The terCAD team. All rights reserved.
+# Use of this source code is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
+
+<LanguagePairExportScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        padding: dp(12)
+        spacing: dp(10)
+
+        # Header
+        BoxLayout:
+            size_hint_y: None
+            height: app.theme.md3_button_height
+            spacing: dp(8)
+            Button:
+                text: app._('button_back', app.locale)
+                size_hint_x: None
+                width: dp(80)
+                on_release: root.go_back()
+            Label:
+                text: app._('lang_pair_export_title', app.locale) + (' — ' + root.pair_name if root.pair_name else '')
+                font_size: sp(18)
+                bold: True
+                halign: 'left'
+                valign: 'middle'
+                text_size: self.size
+
+        # File path row
+        BoxLayout:
+            size_hint_y: None
+            height: dp(40)
+            spacing: dp(8)
+            Label:
+                text: app._('lang_pair_file_path', app.locale)
+                size_hint_x: None
+                width: dp(80)
+                halign: 'right'
+                valign: 'middle'
+                text_size: self.size
+            TextInput:
+                text: root.file_path
+                multiline: False
+                on_text: root.file_path = self.text
+                hint_text: '/path/to/language_pair.json'
+            Button:
+                text: app._('lang_pair_browse_btn', app.locale)
+                size_hint_x: None
+                width: dp(88)
+                on_release: root.open_file_chooser()
+
+        # Action button
+        Button:
+            size_hint_y: None
+            height: app.theme.md3_button_height
+            text: app._('lang_pair_export_btn', app.locale)
+            disabled: root.is_busy
+            on_release: root.do_export()
+
+        # Status label
+        Label:
+            text: root.status_text
+            halign: 'left'
+            valign: 'top'
+            text_size: self.size
+            size_hint_y: None
+            height: dp(80)
+            color: app.theme_color('md3_primary', app.theme_version)
+
+        Widget:

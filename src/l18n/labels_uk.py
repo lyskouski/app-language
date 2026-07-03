@@ -1,4 +1,6 @@
 labels_uk = {
+    "lang_pair_export_title": "Експорт мовної пари",
+    "lang_pair_import_title": "Імпорт мовної пари",
     "lang_pair_io_title": "Імпорт / Експорт мовної пари",
     "lang_pair_export_btn": "Експорт",
     "lang_pair_import_btn": "Імпорт",
