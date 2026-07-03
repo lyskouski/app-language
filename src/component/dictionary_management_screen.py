@@ -106,15 +106,7 @@ class DictionaryManagementWidget(BoxLayout):
 
     def _init_widget(self):
         """Initialize widget after app is ready."""
-        try:
-            app = App.get_running_app()
-            if not app:
-                print("ERROR: No running app found!")
-                return
-        except Exception as e:
-            print(f"ERROR in DictionaryManagementWidget._init_widget: {e}")
-            import traceback
-            traceback.print_exc()
+        app = App.get_running_app()
 
     def load_vocabulary_items(self):
         """Load vocabulary items for the currently selected category."""
@@ -140,7 +132,6 @@ class DictionaryManagementWidget(BoxLayout):
                                 vocabulary_source = games[0].get('source', '')
 
                             if not vocabulary_source:
-                                print(f"ERROR: Could not find vocabulary_source for category_id {category_id}")
                                 return
 
                             vocab_repo = app._container.vocabulary_repository()
@@ -177,11 +168,11 @@ class DictionaryManagementWidget(BoxLayout):
 
     def populate_rv(self):
         """Populate the RecycleView with vocabulary item data."""
+        if not hasattr(self, 'ids') or 'item_view' not in self.ids:
+            Clock.schedule_once(lambda dt: self.populate_rv(), 0.2)
+            return
+
         try:
-            if not hasattr(self, 'ids') or 'item_view' not in self.ids:
-                print("ERROR: item_view not found in ids, retrying...")
-                Clock.schedule_once(lambda dt: self.populate_rv(), 0.2)
-                return
 
             # Create data list with selection state stored in each dict
             # This ensures selection is updated ATOMICALLY with all other properties during RecycleView recycling
@@ -300,7 +291,6 @@ class DictionaryManagementWidget(BoxLayout):
                 app._vocabulary_service.prepare_study_set(len(selected_items), force_shuffle=False)
 
             app._custom_selection_active = True
-            print(f"Saved {len(selected_items)} selected items to app.store")
             self.go_back()
         except Exception as e:
             print(f"ERROR in apply_selection: {e}")
@@ -309,10 +299,5 @@ class DictionaryManagementWidget(BoxLayout):
 
     def go_back(self):
         """Navigate back to previous screen."""
-        try:
-            app = App.get_running_app()
-            app.next_screen('main_screen')
-        except Exception as e:
-            print(f"ERROR in go_back: {e}")
-            import traceback
-            traceback.print_exc()
+        app = App.get_running_app()
+        app.next_screen('main_screen')

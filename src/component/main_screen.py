@@ -111,10 +111,7 @@ class RootWidget(BoxLayout):
                         vocabulary_source = games[0].get('source', '')
                         if vocabulary_source:
                             app.init_store(vocabulary_source)
-                else:
-                    # Custom selection is active - keep it as-is, don't reinitialize
-                    print(f"DEBUG: Preserving custom selection (custom_selection_active=True)")
-
+                # Custom selection is active - keep it as-is, don't reinitialize
                 self.data = games
             except (IndexError, ValueError) as e:
                 print(f"ERROR: Invalid category path: {path} - {e}")
