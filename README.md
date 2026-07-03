@@ -4,7 +4,7 @@
 [![Build Status](https://github.com/lyskouski/app-language/actions/workflows/build.yml/badge.svg)](https://github.com/lyskouski/app-language/actions/workflows/build.yml)
 
 **Tlum** - open source code (whitebox) cross-platform language learning application leverages the power of natural language processing to
-pinpoint pronunciation gaps, computer vision to enhance articulation, and machine learning to boost vocabulary proficiency.
+pinpoint pronunciation gaps, and machine learning to boost vocabulary proficiency.
 
 | Type                     | Alpha Version         | Pre-Release                   | Release                       |
 | ------------------------ | ----------------------| ----------------------------- | ----------------------------- |
@@ -16,8 +16,17 @@ pinpoint pronunciation gaps, computer vision to enhance articulation, and machin
 
 
 ## Functionality
-
-TBD
+- Create new language pairs (BE, EN, PL, RU, and UK)
+- Create new categories for language pairs
+- Add new words to categories
+- Import/export a language pair with all categories and words
+- Light/dark interface mode
+- Interface language (BE, EN, PL, RU, UK)
+- **Practices** (games):
+    - Cards: a word and its translation on the back of the card
+    - Harmonica: a writing experience (write either an original text or a translation)
+    - Acoustic Harmonica: a writing experience based on sounds
+    - Articulation: a pronunciation training tool
 
 ## Support (Sponsorship)
 
