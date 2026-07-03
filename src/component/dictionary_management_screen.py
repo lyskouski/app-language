@@ -45,13 +45,14 @@ class VocabularyItemWidget(ButtonBehavior, BoxLayout):
     def _update_checkbox(self):
         """Update the CheckBox widget visual state when selected changes."""
         try:
-            # Find the CheckBox child widget by traversing children
             from kivy.uix.checkbox import CheckBox
+            # Find the CheckBox child widget by traversing children
             for child in self.children:
                 if isinstance(child, CheckBox):
+                    # Directly set the active state without triggering events
                     child.active = self.selected
                     return
-                # Recursively check nested layouts
+                # Recursively check nested layouts (CheckBox is in last BoxLayout)
                 if hasattr(child, 'children'):
                     for subchild in child.children:
                         if isinstance(subchild, CheckBox):
@@ -195,13 +196,8 @@ class DictionaryManagementWidget(BoxLayout):
                 for idx, item in enumerate(self.data)
             ]
 
-            print(f"  populate_rv: creating {len(data)} items")
-            for i in range(min(3, len(data))):
-                print(f"    item[{i}]: selected={data[i]['selected']}, origin={data[i]['origin'][:20]}")
-
             # Set data which triggers RecycleView to rebind widgets
             self.ids.item_view.data = data
-            print(f"  populate_rv: RecycleView.data set successfully")
         except Exception as e:
             print(f"ERROR in populate_rv: {e}")
             import traceback
@@ -211,24 +207,17 @@ class DictionaryManagementWidget(BoxLayout):
         """Toggle selection of a vocabulary item by ID."""
         try:
             item_index = int(item_id)
+
             # Create new list instead of mutating to force ListProperty update
             if item_index in self.selected_indices:
                 new_indices = [idx for idx in self.selected_indices if idx != item_index]
             else:
                 new_indices = list(self.selected_indices) + [item_index]
 
-            self.selected_indices = new_indices  # Replace entire list
+            self.selected_indices = new_indices
 
-            # Update data dict to include new selected state
-            # This is critical: selection state must be in data dict so it updates atomically
-            if item_index < len(self.data):
-                # Create completely new data list to force RecycleView to rebind
-                self.data = [
-                    dict(item) if idx != item_index else {**dict(item)}
-                    for idx, item in enumerate(self.data)
-                ]
-
-            self.populate_rv()  # Refresh visual state with new selected values in data
+            # Rebuild RecycleView data with correct selection states
+            self.populate_rv()
         except Exception as e:
             print(f"ERROR in toggle_item_selection: {e}")
             import traceback
