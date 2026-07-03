@@ -60,9 +60,18 @@
             text: "[font=assets/fonts/materialdesignicons-webfont.ttf]{}[/font] {}".format(chr(0xF0415), app._("language_pair_add_title", app.locale)) if (root.path == 'root') else ""
             opacity: 1.0 if (root.path == 'root') else 0
             disabled: False if (root.path == 'root') else True
-            size_hint_x: 0.25 if (root.path == 'root') else 0.01
+            size_hint_x: 0.22 if (root.path == 'root') else 0.01
             on_release:
                 root.add_language_pair()
+        Button:
+            # Show "Import" button when at root level
+            markup: True
+            text: "[font=assets/fonts/materialdesignicons-webfont.ttf]{}[/font] {}".format(chr(0xF0490), app._("lang_pair_import_btn", app.locale)) if (root.path == 'root') else ""
+            opacity: 1.0 if (root.path == 'root') else 0
+            disabled: False if (root.path == 'root') else True
+            size_hint_x: 0.18 if (root.path == 'root') else 0.01
+            on_release:
+                root.open_import()
         Button:
             # Show "Manage Dictionaries" button when viewing games (not root, not dictionaries)
             text: app._("dictionaries_manage_title", app.locale) if (root.path != 'root' and not root.path.startswith('assets/data/')) else ""
@@ -145,6 +154,15 @@
         width: self.texture_size[0] + dp(18) if (not root.route_path and root.category_id) else 0
         on_release:
             app.root.get_screen('main_screen').ids.root_widget.add_vocabulary(root)
+    Button:
+        markup: True
+        text: "[font=assets/fonts/materialdesignicons-webfont.ttf]{}[/font] {}".format(chr(0xF0207), app._('lang_pair_export_btn', app.locale))
+        opacity: 1.0 if (root.locale_from and root.locale_to and not root.category_id and not root.route_path) else 0
+        disabled: False if (root.locale_from and root.locale_to and not root.category_id and not root.route_path) else True
+        size_hint_x: None
+        width: self.texture_size[0] + dp(18) if (root.locale_from and root.locale_to and not root.category_id and not root.route_path) else 0
+        on_release:
+            app.root.get_screen('main_screen').ids.root_widget.open_export(root)
     Button:
         markup: True
         text: "[font=assets/fonts/materialdesignicons-webfont.ttf]{}[/font] {}".format(chr(0xF012C), app._('button_select', app.locale))

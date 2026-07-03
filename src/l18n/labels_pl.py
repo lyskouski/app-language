@@ -1,4 +1,9 @@
 labels_pl = {
+    "lang_pair_io_title": "Import / Eksport pary językowej",
+    "lang_pair_export_btn": "Eksport",
+    "lang_pair_import_btn": "Import",
+    "lang_pair_file_path": "Plik",
+    "lang_pair_merge_import": "Scal (dodaj słowa, zachowaj istniejące)",
     "vocab_translation_label": "Tłumaczenie (Język docelowy) *",
     "vocab_sound_label": "Ścieżka pliku dźwięku (Opcjonalnie)",
     "vocab_origin_label": "Źródło (Język źródłowy) *",

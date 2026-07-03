@@ -275,6 +275,38 @@ class RootWidget(BoxLayout):
             import traceback
             traceback.print_exc()
 
+    def open_export(self, info):
+        """Open the import/export screen in export mode for a specific language pair."""
+        try:
+            app = App.get_running_app()
+            io_screen = app.root.get_screen('language_pair_io_screen')
+            io_screen.locale_from = info.locale_from
+            io_screen.locale_to = info.locale_to
+            io_screen.pair_name = info.text
+            io_screen.export_mode = True
+            io_screen.file_path = ''
+            app.next_screen('language_pair_io_screen')
+        except Exception as e:
+            print(f"ERROR in open_export: {e}")
+            import traceback
+            traceback.print_exc()
+
+    def open_import(self):
+        """Open the import/export screen in import mode (no specific pair required)."""
+        try:
+            app = App.get_running_app()
+            io_screen = app.root.get_screen('language_pair_io_screen')
+            io_screen.locale_from = ''
+            io_screen.locale_to = ''
+            io_screen.pair_name = ''
+            io_screen.export_mode = False
+            io_screen.file_path = ''
+            app.next_screen('language_pair_io_screen')
+        except Exception as e:
+            print(f"ERROR in open_import: {e}")
+            import traceback
+            traceback.print_exc()
+
     def on_filter_text(self, text):
         """Filter data based on text input."""
         self._filter_text = text.lower().strip()

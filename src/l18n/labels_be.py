@@ -1,4 +1,9 @@
 labels_be = {
+    "lang_pair_io_title": "Імпарт / Экспарт моўнай пары",
+    "lang_pair_export_btn": "Экспарт",
+    "lang_pair_import_btn": "Імпарт",
+    "lang_pair_file_path": "Файл",
+    "lang_pair_merge_import": "Зліць (дадаць словы, захаваць існуючыя)",
     "vocab_translation_label": "Пераклад (Мэтавая мова) *",
     "vocab_sound_label": "Шлях да аўдыё файла (Неабавязкова)",
     "vocab_origin_label": "Арыгінал (Зыходная мова) *",
