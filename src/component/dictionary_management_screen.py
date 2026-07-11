@@ -142,6 +142,7 @@ class DictionaryManagementWidget(BoxLayout):
                                 {
                                     'origin': item.origin,
                                     'translation': item.translation,
+                                    'category': item.category,
                                     'item_id': str(idx),
                                     'item_index': idx,
                                 }
@@ -180,6 +181,7 @@ class DictionaryManagementWidget(BoxLayout):
                 {
                     'origin': item['origin'],
                     'translation': item['translation'],
+                    'category': item.get('category'),
                     'item_id': str(idx),
                     'item_index': idx,
                     'selected': idx in self.selected_indices  # Store selected state in data dict
@@ -225,6 +227,7 @@ class DictionaryManagementWidget(BoxLayout):
             item = self.data[item_index]
             origin = item.get('origin', '')
             translation = item.get('translation', '')
+            category = item.get('category')
 
             vocab_repo = app._container.vocabulary_repository()
             if hasattr(vocab_repo, 'delete_vocabulary_item'):
@@ -233,6 +236,7 @@ class DictionaryManagementWidget(BoxLayout):
                     app.locale_to,
                     origin,
                     translation=translation,
+                    category=category,
                 )
 
             # Remove from data list
@@ -253,7 +257,11 @@ class DictionaryManagementWidget(BoxLayout):
             if app and hasattr(app, 'store'):
                 app.store = [
                     s for s in app.store
-                    if not (getattr(s, 'origin', None) == origin and getattr(s, 'translation', None) == translation)
+                    if not (
+                        getattr(s, 'origin', None) == origin and
+                        getattr(s, 'translation', None) == translation and
+                        getattr(s, 'category', None) == category
+                    )
                 ]
 
             self.populate_rv()
