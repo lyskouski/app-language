@@ -54,10 +54,13 @@ import component.recorder_widget
 import component.card_layout_widget
 
 from kivy.app import App
+from kivy.clock import Clock
 from kivy.core.window import Window
 from kivy.lang import Builder
+from kivy.metrics import dp
 from kivy.properties import BooleanProperty, StringProperty, ListProperty, ObjectProperty, NumericProperty
 from kivy.uix.screenmanager import ScreenManager
+from kivy.uix.scrollview import ScrollView
 from kivy.uix.textinput import TextInput
 from kivy.utils import platform
 
@@ -317,6 +320,7 @@ class MainApp(App):
 
         if current_field not in fields:
             fields[0].focus = True
+            self._scroll_to_focused_field(fields[0])
             return
 
         current_index = fields.index(current_field)
@@ -324,8 +328,21 @@ class MainApp(App):
         if next_index < len(fields):
             current_field.focus = False
             fields[next_index].focus = True
+            self._scroll_to_focused_field(fields[next_index])
         else:
             current_field.focus = False
+
+    def _scroll_to_focused_field(self, field):
+        """Ensure focused field is visible inside its nearest parent ScrollView."""
+        if not field:
+            return
+
+        parent = field.parent
+        while parent is not None and not isinstance(parent, ScrollView):
+            parent = parent.parent
+
+        if isinstance(parent, ScrollView):
+            Clock.schedule_once(lambda *_: parent.scroll_to(field, padding=dp(16), animate=True), 0)
 
 if __name__ == '__main__':
     MainApp().run()
