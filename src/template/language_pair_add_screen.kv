@@ -131,6 +131,16 @@
                 font_size: sp(16)
                 on_release: root.save_language_pair()
 
+        Label:
+            text: root.status_text
+            size_hint_y: None
+            height: dp(26) if root.status_text else 0
+            color: app.theme_color('md3_primary', app.theme_version)
+            font_size: sp(14)
+            text_size: self.width, None
+            halign: 'left'
+            valign: 'middle'
+
 
 <LanguageTileWidget@ButtonBehavior+BoxLayout>:
     locale: ''

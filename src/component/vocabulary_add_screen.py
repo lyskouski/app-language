@@ -18,6 +18,7 @@ class VocabularyAddScreen(Screen):
     category_text = StringProperty('dictionary')
     category_id = StringProperty('')  # Category ID for database
     difficulty_text = StringProperty('0')
+    status_text = StringProperty('')
 
     categories = ListProperty(['dictionary', 'verbs', 'numbers', 'articulation'])
 
@@ -31,6 +32,7 @@ class VocabularyAddScreen(Screen):
         self.sound_path_text = ''
         self.image_path_text = ''
         self.difficulty_text = '0'
+        self.status_text = ''
         # Don't clear category_text or category_id - they're pre-filled
 
     def save_vocabulary_item(self):
@@ -42,9 +44,11 @@ class VocabularyAddScreen(Screen):
 
         # Validate required fields
         if not self.origin_text or not self.translation_text:
+            self.status_text = "Origin and translation are required"
             return
 
         if not app.locale_from or not app.locale_to:
+            self.status_text = "Please select a language pair first"
             return
 
         try:
@@ -67,14 +71,17 @@ class VocabularyAddScreen(Screen):
                 [new_item],
                 replace=False  # Append, don't replace existing items
             )
+            self.status_text = ''
 
             # Clear form and return to main screen
             self.clear_form()
             app.next_screen('main_screen')
 
         except ValueError as e:
+            self.status_text = str(e)
             print(f"ERROR: {e}")
         except Exception as e:
+            self.status_text = f"Failed to add vocabulary item: {e}"
             print(f"Error adding vocabulary item: {e}")
             pass
 

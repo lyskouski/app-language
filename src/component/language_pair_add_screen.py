@@ -16,6 +16,7 @@ class LanguagePairAddScreen(Screen):
     locale_to_text = StringProperty('')
     name_text = StringProperty('')
     logo_path_text = StringProperty('')
+    status_text = StringProperty('')
 
     # Available languages for dropdowns
     available_languages = ListProperty([])
@@ -58,6 +59,7 @@ class LanguagePairAddScreen(Screen):
         self.locale_to_text = ''
         self.name_text = ''
         self.logo_path_text = ''
+        self.status_text = ''
 
     def update_name_automatically(self):
         """
@@ -83,19 +85,19 @@ class LanguagePairAddScreen(Screen):
 
         # Validate required fields
         if not locale_from:
-            print("ERROR: Source language is required")
+            self.status_text = "Source language is required"
             return
 
         if not locale_to:
-            print("ERROR: Target language is required")
+            self.status_text = "Target language is required"
             return
 
         if not name:
-            print("ERROR: Name is required")
+            self.status_text = "Name is required"
             return
 
         if locale_from == locale_to:
-            print("ERROR: Source and target languages must be different")
+            self.status_text = "Source and target languages must be different"
             return
 
         try:
@@ -103,7 +105,7 @@ class LanguagePairAddScreen(Screen):
             config_repo = app._container.config_repository()
 
             if config_repo.get_language_pair(locale_from, locale_to) is not None:
-                print(f"ERROR: Language pair already exists: {locale_from}-{locale_to}")
+                self.status_text = f"Language pair already exists: {locale_from}-{locale_to}"
                 return
 
             # Add language pair to database
@@ -115,14 +117,17 @@ class LanguagePairAddScreen(Screen):
             )
 
             print(f"✓ Language pair created: {name} (ID: {pair_id})")
+            self.status_text = ""
 
             # Clear form and return to main screen
             self.clear_form()
             app.next_screen('main_screen')
 
         except ValueError as e:
+            self.status_text = str(e)
             print(f"ERROR: {e}")
         except Exception as e:
+            self.status_text = f"Failed to save language pair: {e}"
             print(f"ERROR saving language pair: {e}")
             import traceback
             traceback.print_exc()
