@@ -174,12 +174,51 @@ class SQLiteVocabularyRepository(IVocabularyRepository):
                 # Get or create language pair
                 language_pair_id = self._get_or_create_language_pair(locale_from, locale_to)
 
+                # Validate duplicate words within the incoming payload.
+                seen_keys = set()
+                for item in items:
+                    normalized_category = (item.category or '').strip().lower()
+                    normalized_origin = item.origin.strip().lower()
+                    item_key = (normalized_category, normalized_origin)
+
+                    if item_key in seen_keys:
+                        raise ValueError(
+                            f"Duplicate word in category '{item.category or ''}': {item.origin}"
+                        )
+
+                    seen_keys.add(item_key)
+
                 if replace:
                     # Delete existing items for this language pair
                     conn.execute(
                         "DELETE FROM vocabulary_items WHERE language_pair_id = ?",
                         (language_pair_id,)
                     )
+                else:
+                    for item in items:
+                        normalized_origin = item.origin.strip()
+
+                        if item.category is None:
+                            existing = conn.execute(
+                                """SELECT id FROM vocabulary_items
+                                   WHERE language_pair_id = ?
+                                     AND category IS NULL
+                                     AND lower(trim(origin)) = lower(?)""",
+                                (language_pair_id, normalized_origin)
+                            ).fetchone()
+                        else:
+                            existing = conn.execute(
+                                """SELECT id FROM vocabulary_items
+                                   WHERE language_pair_id = ?
+                                     AND lower(trim(category)) = lower(?)
+                                     AND lower(trim(origin)) = lower(?)""",
+                                (language_pair_id, item.category.strip(), normalized_origin)
+                            ).fetchone()
+
+                        if existing is not None:
+                            raise ValueError(
+                                f"Word already exists in category '{item.category or ''}': {item.origin}"
+                            )
 
                 # Insert new items
                 for item in items:

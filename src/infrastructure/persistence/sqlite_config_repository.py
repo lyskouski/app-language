@@ -191,12 +191,19 @@ class SQLiteConfigRepository:
         Returns:
             Language pair ID
         """
+        normalized_from = locale_from.strip().upper()
+        normalized_to = locale_to.strip().upper()
+
+        existing = self.get_language_pair(normalized_from, normalized_to)
+        if existing is not None:
+            raise ValueError(f"Language pair already exists: {normalized_from}-{normalized_to}")
+
         try:
             cursor = self._db.execute(
-                """INSERT OR REPLACE INTO language_pairs
+                """INSERT INTO language_pairs
                    (locale_from, locale_to, name, logo_path)
                    VALUES (?, ?, ?, ?)""",
-                (locale_from, locale_to, name, logo_path)
+                (normalized_from, normalized_to, name, logo_path)
             )
             self._db.get_connection().commit()
             return cursor.lastrowid
@@ -367,6 +374,11 @@ class SQLiteConfigRepository:
         Returns:
             Category ID
         """
+        normalized_category_name = category_name.strip()
+
+        if not normalized_category_name:
+            raise ValueError("Category name is required")
+
         # Get language pair ID
         row = self._db.fetchone(
             "SELECT id FROM language_pairs WHERE locale_from = ? AND locale_to = ?",
@@ -378,12 +390,22 @@ class SQLiteConfigRepository:
 
         language_pair_id = row['id']
 
+        duplicate = self._db.fetchone(
+            """SELECT id FROM game_categories
+               WHERE language_pair_id = ?
+                 AND lower(trim(category_name)) = lower(?)""",
+            (language_pair_id, normalized_category_name)
+        )
+
+        if duplicate:
+            raise ValueError(f"Category already exists: {normalized_category_name}")
+
         try:
             cursor = self._db.execute(
                 """INSERT INTO game_categories
                    (language_pair_id, category_name, vocabulary_source)
                    VALUES (?, ?, ?)""",
-                (language_pair_id, category_name, vocabulary_source)
+                (language_pair_id, normalized_category_name, vocabulary_source)
             )
             self._db.get_connection().commit()
             return cursor.lastrowid

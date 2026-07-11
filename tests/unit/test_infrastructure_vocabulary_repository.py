@@ -103,6 +103,23 @@ class TestSQLiteVocabularyRepository:
         items = repository.load_from_file("/nonexistent/path/file.txt")
         assert items == []
 
+    def test_save_vocabulary_items_rejects_duplicate_word_in_same_category(self, repository):
+        """Test duplicate origin in the same category is rejected when appending."""
+        repository.save_vocabulary_items(
+            "EN",
+            "ES",
+            [VocabularyItem("hello", "hola", category="verbs")],
+            replace=False,
+        )
+
+        with pytest.raises(ValueError, match="Word already exists"):
+            repository.save_vocabulary_items(
+                "EN",
+                "ES",
+                [VocabularyItem(" hello ", "saludo", category="Verbs")],
+                replace=False,
+            )
+
 
 if __name__ == '__main__':
     pytest.main([__file__, '-v'])

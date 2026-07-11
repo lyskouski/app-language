@@ -25,9 +25,10 @@ class CategoryAddScreen(Screen):
         Uses dependency injection to get repository from container.
         """
         app = App.get_running_app()
+        category_name = self.category_name_text.strip()
 
         # Validate required fields
-        if not self.category_name_text:
+        if not category_name:
             print("ERROR: Category name is required")
             return
 
@@ -43,14 +44,16 @@ class CategoryAddScreen(Screen):
             config_repo.add_game_category(
                 app.locale_from,
                 app.locale_to,
-                self.category_name_text.strip(),
-                self.category_name_text.strip()
+                category_name,
+                category_name
             )
 
             # Clear form and return to main screen
             self.clear_form()
             app.next_screen('main_screen')
 
+        except ValueError as e:
+            print(f"ERROR: {e}")
         except Exception as e:
             print(f"ERROR saving category: {e}")
             import traceback

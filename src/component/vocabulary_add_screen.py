@@ -72,6 +72,8 @@ class VocabularyAddScreen(Screen):
             self.clear_form()
             app.next_screen('main_screen')
 
+        except ValueError as e:
+            print(f"ERROR: {e}")
         except Exception as e:
             print(f"Error adding vocabulary item: {e}")
             pass

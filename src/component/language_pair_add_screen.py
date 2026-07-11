@@ -77,20 +77,24 @@ class LanguagePairAddScreen(Screen):
         """
         app = App.get_running_app()
 
+        locale_from = self.locale_from_text.strip().upper()
+        locale_to = self.locale_to_text.strip().upper()
+        name = self.name_text.strip()
+
         # Validate required fields
-        if not self.locale_from_text:
+        if not locale_from:
             print("ERROR: Source language is required")
             return
 
-        if not self.locale_to_text:
+        if not locale_to:
             print("ERROR: Target language is required")
             return
 
-        if not self.name_text:
+        if not name:
             print("ERROR: Name is required")
             return
 
-        if self.locale_from_text == self.locale_to_text:
+        if locale_from == locale_to:
             print("ERROR: Source and target languages must be different")
             return
 
@@ -98,20 +102,26 @@ class LanguagePairAddScreen(Screen):
             # Get repository from DI container
             config_repo = app._container.config_repository()
 
+            if config_repo.get_language_pair(locale_from, locale_to) is not None:
+                print(f"ERROR: Language pair already exists: {locale_from}-{locale_to}")
+                return
+
             # Add language pair to database
             pair_id = config_repo.add_language_pair(
-                self.locale_from_text,
-                self.locale_to_text,
-                self.name_text.strip(),
+                locale_from,
+                locale_to,
+                name,
                 self.logo_path_text.strip() if self.logo_path_text else ''
             )
 
-            print(f"✓ Language pair created: {self.name_text} (ID: {pair_id})")
+            print(f"✓ Language pair created: {name} (ID: {pair_id})")
 
             # Clear form and return to main screen
             self.clear_form()
             app.next_screen('main_screen')
 
+        except ValueError as e:
+            print(f"ERROR: {e}")
         except Exception as e:
             print(f"ERROR saving language pair: {e}")
             import traceback
