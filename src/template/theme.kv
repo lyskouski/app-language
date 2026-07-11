@@ -25,6 +25,7 @@
 <TextInput>:
     size_hint_y: None
     height: app.theme.md3_textinput_height
+    on_text_validate: app.focus_next_form_field(self)
     background_normal: ""
     background_active: ""
     background_disabled_normal: ""

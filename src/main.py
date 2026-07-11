@@ -58,6 +58,7 @@ from kivy.core.window import Window
 from kivy.lang import Builder
 from kivy.properties import BooleanProperty, StringProperty, ListProperty, ObjectProperty, NumericProperty
 from kivy.uix.screenmanager import ScreenManager
+from kivy.uix.textinput import TextInput
 from kivy.utils import platform
 
 from kivy.base import EventLoop
@@ -291,6 +292,40 @@ class MainApp(App):
                 widget.init_data(item)
             if hasattr(widget, 'load_data'):
                 widget.load_data()
+
+    def focus_next_form_field(self, current_field):
+        """Move focus to the next enabled single-line TextInput in the current screen."""
+        if not self.root or not isinstance(current_field, TextInput):
+            return
+
+        current_screen = self.root.current_screen
+        if not current_screen:
+            return
+
+        fields = []
+        for widget in current_screen.walk(restrict=True):
+            if not isinstance(widget, TextInput):
+                continue
+            if widget.disabled or getattr(widget, 'readonly', False):
+                continue
+            if getattr(widget, 'multiline', False):
+                continue
+            fields.append(widget)
+
+        if not fields:
+            return
+
+        if current_field not in fields:
+            fields[0].focus = True
+            return
+
+        current_index = fields.index(current_field)
+        next_index = current_index + 1
+        if next_index < len(fields):
+            current_field.focus = False
+            fields[next_index].focus = True
+        else:
+            current_field.focus = False
 
 if __name__ == '__main__':
     MainApp().run()
