@@ -16,6 +16,9 @@ class CategoryAddScreen(Screen):
     def __init__(self, **kwargs):
         super(CategoryAddScreen, self).__init__(**kwargs)
 
+    def _get_app(self):
+        return App.get_running_app()
+
     def clear_form(self):
         """Clear all form fields."""
         self.category_name_text = ''
@@ -26,7 +29,7 @@ class CategoryAddScreen(Screen):
         Save a new category to the database.
         Uses dependency injection to get repository from container.
         """
-        app = App.get_running_app()
+        app = self._get_app()
         category_name = self.category_name_text.strip()
 
         # Validate required fields
@@ -66,6 +69,6 @@ class CategoryAddScreen(Screen):
 
     def cancel(self):
         """Cancel and return to main screen."""
-        app = App.get_running_app()
+        app = self._get_app()
         self.clear_form()
         app.next_screen('main_screen')

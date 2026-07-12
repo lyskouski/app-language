@@ -128,11 +128,34 @@ class RootWidget(BoxLayout):
         self.load_data()
         self.populate_rv()
 
+    def _get_app(self):
+        return App.get_running_app()
+
+    def _get_screen(self, screen_name):
+        app = self._get_app()
+        if not app or not hasattr(app, 'root') or not app.root:
+            return None
+
+        if screen_name not in app.root.screen_names:
+            return None
+
+        return app.root.get_screen(screen_name)
+
+    def _go_to_loading_then(self, screen_name):
+        app = self._get_app()
+        if not app:
+            return
+
+        app.next_screen('loading_screen')
+        Clock.schedule_once(
+            lambda dt: app.next_screen(screen_name, self._get_screen('loading_screen')),
+            1
+        )
+
     def update_data(self, info):
         """Handle navigation when a language pair, dictionary, or game is clicked."""
         try:
-
-            app = App.get_running_app()
+            app = self._get_app()
 
             # Update locale settings
             if (info.locale_from != ''):
@@ -143,11 +166,7 @@ class RootWidget(BoxLayout):
             # Check if this is a game (has route_path) - Level 3 → Game screen
             if (info.route_path != ''):
                 # Navigate to the specific game screen
-                app.next_screen('loading_screen')
-                Clock.schedule_once(
-                    lambda dt: app.next_screen(info.route_path, app.root.get_screen('loading_screen')),
-                    1
-                )
+                self._go_to_loading_then(info.route_path)
                 return
 
             # Otherwise, navigate to next level
@@ -166,14 +185,7 @@ class RootWidget(BoxLayout):
     def play_game(self, info):
         """Load vocabulary and navigate to a game screen."""
         try:
-            app = App.get_running_app()
-
-            # Navigate to the loading screen, then to the game screen
-            app.next_screen('loading_screen')
-            Clock.schedule_once(
-                lambda dt: app.next_screen(info.route_path, app.root.get_screen('loading_screen')),
-                1
-            )
+            self._go_to_loading_then(info.route_path)
         except Exception as e:
             print(f"ERROR in play_game: {e}")
             import traceback
@@ -182,10 +194,13 @@ class RootWidget(BoxLayout):
     def add_vocabulary(self, info):
         """Navigate to vocabulary add screen with category pre-filled."""
         try:
-            app = App.get_running_app()
+            app = self._get_app()
 
             # Get the vocabulary add screen and set category
-            add_screen = app.root.get_screen('vocabulary_add_screen')
+            add_screen = self._get_screen('vocabulary_add_screen')
+            if not add_screen:
+                return
+
             add_screen.category_text = info.category_name
             add_screen.category_id = info.category_id
 
@@ -260,7 +275,7 @@ class RootWidget(BoxLayout):
     def add_category(self):
         """Navigate to category add screen."""
         try:
-            app = App.get_running_app()
+            app = self._get_app()
             app.next_screen('category_add_screen')
         except Exception as e:
             print(f"ERROR in add_category: {e}")
@@ -270,7 +285,7 @@ class RootWidget(BoxLayout):
     def add_language_pair(self):
         """Navigate to language pair add screen."""
         try:
-            app = App.get_running_app()
+            app = self._get_app()
             app.next_screen('language_pair_add_screen')
         except Exception as e:
             print(f"ERROR in add_language_pair: {e}")
@@ -280,8 +295,11 @@ class RootWidget(BoxLayout):
     def open_export(self, info):
         """Open the export screen for a specific language pair."""
         try:
-            app = App.get_running_app()
-            export_screen = app.root.get_screen('language_pair_export_screen')
+            app = self._get_app()
+            export_screen = self._get_screen('language_pair_export_screen')
+            if not export_screen:
+                return
+
             export_screen.locale_from = info.locale_from
             export_screen.locale_to = info.locale_to
             export_screen.pair_name = info.text
@@ -295,8 +313,11 @@ class RootWidget(BoxLayout):
     def open_import(self):
         """Open the import screen."""
         try:
-            app = App.get_running_app()
-            import_screen = app.root.get_screen('language_pair_import_screen')
+            app = self._get_app()
+            import_screen = self._get_screen('language_pair_import_screen')
+            if not import_screen:
+                return
+
             import_screen.file_path = ''
             app.next_screen('language_pair_import_screen')
         except Exception as e:

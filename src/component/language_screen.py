@@ -18,11 +18,14 @@ class LanguageWidget(BoxLayout):
         # Defer initialization until app is fully ready
         Clock.schedule_once(lambda dt: self._init_widget(), 0.1)
 
+    def _get_app(self):
+        return App.get_running_app()
+
     def _init_widget(self):
         """Initialize widget after app is ready."""
         try:
             # Get services from DI container
-            app = App.get_running_app()
+            app = self._get_app()
             if not app:
                 print("ERROR: No running app found!")
                 return
@@ -66,7 +69,7 @@ class LanguageWidget(BoxLayout):
 
     def select_language(self, locale):
         """Select language using settings service."""
-        app = App.get_running_app()
+        app = self._get_app()
         # Use settings service to update locale
         self._settings_service.update_interface_locale(locale)
         # Update app property for backward compatibility

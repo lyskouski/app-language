@@ -25,10 +25,13 @@ class LanguagePairAddScreen(Screen):
     def __init__(self, **kwargs):
         super(LanguagePairAddScreen, self).__init__(**kwargs)
 
+    def _get_app(self):
+        return App.get_running_app()
+
     def on_enter(self):
         """Load available languages when screen is entered."""
-        app = App.get_running_app()
         try:
+            app = self._get_app()
             config_repo = app._container.config_repository()
             languages = config_repo.get_all_languages()
             self.available_languages = [(lang['locale'], lang['text'], lang['logo']) for lang in languages]
@@ -77,7 +80,7 @@ class LanguagePairAddScreen(Screen):
         Save a new language pair to the database.
         Uses dependency injection to get repository from container.
         """
-        app = App.get_running_app()
+        app = self._get_app()
 
         locale_from = self.locale_from_text.strip().upper()
         locale_to = self.locale_to_text.strip().upper()
@@ -134,6 +137,6 @@ class LanguagePairAddScreen(Screen):
 
     def cancel(self):
         """Cancel and return to main screen."""
-        app = App.get_running_app()
+        app = self._get_app()
         self.clear_form()
         app.next_screen('main_screen')

@@ -25,6 +25,9 @@ class VocabularyAddScreen(Screen):
     def __init__(self, **kwargs):
         super(VocabularyAddScreen, self).__init__(**kwargs)
 
+    def _get_app(self):
+        return App.get_running_app()
+
     def clear_form(self):
         """Clear all form fields except category (which is pre-filled)."""
         self.origin_text = ''
@@ -40,7 +43,7 @@ class VocabularyAddScreen(Screen):
         Save a new vocabulary item to the database.
         Uses dependency injection to get repository from container.
         """
-        app = App.get_running_app()
+        app = self._get_app()
 
         # Validate required fields
         if not self.origin_text or not self.translation_text:
@@ -83,10 +86,9 @@ class VocabularyAddScreen(Screen):
         except Exception as e:
             self.status_text = f"Failed to add vocabulary item: {e}"
             print(f"Error adding vocabulary item: {e}")
-            pass
 
     def cancel(self):
         """Cancel and return to main screen."""
-        app = App.get_running_app()
+        app = self._get_app()
         self.clear_form()
         app.next_screen('main_screen')
