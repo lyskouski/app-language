@@ -26,6 +26,7 @@ class RecorderWidget(BoxLayout):
         self._recorder_service = app._container.recorder_service()
         self._localization_service = app._container.localization_service()
         self._audio_comparator = app._container.audio_comparator()
+        self._media_service = app._container.media_service(app.locale_to, app.get_audio_dir())
 
     def init_data(self, item):
         self.loading_widget = item
@@ -381,7 +382,4 @@ class RecorderWidget(BoxLayout):
             app = App.get_running_app()
             self.status_label.text = self._localization_service.translate('status_select_sentence', app.locale)
             return
-        # Use MediaService to play audio
-        app = App.get_running_app()
-        media_service = app._container.media_service()
-        media_service.play_audio(instance.file_path)
+        self._media_service.play_audio(instance.file_path)

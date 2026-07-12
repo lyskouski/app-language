@@ -6,7 +6,6 @@ import re
 import requests
 import json
 import base64
-import threading
 import platform
 from typing import Optional
 
@@ -26,6 +25,7 @@ class MediaService:
     def __init__(self, default_lang: str = 'en', audio_dir: str = 'assets/data/EN/audio/'):
         self._lang = default_lang.lower()
         self._audio_dir = audio_dir
+        self._current_sound = None
 
     def set_language(self, lang: str) -> None:
         """Set the language for TTS."""
@@ -74,21 +74,25 @@ class MediaService:
             print(f"[MediaService] File not found: {path}")
             return
 
-        def _play():
+        def _play(dt):
             try:
-                if platform.system() == 'Windows':
-                    sound = MusicSDL2(source=path)
-                else:
-                    sound = SoundLoader.load(path)
+                if self._current_sound:
+                    self._current_sound.stop()
+                    self._current_sound = None
 
-                if sound:
-                    Clock.schedule_once(lambda dt: sound.play(), 0)
+                if platform.system() == 'Windows':
+                    self._current_sound = MusicSDL2(source=path)
+                else:
+                    self._current_sound = SoundLoader.load(path)
+
+                if self._current_sound:
+                    self._current_sound.play()
                 else:
                     print(f"[MediaService] Cannot load audio: {path}")
             except Exception as e:
                 print(f"[MediaService] Error playing audio: {e}")
 
-        threading.Thread(target=_play, daemon=True).start()
+        Clock.schedule_once(_play, 0)
 
     def _generate_tts_audio(self, word: str, filepath: str) -> None:
         """
