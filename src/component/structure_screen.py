@@ -49,6 +49,11 @@ class StructureScreen(Screen):
     def populate_rv(self):
         self.ids.structure_view.data = self.data
 
+    def reload_data(self):
+        """Reload structure data and refresh the view."""
+        self.load_data()
+        self.populate_rv()
+
 class StructureWidget(BoxLayout):
     source = StringProperty('')
     parent_source = StringProperty('')
@@ -63,7 +68,10 @@ class StructureWidget(BoxLayout):
 
     def expand(self):
         app = App.get_running_app()
-        screen = app.root.get_screen('structure_screen')
+        screen = self._get_structure_screen(app)
+        if not screen:
+            return
+
         new_data = screen.get_data(self.source)
         new_indent = (self.indent or 0) + 0.1
         for item in new_data:
@@ -83,7 +91,10 @@ class StructureWidget(BoxLayout):
 
     def collapse(self):
         app = App.get_running_app()
-        screen = app.root.get_screen('structure_screen')
+        screen = self._get_structure_screen(app)
+        if not screen:
+            return
+
         data = []
         indent = None
         for _, item in enumerate(screen.data):
@@ -101,3 +112,12 @@ class StructureWidget(BoxLayout):
                 data += [item]
         screen.data = data
         screen.populate_rv()
+
+    def _get_structure_screen(self, app):
+        if not app or not hasattr(app, 'root') or not app.root:
+            return None
+
+        if 'structure_screen' not in app.root.screen_names:
+            return None
+
+        return app.root.get_screen('structure_screen')

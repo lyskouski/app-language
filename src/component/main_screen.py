@@ -3,7 +3,7 @@
 
 from kivy.app import App
 from kivy.clock import Clock
-from kivy.properties import ObjectProperty, StringProperty, ListProperty
+from kivy.properties import ListProperty, StringProperty
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.screenmanager import Screen
 
@@ -20,7 +20,7 @@ class MainScreen(Screen):
                 root_widget.populate_rv()
 
 class RootWidget(BoxLayout):
-    data = ObjectProperty([])
+    data = ListProperty([])
     filtered_data = ListProperty([])
     path = StringProperty('root')  # Changed from JSON path to navigation state
 
@@ -122,6 +122,11 @@ class RootWidget(BoxLayout):
 
         # Initialize filtered data when data is loaded
         self._update_filtered_data()
+
+    def reload_data(self):
+        """Reload the current view and refresh the RecycleView."""
+        self.load_data()
+        self.populate_rv()
 
     def update_data(self, info):
         """Handle navigation when a language pair, dictionary, or game is clicked."""

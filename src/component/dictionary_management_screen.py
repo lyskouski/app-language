@@ -78,11 +78,6 @@ class VocabularyItemWidget(ButtonBehavior, BoxLayout):
         try:
             if self.management_widget:
                 self.management_widget.toggle_item_selection(self.item_id)
-                return
-
-            app = App.get_running_app()
-            management_widget = app.root.get_screen('dictionary_management_screen').ids.management_widget
-            management_widget.toggle_item_selection(self.item_id)
         except Exception as e:
             print(f"ERROR in VocabularyItemWidget.on_release: {e}")
 

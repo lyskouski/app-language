@@ -3,7 +3,7 @@
 
 from kivy.app import App
 from kivy.clock import Clock
-from kivy.properties import ObjectProperty
+from kivy.properties import ListProperty
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.screenmanager import Screen
 
@@ -11,7 +11,7 @@ class LanguageScreen(Screen):
     pass
 
 class LanguageWidget(BoxLayout):
-    data = ObjectProperty([])
+    data = ListProperty([])
 
     def __init__(self, **kwargs):
         super(LanguageWidget, self).__init__(**kwargs)
