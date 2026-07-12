@@ -177,6 +177,18 @@ class MainApp(App):
         """Get the image directory for current locale."""
         return self._resource_service.get_image_directory(self.locale_to)
 
+    def _sync_store_from_vocabulary_service(self, force_shuffle: bool, limit: int = 25):
+        """Prepare the current study set and publish it to the app store."""
+        self._vocabulary_service.prepare_study_set(limit, force_shuffle)
+        self.store = self._vocabulary_service.get_current_study_set()
+
+    def _load_screen(self, screen_manager, screen_class, screen_name):
+        """Load a screen KV file and add the screen to the manager."""
+        path = kivy.resources.resource_find(f'template/{screen_name}.kv')
+        if path:
+            Builder.load_file(path)
+        screen_manager.add_widget(screen_class(name=screen_name))
+
     def build(self):
         if platform in ['android', 'ios']:
             self.is_mobile = True
@@ -218,9 +230,7 @@ class MainApp(App):
             (LanguagePairImportScreen, 'language_pair_import_screen')
         ]
         for cls, name in screens:
-            path = kivy.resources.resource_find(f'template/{name}.kv')
-            Builder.load_file(path)
-            sm.add_widget(cls(name=name))
+            self._load_screen(sm, cls, name)
         sm.current = 'language_screen' if not self.locale else 'main_screen'
         return sm
 
@@ -260,9 +270,7 @@ class MainApp(App):
                     # Set items directly (bypass file loading)
                     self._vocabulary_service._current_items = items
 
-                    # Prepare and get study set
-                    self._vocabulary_service.prepare_study_set(25, force_shuffle)
-                    self.store = self._vocabulary_service.get_current_study_set()
+                    self._sync_store_from_vocabulary_service(force_shuffle)
                 else:
                     print("ERROR: locale_from and locale_to must be set to load from database")
             else:
@@ -277,14 +285,10 @@ class MainApp(App):
                     print(f"ERROR: File not found: {data_path}")
                     return
 
-                # Prepare and get study set
-                self._vocabulary_service.prepare_study_set(25, force_shuffle)
-                self.store = self._vocabulary_service.get_current_study_set()
+                self._sync_store_from_vocabulary_service(force_shuffle)
         elif self._vocabulary_service:
             # Just shuffle if already loaded
-            self._vocabulary_service.prepare_study_set(25, force_shuffle)
-            self.store = self._vocabulary_service.get_current_study_set()
-            self.store = self._vocabulary_service.get_current_study_set()
+            self._sync_store_from_vocabulary_service(force_shuffle)
 
     def refresh_widgets(self, item = None):
         if not self.root:
