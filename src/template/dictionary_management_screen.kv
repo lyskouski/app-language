@@ -65,7 +65,7 @@
         width: dp(88)
         on_release:
             root._button_clicked = True
-            app.root.get_screen('dictionary_management_screen').ids.management_widget.delete_item(root.item_id)
+            root.management_widget.delete_item(root.item_id)
 
     BoxLayout:
         orientation: "vertical"
@@ -88,4 +88,3 @@
         disabled: True
         size_hint_x: None
         width: dp(50)
-
