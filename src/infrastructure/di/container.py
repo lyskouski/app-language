@@ -27,7 +27,7 @@ from application.services.vocabulary_service import VocabularyService
 from application.services.settings_service import SettingsService
 from application.services.resource_service import ResourceService
 from application.services.resource_service import LocalizationService
-from application.services.media_service import MediaService
+from application.services.media_service import MediaService, KivyAudioPlaybackBackend
 from application.services.recorder_service import RecorderService, IRecorderController
 from application.services.theme_service import ThemeService
 
@@ -248,7 +248,20 @@ class DependencyContainer:
 
     def media_service(self, lang: str = 'en', audio_dir: str = 'assets/data/EN/audio/') -> MediaService:
         """Get media service instance."""
-        return MediaService(lang, audio_dir)
+        return MediaService(lang, audio_dir, self.audio_playback_backend())
+
+    def audio_playback_backend(self):
+        """Get platform-specific audio playback backend."""
+        if platform == 'android':
+            try:
+                from controller.android_audio_playback_backend import AndroidAudioPlaybackBackend
+                android_backend = AndroidAudioPlaybackBackend()
+                if android_backend.is_available():
+                    return android_backend
+            except Exception as e:
+                print(f"⚠️  Android audio playback backend unavailable: {e}")
+
+        return KivyAudioPlaybackBackend()
 
     def recorder_service(self) -> RecorderService:
         """Get recorder service instance."""

@@ -7,13 +7,61 @@ import requests
 import json
 import base64
 import platform
+from abc import ABC, abstractmethod
 from typing import Optional
 
 if platform.system() == 'Windows':
     from kivy.core.audio.audio_sdl2 import MusicSDL2
 else:
     from kivy.core.audio import SoundLoader
+
 from kivy.clock import Clock
+
+
+class IAudioPlaybackBackend(ABC):
+    """Abstraction for platform-specific audio playback backends."""
+
+    @abstractmethod
+    def play_audio(self, path: str) -> bool:
+        """Play audio at the provided path; return True on success."""
+        pass
+
+    @abstractmethod
+    def stop_audio(self) -> None:
+        """Stop and release any active playback resources."""
+        pass
+
+
+class KivyAudioPlaybackBackend(IAudioPlaybackBackend):
+    """Default Kivy-based audio backend used on desktop and as fallback."""
+
+    def __init__(self):
+        self._current_sound = None
+
+    def play_audio(self, path: str) -> bool:
+        self.stop_audio()
+
+        if platform.system() == 'Windows':
+            self._current_sound = MusicSDL2(source=path)
+        else:
+            self._current_sound = SoundLoader.load(path)
+
+        if not self._current_sound:
+            return False
+
+        self._current_sound.play()
+        return True
+
+    def stop_audio(self) -> None:
+        if not self._current_sound:
+            return
+
+        try:
+            self._current_sound.stop()
+        except Exception:
+            pass
+        finally:
+            self._current_sound = None
 
 
 class MediaService:
@@ -22,10 +70,15 @@ class MediaService:
     Single Responsibility: Handle audio playback and TTS generation.
     """
 
-    def __init__(self, default_lang: str = 'en', audio_dir: str = 'assets/data/EN/audio/'):
+    def __init__(
+        self,
+        default_lang: str = 'en',
+        audio_dir: str = 'assets/data/EN/audio/',
+        audio_playback_backend: Optional[IAudioPlaybackBackend] = None
+    ):
         self._lang = default_lang.lower()
         self._audio_dir = audio_dir
-        self._current_sound = None
+        self._audio_playback_backend = audio_playback_backend or KivyAudioPlaybackBackend()
 
     def set_language(self, lang: str) -> None:
         """Set the language for TTS."""
@@ -76,18 +129,7 @@ class MediaService:
 
         def _play(dt):
             try:
-                if self._current_sound:
-                    self._current_sound.stop()
-                    self._current_sound = None
-
-                if platform.system() == 'Windows':
-                    self._current_sound = MusicSDL2(source=path)
-                else:
-                    self._current_sound = SoundLoader.load(path)
-
-                if self._current_sound:
-                    self._current_sound.play()
-                else:
+                if not self._audio_playback_backend.play_audio(path):
                     print(f"[MediaService] Cannot load audio: {path}")
             except Exception as e:
                 print(f"[MediaService] Error playing audio: {e}")
