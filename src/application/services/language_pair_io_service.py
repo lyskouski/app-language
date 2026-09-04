@@ -3,7 +3,7 @@
 
 import json
 import os
-from typing import Dict, Optional
+from typing import Dict
 
 from infrastructure.persistence.sqlite_vocabulary_repository import SQLiteVocabularyRepository
 from infrastructure.persistence.sqlite_config_repository import SQLiteConfigRepository
