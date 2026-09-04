@@ -37,7 +37,7 @@ class TestMediaService:
         # Mock successful TTS response
         mock_response = Mock()
         mock_response.status_code = 200
-        mock_response.text = "//OEtlc3Q="  # Base64 encoded "test"
+        mock_response.text = "//OEdGVzdA=="  # //OE marker followed by Base64 encoded "test"
         mock_post.return_value = mock_response
 
         result = media_service.get_audio_file("hello")

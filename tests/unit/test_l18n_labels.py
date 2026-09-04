@@ -59,8 +59,9 @@ class LabelsTestCase(unittest.TestCase):
                         if actual != expected:
                             problematic_keys.append(f"Position {i}: got '{actual}', expected '{expected}'")
 
+                    problematic_positions = "\n".join(problematic_keys[:10])
                     self.fail(f"Keys in {lang} are not in descending order. "
-                             f"Problematic positions:\n{"\n".join(problematic_keys[:10])}")  # Show max 10 issues
+                             f"Problematic positions:\n{problematic_positions}")  # Show max 10 issues
 
         # Verify we have some labels to test
         self.assertGreater(len(labels[all_languages[0]]), 0, "Labels should not be empty")
