@@ -12,6 +12,8 @@ parts:
   tlum:
     plugin: python
     source: .
+    build-environment:
+      - PIP_IGNORE_INSTALLED: "1"
     stage-packages:
       - ffmpeg
       - libpulse0
@@ -25,8 +27,8 @@ parts:
       - xclip
       - xsel
     override-build: |
-      python3 -m pip install --upgrade pip
-      python3 -m pip install --prefix=$SNAPCRAFT_PART_INSTALL -r requirements.txt
+      python3 -m pip install --ignore-installed --upgrade pip
+      python3 -m pip install --ignore-installed --prefix=$SNAPCRAFT_PART_INSTALL -r requirements.txt
       snapcraftctl build
       cp -r src $SNAPCRAFT_PART_INSTALL/
       cp -r assets $SNAPCRAFT_PART_INSTALL/
