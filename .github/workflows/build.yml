@@ -210,7 +210,7 @@ jobs:
 # Linux: Snap
       - name: Install Snapcraft
         if: matrix.target == 'LinuxSnap'
-        uses: canonical/setup-lxd@v0.1.1
+        uses: canonical/setup-lxd@v1
 
       - name: Update Version
         if: matrix.target == 'LinuxSnap'
@@ -224,7 +224,13 @@ jobs:
         if: matrix.target == 'LinuxSnap'
         run: |
           sudo snap install snapcraft --classic
-          snapcraft pack --verbose
+          for attempt in 1 2 3; do
+            snapcraft pack --verbose && break
+            if [ "$attempt" -eq 3 ]; then
+              exit 1
+            fi
+            echo "Snapcraft build failed; retrying ($attempt/3)."
+          done
           cp tlum_${{ needs.release.outputs.version }}+${{ needs.release.outputs.build_number }}_amd64.snap "$GITHUB_WORKSPACE/tlum_${{ matrix.target }}.snap"
 
 ## TODO: Resolve failure on start: "Emergency stop (memory image dumped to disk)"
