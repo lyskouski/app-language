@@ -12,9 +12,13 @@ from kivy.uix.label import Label
 from kivy.uix.progressbar import ProgressBar
 from kivy.uix.scrollview import ScrollView
 from kivy.clock import Clock
+from kivy.properties import NumericProperty
 
 class MultilineLabel(Label):
     pass
+
+class StripedRow(BoxLayout):
+    row_index = NumericProperty(-1)
 
 class RecorderWidget(BoxLayout):
     loading_widget = None
@@ -51,8 +55,14 @@ class RecorderWidget(BoxLayout):
         list_layout = GridLayout(cols=1, size_hint_y=None, spacing=5, padding=[0, 0, 0, 5])
         list_layout.bind(minimum_height=list_layout.setter('height'))
 
-        for file_name, sentence in self.audio_files.items():
-            row = BoxLayout(orientation='horizontal', size_hint_y=None, height=app.theme.md3_button_height + 8, spacing=8)
+        for row_index, (file_name, sentence) in enumerate(self.audio_files.items()):
+            row = StripedRow(
+                row_index=row_index,
+                orientation='horizontal',
+                size_hint_y=None,
+                height=app.theme.md3_button_height + 8,
+                spacing=8,
+            )
             row.add_widget(MultilineLabel(text=sentence))
             choose_button = Button(text=self._localization_service.translate('button_choose', app.locale), size_hint_x=0.2)
             choose_button.file_path = file_name

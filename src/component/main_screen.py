@@ -333,12 +333,15 @@ class RootWidget(BoxLayout):
     def _update_filtered_data(self):
         """Update filtered data and repopulate RecycleView."""
         if not self._filter_text:
-            self.filtered_data = self.data[:]
+            filtered_data = self.data[:]
         else:
-            self.filtered_data = [
+            filtered_data = [
                 item for item in self.data
                 if self._filter_text in str(item.get('text', '')).lower()
             ]
+        self.filtered_data = [
+            dict(item, row_index=index) for index, item in enumerate(filtered_data)
+        ]
         self.populate_rv()
 
     def populate_rv(self):

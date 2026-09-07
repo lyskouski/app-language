@@ -3,6 +3,8 @@
 # Copyright 2026 The terCAD team. All rights reserved.
 # Use of this source code is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
 
+#:import StripedRow component.recorder_widget.StripedRow
+
 <ScreenManager>:
     canvas.before:
         Color:
@@ -15,6 +17,15 @@
     canvas.before:
         Color:
             rgba: app.theme_color('md3_surface', app.theme_version)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+<StripedRow>:
+    canvas.before:
+        Color:
+            rgba: app.theme_color('md3_primary', app.theme_version)
+            a: 0.1 if self.row_index % 2 == 0 else 0
         Rectangle:
             pos: self.pos
             size: self.size

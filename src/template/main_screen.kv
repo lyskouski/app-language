@@ -115,6 +115,7 @@
     orientation: "horizontal"
     spacing: dp(8)
     padding: [0, dp(4), 0, dp(4)]
+    row_index: -1
     text: ""
     source: ""
     logo: ""
@@ -124,6 +125,13 @@
     locale_to: ""
     category_id: ""
     category_name: ""
+    canvas.before:
+        Color:
+            rgba: app.theme_color('md3_primary', app.theme_version)
+            a: 0.1 if root.row_index % 2 == 0 else 0
+        Rectangle:
+            pos: self.pos
+            size: self.size
     Widget:
         size_hint_x: 0.05
     Button:
