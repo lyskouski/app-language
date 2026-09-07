@@ -1,6 +1,7 @@
 # Copyright 2026 The terCAD team. All rights reserved.
 # Use of this source code is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
 
+import importlib
 import os
 from kivy.app import App
 from kivy.clock import Clock
@@ -10,8 +11,19 @@ from kivy.uix.button import Button
 from kivy.uix.filechooser import FileChooserListView
 from kivy.uix.popup import Popup
 from kivy.uix.screenmanager import Screen
+from kivy.utils import platform
 
 from application.services.language_pair_io_service import LanguagePairIOService
+
+
+def _get_download_dir() -> str:
+    if platform == "android":
+        storage = importlib.import_module("android.storage")
+
+        return os.path.join(storage.primary_external_storage_path(), "Download")
+    if platform == "ios":
+        return App.get_running_app().user_data_dir
+    return os.path.join(os.path.expanduser("~"), "Downloads")
 
 
 def _get_service() -> LanguagePairIOService:
@@ -23,9 +35,10 @@ def _get_service() -> LanguagePairIOService:
 
 
 def _open_file_chooser(screen, dir_mode: bool):
-    start_dir = os.path.dirname(screen.file_path) if screen.file_path else os.path.expanduser("~")
+    download_dir = _get_download_dir()
+    start_dir = os.path.dirname(screen.file_path) if screen.file_path else download_dir
     if not os.path.isdir(start_dir):
-        start_dir = os.path.expanduser("~")
+        start_dir = download_dir if os.path.isdir(download_dir) else os.path.expanduser("~")
 
     chooser = FileChooserListView(
         path=start_dir,
@@ -77,11 +90,10 @@ class LanguagePairExportScreen(Screen):
     is_busy = BooleanProperty(False)
 
     def on_enter(self):
-        app = App.get_running_app()
-        home = app.get_home_dir() if hasattr(app, "get_home_dir") else os.path.expanduser("~")
+        download_dir = _get_download_dir()
         if not self.file_path:
             pair_tag = f"{self.locale_from}-{self.locale_to}" if (self.locale_from and self.locale_to) else "language_pair"
-            self.file_path = os.path.join(home, f"{pair_tag}.json")
+            self.file_path = os.path.join(download_dir, f"{pair_tag}.json")
         self.status_text = ""
 
     def open_file_chooser(self):
@@ -115,9 +127,7 @@ class LanguagePairImportScreen(Screen):
 
     def on_enter(self):
         if not self.file_path:
-            app = App.get_running_app()
-            home = app.get_home_dir() if hasattr(app, "get_home_dir") else os.path.expanduser("~")
-            self.file_path = os.path.join(home, "language_pair.json")
+            self.file_path = os.path.join(_get_download_dir(), "language_pair.json")
         self.status_text = ""
 
     def open_file_chooser(self):
