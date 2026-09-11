@@ -16,12 +16,12 @@ pinpoint pronunciation gaps, and machine learning to boost vocabulary proficienc
 
 
 ## Functionality
-- Create new language pairs (BE, EN, PL, RU, and UK)
+- Create new language pairs
 - Create new categories for language pairs
 - Add new words to categories
 - Import/export a language pair with all categories and words
 - Light/dark interface mode
-- Interface language (BE, EN, PL, RU, UK)
+- Interface language (BE, EN, PL, RU, UK, FR, DE)
 - **Practices** (games):
     - Cards: a word and its translation on the back of the card
     - Harmonica: a writing experience (write either an original text or a translation)
