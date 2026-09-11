@@ -22,10 +22,30 @@ import kivy.resources
 import sys
 from pathlib import Path
 from kivy.config import Config
+from kivy.core.text import LabelBase
 
 _PROJECT_ROOT = Path(__file__).resolve().parent.parent
+
 _BOOTSTRAP_ICON = _PROJECT_ROOT / 'assets' / 'images' / 'logo_44.png'
 Config.set('kivy', 'window_icon', str(_BOOTSTRAP_ICON))
+
+_FONTS_DIR = _PROJECT_ROOT / 'assets' / 'fonts'
+
+_APP_FONT = _FONTS_DIR / 'DejaVuSans.ttf'
+LabelBase.register(name='DejaVu Sans', fn_regular=str(_APP_FONT))
+Config.set('kivy', 'default_font', str(['DejaVu Sans', str(_APP_FONT)]))
+
+# Script-specific fonts used as fallbacks by `l18n.script_fonts.font_for_text`
+_CJK_FONT = _FONTS_DIR / 'NotoSansCJK-Regular.ttc'
+LabelBase.register(name='Noto Sans CJK SC', fn_regular=str(_CJK_FONT))
+for _script_font in (
+    'Arabic', 'Bengali', 'Devanagari', 'Ethiopic', 'Georgian', 'Gujarati', 'Gurmukhi',
+    'Kannada', 'Khmer', 'Malayalam', 'Tamil', 'Telugu', 'Thai',
+):
+    LabelBase.register(
+        name=f'Noto Sans {_script_font}',
+        fn_regular=str(_FONTS_DIR / f'NotoSans{_script_font}-Regular.ttf'),
+    )
 
 from component.card_screen import CardScreen
 from component.loading_screen import LoadingScreen
@@ -42,6 +62,7 @@ from component.vocabulary_add_screen import VocabularyAddScreen
 from component.category_add_screen import CategoryAddScreen
 from component.language_pair_add_screen import LanguagePairAddScreen
 from component.language_pair_io_screen import LanguagePairExportScreen, LanguagePairImportScreen
+from l18n.script_fonts import font_for_text
 
 # Clean Architecture imports
 from infrastructure.di.container import DependencyContainer
@@ -137,6 +158,10 @@ class MainApp(App):
         to force live theme re-evaluation when mode changes.
         """
         return getattr(self.theme, token_name)
+
+    def font_for_text(self, text):
+        """Resolve the registered font able to render every character in `text`."""
+        return font_for_text(text)
 
     def toggle_theme_mode(self, dark_enabled: bool):
         """Switch between light and dark theme and persist choice in database."""
