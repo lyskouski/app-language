@@ -29,6 +29,10 @@ _PROJECT_ROOT = Path(__file__).resolve().parent.parent
 _BOOTSTRAP_ICON = _PROJECT_ROOT / 'assets' / 'images' / 'logo_44.png'
 Config.set('kivy', 'window_icon', str(_BOOTSTRAP_ICON))
 
+#if kivy.utils.platform not in ('android', 'ios'):
+#    Config.set('graphics', 'width', '1024')
+#    Config.set('graphics', 'height', '500')
+
 _FONTS_DIR = _PROJECT_ROOT / 'assets' / 'fonts'
 
 _APP_FONT = _FONTS_DIR / 'DejaVuSans.ttf'
