@@ -39,6 +39,11 @@ class LabelsTestCase(unittest.TestCase):
         # Verify we have some labels to test
         self.assertGreater(len(reference_labels), 0, f"{reference_lang} labels should not be empty")
 
+    def test_available_locales_include_international_languages(self):
+        """Ensure German and French locales are registered for the application UI."""
+        self.assertIn("DE", labels)
+        self.assertIn("FR", labels)
+
     def test_ordering(self):
         """Test that all labels are ordered in DESC order of keys"""
         # Get all available languages
