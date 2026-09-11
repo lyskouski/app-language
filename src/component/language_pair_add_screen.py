@@ -5,6 +5,9 @@ from kivy.app import App
 from kivy.properties import StringProperty, ListProperty
 from kivy.uix.screenmanager import Screen
 
+from l18n.world_languages import WORLD_LANGUAGES
+
+
 class LanguagePairAddScreen(Screen):
     """
     Screen for adding new language pairs to the database.
@@ -28,30 +31,43 @@ class LanguagePairAddScreen(Screen):
     def _get_app(self):
         return App.get_running_app()
 
+    def _build_language_catalog(self):
+        """Return the canonical worldwide language list as locale/name tuples."""
+        return [(locale, name, '') for locale, name in sorted(WORLD_LANGUAGES.items())]
+
+    def _display_name_for(self, locale):
+        """Return a selector label in the format 'CODE - Language name'."""
+        name = next((name for code, name, _ in self.available_languages if code == locale), locale)
+        return f"{locale} - {name}"
+
     def on_enter(self):
-        """Load available languages when screen is entered."""
+        """Load the full worldwide language list when the screen is entered."""
         try:
-            app = self._get_app()
-            config_repo = app._container.config_repository()
-            languages = config_repo.get_all_languages()
-            self.available_languages = [(lang['locale'], lang['text'], lang['logo']) for lang in languages]
-            # Populate spinner options with locale codes
-            self.language_options = [lang[0] for lang in self.available_languages]
+            self.available_languages = self._build_language_catalog()
+            self.language_options = [self._display_name_for(locale) for locale, _, _ in self.available_languages]
         except Exception as e:
             print(f"ERROR loading languages: {e}")
             import traceback
             traceback.print_exc()
 
+    def _resolve_locale_from_display(self, display_value):
+        """Map a selector label back to the raw locale code."""
+        if not display_value or ' - ' not in display_value:
+            return display_value
+        return display_value.split(' - ', 1)[0].strip()
+
     def select_from_language(self, locale):
         """Select source language."""
-        self.from_language_text = locale
-        self.locale_from_text = locale
+        value = self._resolve_locale_from_display(locale)
+        self.from_language_text = value
+        self.locale_from_text = value
         self.update_name_automatically()
 
     def select_to_language(self, locale):
         """Select target language."""
-        self.to_language_text = locale
-        self.locale_to_text = locale
+        value = self._resolve_locale_from_display(locale)
+        self.to_language_text = value
+        self.locale_to_text = value
         self.update_name_automatically()
 
     def clear_form(self):
