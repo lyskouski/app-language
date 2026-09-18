@@ -17,8 +17,7 @@ package.domain = com.tercad
 source.dir = .
 
 # (list) Source files to include (let empty to include all the files)
-# sql needed for database_schema.sql
-source.include_exts = py,png,jpg,kv,atlas,json,txt,ttf,wav,mp3,csv,sql,db
+source.include_exts = py,png,jpg,kv,atlas,json,txt,ttf,ttc,wav,mp3,csv,sql,db
 
 # (list) List of inclusions using pattern matching
 source.include_patterns = assets/*,src/*,android/*

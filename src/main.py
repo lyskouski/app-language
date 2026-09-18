@@ -39,16 +39,27 @@ _APP_FONT = _FONTS_DIR / 'DejaVuSans.ttf'
 LabelBase.register(name='DejaVu Sans', fn_regular=str(_APP_FONT))
 Config.set('kivy', 'default_font', str(['DejaVu Sans', str(_APP_FONT)]))
 
+
+def _register_font_safe(name, font_path):
+    """Register a font, falling back to the default UI font if the file is
+    missing/unreadable (e.g. excluded from a packaged build) so a packaging
+    issue with a single font can't crash the whole app on startup."""
+    try:
+        LabelBase.register(name=name, fn_regular=str(font_path))
+    except Exception as e:
+        print(f"Warning: Failed to register font '{name}' from {font_path}: {e}")
+        LabelBase.register(name=name, fn_regular=str(_APP_FONT))
+
+
 # Script-specific fonts used as fallbacks by `l18n.script_fonts.font_for_text`
-_CJK_FONT = _FONTS_DIR / 'NotoSansCJK-Regular.ttc'
-LabelBase.register(name='Noto Sans CJK SC', fn_regular=str(_CJK_FONT))
+_register_font_safe('Noto Sans CJK SC', _FONTS_DIR / 'NotoSansCJK-Regular.ttc')
 for _script_font in (
     'Arabic', 'Bengali', 'Devanagari', 'Ethiopic', 'Georgian', 'Gujarati', 'Gurmukhi',
     'Kannada', 'Khmer', 'Malayalam', 'Tamil', 'Telugu', 'Thai',
 ):
-    LabelBase.register(
-        name=f'Noto Sans {_script_font}',
-        fn_regular=str(_FONTS_DIR / f'NotoSans{_script_font}-Regular.ttf'),
+    _register_font_safe(
+        f'Noto Sans {_script_font}',
+        _FONTS_DIR / f'NotoSans{_script_font}-Regular.ttf',
     )
 
 from component.card_screen import CardScreen
