@@ -25,7 +25,7 @@ jobs:
       matrix:
         target: [iOS]
         include:
-          - os: macos-14
+          - os: macos-15
             target: iOS
             build_path: build
             asset_extension: .ipa
@@ -63,6 +63,15 @@ jobs:
         run: |
           brew install autoconf automake libtool pkg-config
           brew link libtool
+
+      # App Store Connect requires the app be built with the current iOS SDK; pin to
+      # whichever Xcode version is newest on the runner image instead of the default.
+      - name: Select latest available Xcode
+        if: matrix.target == 'iOS'
+        run: |
+          LATEST_XCODE=$(ls -d /Applications/Xcode*.app 2>/dev/null | sort -V | tail -1)
+          sudo xcode-select -s "$LATEST_XCODE/Contents/Developer"
+          xcodebuild -version
 
       - name: Import Apple code-signing certificate and provisioning profile
         if: matrix.target == 'iOS'
@@ -143,6 +152,10 @@ jobs:
         env:
           PYTHONHOME: ""
           PYTHONPATH: ""
+          # requests -> charset-normalizer ships a precompiled accelerator (md/cd .so) built
+          # for the host (macOS), which App Store validation rejects as a loose binary in the
+          # bundle; force it to install from source so no native extension is built.
+          PIP_NO_BINARY: charset-normalizer
         run: |
           buildozer ios release
 
@@ -169,6 +182,7 @@ jobs:
         env:
           PYTHONHOME: ""
           PYTHONPATH: ""
+          PIP_NO_BINARY: charset-normalizer
         run: |
           buildozer ios release
 
