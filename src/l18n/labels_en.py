@@ -63,6 +63,8 @@ labels_en = {
     "error_not_found": "Error: No recorded file found",
     "edit_structure": "Edit Structure",
     "dictionaries_manage_title": "Manage dictionary",
+    "delete_confirmation_title": "Confirm deletion",
+    "delete_confirmation_message": "Are you sure you want to delete this item? This action cannot be undone.",
     "category_vocab_label": "Vocabulary Source *",
     "category_order_label": "Display Order (Optional)",
     "category_name_label": "Category Name *",

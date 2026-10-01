@@ -60,12 +60,12 @@
     # Canvas is drawn dynamically by _redraw_background() callback in Python
 
     Button:
-        text: "Delete"
+        text: app._("button_delete", app.locale)
         size_hint_x: None
         width: dp(88)
         on_release:
             root._button_clicked = True
-            root.management_widget.delete_item(root.item_id)
+            root.management_widget.confirm_delete_item(root.item_id)
 
     BoxLayout:
         orientation: "vertical"

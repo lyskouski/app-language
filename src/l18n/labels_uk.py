@@ -63,6 +63,8 @@ labels_uk = {
     "error_not_found": "Помилка: Записаний файл не знайдено",
     "edit_structure": "Редагувати структуру",
     "dictionaries_manage_title": "Керування словником",
+    "delete_confirmation_title": "Підтвердьте видалення",
+    "delete_confirmation_message": "Ви впевнені, що хочете видалити цей елемент? Цю дію не можна скасувати.",
     "category_vocab_label": "Джерело словника *",
     "category_order_label": "Порядок відображення (Необов'язково)",
     "category_name_label": "Назва категорії *",

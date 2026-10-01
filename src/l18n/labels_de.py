@@ -63,6 +63,8 @@ labels_de = {
     "error_not_found": "Fehler: Keine aufgezeichnete Datei gefunden",
     "edit_structure": "Struktur bearbeiten",
     "dictionaries_manage_title": "Wörterbuch verwalten",
+    "delete_confirmation_title": "Löschen bestätigen",
+    "delete_confirmation_message": "Möchten Sie diesen Eintrag wirklich löschen? Dieser Vorgang kann nicht rückgängig gemacht werden.",
     "category_vocab_label": "Wörterbuchquelle *",
     "category_order_label": "Anzeigereihenfolge (Optional)",
     "category_name_label": "Kategoriename *",

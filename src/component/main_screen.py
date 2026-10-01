@@ -7,6 +7,9 @@ from kivy.properties import ListProperty, OptionProperty, StringProperty
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.screenmanager import Screen
 
+from .delete_confirmation_popup import show_delete_confirmation
+
+
 class MainScreen(Screen):
     def on_enter(self):
         """Reload data when screen becomes visible."""
@@ -197,23 +200,36 @@ class RootWidget(BoxLayout):
             import traceback
             traceback.print_exc()
 
-    def delete_category(self, info):
+    def confirm_delete(self, info):
+        category_name = info.category_name
+        locale_from = info.locale_from
+        locale_to = info.locale_to
+
+        if info.category_id:
+            show_delete_confirmation(
+                lambda: self.delete_category(category_name, locale_from, locale_to)
+            )
+        else:
+            show_delete_confirmation(
+                lambda: self.delete_language_pair(locale_from, locale_to)
+            )
+
+    def delete_category(self, category_name, locale_from, locale_to):
         """Delete a category from current language pair and refresh list."""
         try:
             app = App.get_running_app()
 
-            category_name = getattr(info, 'category_name', '')
             if not category_name:
                 print("ERROR: Category name is empty")
                 return
 
-            if not app.locale_from or not app.locale_to:
+            if not locale_from or not locale_to:
                 print("ERROR: locale_from or locale_to not set")
                 return
 
             deleted = self._config_repo.delete_game_category(
-                app.locale_from,
-                app.locale_to,
+                locale_from,
+                locale_to,
                 category_name,
             )
 
@@ -227,13 +243,10 @@ class RootWidget(BoxLayout):
             import traceback
             traceback.print_exc()
 
-    def delete_language_pair(self, info):
+    def delete_language_pair(self, locale_from, locale_to):
         """Delete a language pair and cascade-delete linked categories and vocabulary."""
         try:
             app = App.get_running_app()
-
-            locale_from = getattr(info, 'locale_from', '')
-            locale_to = getattr(info, 'locale_to', '')
 
             if not locale_from or not locale_to:
                 print("ERROR: locale_from or locale_to is empty")

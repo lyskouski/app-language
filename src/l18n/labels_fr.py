@@ -63,6 +63,8 @@ labels_fr = {
     "error_not_found": "Erreur : aucun fichier enregistré trouvé",
     "edit_structure": "Modifier la structure",
     "dictionaries_manage_title": "Gérer le dictionnaire",
+    "delete_confirmation_title": "Confirmer la suppression",
+    "delete_confirmation_message": "Voulez-vous vraiment supprimer cet élément ? Cette action est irréversible.",
     "category_vocab_label": "Source du vocabulaire *",
     "category_order_label": "Ordre d'affichage (Optionnel)",
     "category_name_label": "Nom de la catégorie *",

@@ -63,6 +63,8 @@ labels_pl = {
     "error_not_found": "Błąd: nie znaleziono nagranego pliku",
     "edit_structure": "Edytuj strukturę",
     "dictionaries_manage_title": "Zarządzaj słownikiem",
+    "delete_confirmation_title": "Potwierdź usunięcie",
+    "delete_confirmation_message": "Czy na pewno chcesz usunąć ten element? Tej operacji nie można cofnąć.",
     "category_vocab_label": "Źródło słownika *",
     "category_order_label": "Porządek wyświetlania (Opcjonalnie)",
     "category_name_label": "Nazwa kategorii *",

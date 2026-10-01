@@ -63,6 +63,8 @@ labels_ru = {
     "error_not_found": "Ошибка: Записанный файл не найден",
     "edit_structure": "Редактировать структуру",
     "dictionaries_manage_title": "Управление словарем",
+    "delete_confirmation_title": "Подтвердите удаление",
+    "delete_confirmation_message": "Вы уверены, что хотите удалить этот элемент? Это действие нельзя отменить.",
     "category_vocab_label": "Источник словаря *",
     "category_order_label": "Порядок отображения (Необязательно)",
     "category_name_label": "Название категории *",

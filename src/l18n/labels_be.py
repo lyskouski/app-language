@@ -63,6 +63,8 @@ labels_be = {
     "error_not_found": "Памылка: Запісаны файл не знойдзен",
     "edit_structure": "Рэдагаваць структуру",
     "dictionaries_manage_title": "Кіраванне слоўнікам",
+    "delete_confirmation_title": "Пацвердзіце выдаленне",
+    "delete_confirmation_message": "Вы ўпэўнены, што хочаце выдаліць гэты элемент? Гэта дзеянне нельга адмяніць.",
     "category_vocab_label": "Крыніца слоўніка *",
     "category_order_label": "Парадак адлюстравання (Неабавязкова)",
     "category_name_label": "Назва катэгорыі *",

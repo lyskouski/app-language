@@ -11,6 +11,8 @@ from kivy.uix.screenmanager import Screen
 from kivy.uix.behaviors import FocusBehavior, ButtonBehavior
 from kivy.uix.recycleboxlayout import RecycleBoxLayout
 
+from .delete_confirmation_popup import show_delete_confirmation
+
 
 class SelectableRecycleBoxLayout(FocusBehavior, RecycleBoxLayout):
     """RecycleBoxLayout with selection support."""
@@ -313,6 +315,10 @@ class DictionaryManagementWidget(BoxLayout):
             print(f"ERROR in delete_item: {e}")
             import traceback
             traceback.print_exc()
+
+    def confirm_delete_item(self, item_id):
+        item_id = str(item_id)
+        show_delete_confirmation(lambda: self.delete_item(item_id))
 
     def apply_selection(self):
         """Apply the selected items to the app store."""
