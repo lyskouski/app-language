@@ -106,6 +106,13 @@ jobs:
           sed -i '' -e "s/^#ios.codesign.development_team.debug = .*/ios.codesign.development_team.debug = $APPLE_TEAM_ID/" buildozer.spec
           sed -i '' -e "s/^#ios.codesign.development_team.release = .*/ios.codesign.development_team.release = $APPLE_TEAM_ID/" buildozer.spec
 
+      # buildozer's `xcodebuild -exportArchive` call smashes "-archivePath" and its value
+      # into a single shell-quoted string, but invokes xcodebuild without a shell, so
+      # xcodebuild rejects it as an invalid option. See ios/patch_buildozer_export_archive.py.
+      - name: Patch upstream buildozer iOS export-archive quoting bug
+        if: matrix.target == 'iOS'
+        run: python3 ios/patch_buildozer_export_archive.py
+
       # buildozer tries to compile the phonegap/ios-deploy companion CLI (used only by
       # `buildozer ios deploy/run`, never by `release`) via xcodebuild, and that clone is
       # broken upstream ("does not contain an Xcode project"). Pre-seed a stub binary so
