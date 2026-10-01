@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fixes two bugs in buildozer's ios target (targets/ios.py, build_package()):
+"""Fixes three bugs in buildozer's ios target (targets/ios.py, build_package()):
 
 1. The `xcodebuild -exportArchive` call builds its args as single strings with the flag
    and value smashed together inside shell-style quotes, e.g. `f'-archivePath "{xcarchive}"'`,
@@ -13,21 +13,35 @@
    Redirected to read the real export options plist path from the
    BUILDOZER_IOS_EXPORT_OPTIONS_PLIST env var (falls back to plist_rfn, i.e. previous
    buggy behaviour, if unset).
+
+3. `CFBundleVersion` is set to `"{version}.{build_id}"` (buildozer's own internal build
+   counter), e.g. "0.4.0.2", instead of a plain build number App Store Connect expects.
+   Redirected to read from the BUILDOZER_IOS_BUILD_NUMBER env var (falls back to the old
+   buggy value if unset).
 """
 import re
 import sys
 
 import buildozer.targets.ios as ios_module
 
-PATTERN = re.compile(
+EXPORT_PATTERN = re.compile(
     r"""f'-archivePath\s+"\{xcarchive\}"',\s*\n"""
     r"""\s*f'-exportOptionsPlist\s+"\{plist_rfn\}"',\s*\n"""
     r"""\s*f'-exportPath\s+"\{ipa_tmp\}"',"""
 )
-REPLACEMENT = (
+EXPORT_REPLACEMENT = (
     "'-archivePath', xcarchive,\n"
     "            '-exportOptionsPlist', os.environ.get('BUILDOZER_IOS_EXPORT_OPTIONS_PLIST', plist_rfn),\n"
     "            '-exportPath', ipa_tmp,"
+)
+
+BUILD_NUMBER_PATTERN = re.compile(
+    r"""plist\['CFBundleVersion'\]\s*=\s*'\{\}\.\{\}'\.format\(version,\s*\n"""
+    r"""\s*self\.buildozer\.build_id\)"""
+)
+BUILD_NUMBER_REPLACEMENT = (
+    "plist['CFBundleVersion'] = os.environ.get(\n"
+    "                'BUILDOZER_IOS_BUILD_NUMBER', '{}.{}'.format(version, self.buildozer.build_id))"
 )
 
 
@@ -36,26 +50,37 @@ def main():
     with open(path) as f:
         content = f.read()
 
-    if "'-archivePath', xcarchive," in content:
+    already_patched = "'-archivePath', xcarchive," in content
+    build_number_patched = "BUILDOZER_IOS_BUILD_NUMBER" in content
+
+    if already_patched and build_number_patched:
         print(f"{path} already patched")
         return
 
-    new_content, count = PATTERN.subn(REPLACEMENT, content)
-    if count != 1:
-        print(f"ERROR: expected pattern not found (exactly once) in {path}", file=sys.stderr)
-        sys.exit(1)
+    if not already_patched:
+        content, count = EXPORT_PATTERN.subn(EXPORT_REPLACEMENT, content)
+        if count != 1:
+            print(f"ERROR: export-archive pattern not found (exactly once) in {path}", file=sys.stderr)
+            sys.exit(1)
 
-    if "import os\n" not in new_content:
+    if not build_number_patched:
+        content, count = BUILD_NUMBER_PATTERN.subn(BUILD_NUMBER_REPLACEMENT, content)
+        if count != 1:
+            print(f"ERROR: CFBundleVersion pattern not found (exactly once) in {path}", file=sys.stderr)
+            sys.exit(1)
+
+    if "import os\n" not in content:
         # ios.py already imports several stdlib modules at the top; add `os` if missing.
-        new_content = new_content.replace("import plistlib\n", "import os\nimport plistlib\n", 1)
+        content = content.replace("import plistlib\n", "import os\nimport plistlib\n", 1)
 
     with open(path, "w") as f:
-        f.write(new_content)
+        f.write(content)
     print(f"Patched {path}")
 
 
 if __name__ == "__main__":
     main()
+
 
 
 
