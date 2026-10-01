@@ -104,6 +104,17 @@ jobs:
           sed -i '' -e "s/^#ios.codesign.development_team.debug = .*/ios.codesign.development_team.debug = $APPLE_TEAM_ID/" buildozer.spec
           sed -i '' -e "s/^#ios.codesign.development_team.release = .*/ios.codesign.development_team.release = $APPLE_TEAM_ID/" buildozer.spec
 
+      # buildozer tries to compile the phonegap/ios-deploy companion CLI (used only by
+      # `buildozer ios deploy/run`, never by `release`) via xcodebuild, and that clone is
+      # broken upstream ("does not contain an Xcode project"). Pre-seed a stub binary so
+      # buildozer's file-exists check skips that build entirely.
+      - name: Stub out unused buildozer ios-deploy helper
+        if: matrix.target == 'iOS'
+        run: |
+          mkdir -p .buildozer/ios/platform/ios-deploy
+          printf '#!/bin/sh\nexit 0\n' > .buildozer/ios/platform/ios-deploy/ios-deploy
+          chmod +x .buildozer/ios/platform/ios-deploy/ios-deploy
+
       # First pass clones kivy-ios, compiles the recipes (slow) and generates the Xcode
       # project + Info.plist. It may fail at the archive/export step before the plist is
       # patched below, so the failure is tolerated here and the build is retried after.
@@ -119,7 +130,7 @@ jobs:
       - name: Patch generated Info.plist
         if: matrix.target == 'iOS'
         run: |
-          PLIST=$(find .buildozer/ios/platform/kivy-ios -maxdepth 1 -name "*-Info.plist" | head -1)
+          PLIST=$(find .buildozer/ios/platform/kivy-ios -name "*-Info.plist" | head -1)
           ./ios/patch_info_plist.sh "$PLIST"
 
       - name: Build and archive iOS IPA (release pass)
