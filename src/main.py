@@ -81,6 +81,7 @@ from l18n.script_fonts import font_for_text
 
 # Clean Architecture imports
 from infrastructure.di.container import DependencyContainer
+from application.services.recorder_service import cleanup_temporary_recordings
 
 ## Load all widgets (for distribution) to avoid:
 # AttributeError: module 'component' has no attribute 'recorder_widget'
@@ -230,6 +231,8 @@ class MainApp(App):
         screen_manager.add_widget(screen_class(name=screen_name))
 
     def build(self):
+        cleanup_temporary_recordings(self.get_home_dir())
+
         if platform in ['android', 'ios']:
             self.is_mobile = True
 

@@ -2,6 +2,34 @@
 # Use of this source code is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
 
 from abc import ABC, abstractmethod
+import os
+import re
+
+
+_TEMPORARY_RECORDING_PATTERN = re.compile(r'tmp_\d+\.(?:wav|mp3|3gp|m4a)\Z')
+
+
+def cleanup_temporary_recordings(home_dir: str) -> int:
+    """Remove stale recording files created by the Articulation game."""
+    removed_count = 0
+    try:
+        entries = os.scandir(home_dir)
+    except OSError:
+        return removed_count
+
+    with entries:
+        for entry in entries:
+            if not _TEMPORARY_RECORDING_PATTERN.fullmatch(entry.name):
+                continue
+            try:
+                if not entry.is_file(follow_symlinks=False):
+                    continue
+                os.remove(entry.path)
+            except OSError:
+                continue
+            removed_count += 1
+
+    return removed_count
 
 
 class IRecorderController(ABC):

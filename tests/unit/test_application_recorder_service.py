@@ -6,7 +6,7 @@
 import pytest
 from unittest.mock import Mock
 
-from application.services.recorder_service import RecorderService
+from application.services.recorder_service import RecorderService, cleanup_temporary_recordings
 
 
 class TestRecorderService:
@@ -49,6 +49,32 @@ class TestRecorderService:
         assert result == "/path/to/recording.mp3"
         assert recorder_service.is_recording() is False
         mock_controller.stop_recording.assert_called_once()
+
+class TestCleanupTemporaryRecordings:
+    def test_removes_generated_recordings_for_all_platforms(self, tmp_path):
+        filenames = (
+            'tmp_123.wav',
+            'tmp_123.mp3',
+            'tmp_123.3gp',
+            'tmp_123.m4a',
+        )
+        for filename in filenames:
+            (tmp_path / filename).write_bytes(b'audio')
+
+        removed_count = cleanup_temporary_recordings(str(tmp_path))
+
+        assert removed_count == len(filenames)
+        assert not any((tmp_path / filename).exists() for filename in filenames)
+
+    def test_preserves_unrelated_files(self, tmp_path):
+        filenames = ('word.mp3', 'tmp_recording.mp3', 'tmp_123.txt')
+        for filename in filenames:
+            (tmp_path / filename).write_bytes(b'data')
+
+        removed_count = cleanup_temporary_recordings(str(tmp_path))
+
+        assert removed_count == 0
+        assert all((tmp_path / filename).exists() for filename in filenames)
 
 
 if __name__ == '__main__':
