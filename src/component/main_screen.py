@@ -217,8 +217,6 @@ class RootWidget(BoxLayout):
     def delete_category(self, category_name, locale_from, locale_to):
         """Delete a category from current language pair and refresh list."""
         try:
-            app = App.get_running_app()
-
             if not category_name:
                 print("ERROR: Category name is empty")
                 return
