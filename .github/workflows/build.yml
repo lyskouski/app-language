@@ -23,13 +23,18 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [Windows, Linux, LinuxSnap, LinuxAppImage, Android, AndroidDebug]
+        target: [Windows, Linux, LinuxSnap, LinuxAppImage, Android, AndroidDebug, iOS]
         include:
           - os: windows-latest
             target: Windows
             build_path: windows/dist
             asset_extension: .zip
             asset_content_type: application/zip
+          - os: macos-14
+            target: iOS
+            build_path: build
+            asset_extension: .ipa
+            asset_content_type: application/octet-stream
           # Error: version `GLIBC_2.38' not found
           # Build Linux app in the oldest Ubuntu for better compatibility
           - os: ubuntu-22.04
@@ -77,14 +82,107 @@ jobs:
       - name: Install Apple requirements
         if: matrix.target == 'iOS' || matrix.target == 'macOS'
         run: |
-          pip install pyobjus
+          pip install pyobjus kivy-ios
 
       - name: Install Linux requirements
         if: startsWith(matrix.target, 'Linux')
         run: |
           pip install ffpyplayer
 
-# iOS [TBD]
+# iOS
+      - name: Install iOS build dependencies
+        if: matrix.target == 'iOS'
+        run: |
+          brew install autoconf automake libtool pkg-config
+          brew link libtool
+
+      - name: Import Apple code-signing certificate and provisioning profile
+        if: matrix.target == 'iOS'
+        env:
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_P12 }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_P12_KEY }}
+          APPLE_PROVISIONING_PROFILE: ${{ secrets.APPLE_IOS_PROFILE }}
+        run: |
+          KEYCHAIN_PATH="$RUNNER_TEMP/app-signing.keychain-db"
+          KEYCHAIN_PASSWORD="$(openssl rand -base64 24)"
+          CERTIFICATE_PATH="$RUNNER_TEMP/certificate.p12"
+          PROFILE_PATH="$RUNNER_TEMP/profile.mobileprovision"
+
+          echo -n "$APPLE_CERTIFICATE" | base64 --decode -o "$CERTIFICATE_PATH"
+          echo -n "$APPLE_PROVISIONING_PROFILE" | base64 --decode -o "$PROFILE_PATH"
+
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security import "$CERTIFICATE_PATH" -P "$APPLE_CERTIFICATE_PASSWORD" -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security list-keychain -d user -s "$KEYCHAIN_PATH" login.keychain
+
+          mkdir -p ~/Library/MobileDevice/"Provisioning Profiles"
+          cp "$PROFILE_PATH" ~/Library/MobileDevice/"Provisioning Profiles"/tlum_appstore.mobileprovision
+
+          echo "KEYCHAIN_PATH=$KEYCHAIN_PATH" >> $GITHUB_ENV
+
+      - name: Update version and codesign identity in buildozer.spec
+        if: matrix.target == 'iOS'
+        env:
+          APPLE_CODESIGN_IDENTITY: ${{ secrets.APPLE_CODESIGN_IDENTITY }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          sed -i '' -e "s/^version = .*/version = ${{ needs.release.outputs.version }}/" buildozer.spec
+          sed -i '' -e "s/^android.numeric_version = .*/android.numeric_version = ${{ needs.release.outputs.build_number }}/" buildozer.spec
+          sed -i '' -e "s|^#ios.codesign.debug = .*|ios.codesign.debug = \"$APPLE_CODESIGN_IDENTITY\"|" buildozer.spec
+          sed -i '' -e "s|^#ios.codesign.release = .*|ios.codesign.release = \"$APPLE_CODESIGN_IDENTITY\"|" buildozer.spec
+          sed -i '' -e "s/^#ios.codesign.development_team.debug = .*/ios.codesign.development_team.debug = $APPLE_TEAM_ID/" buildozer.spec
+          sed -i '' -e "s/^#ios.codesign.development_team.release = .*/ios.codesign.development_team.release = $APPLE_TEAM_ID/" buildozer.spec
+
+      # First pass clones kivy-ios, compiles the recipes (slow) and generates the Xcode
+      # project + Info.plist. It may fail at the archive/export step before the plist is
+      # patched below, so the failure is tolerated here and the build is retried after.
+      - name: Build iOS recipes and Xcode project (first pass)
+        if: matrix.target == 'iOS'
+        continue-on-error: true
+        env:
+          PYTHONHOME: ""
+          PYTHONPATH: ""
+        run: |
+          buildozer ios release
+
+      - name: Patch generated Info.plist
+        if: matrix.target == 'iOS'
+        run: |
+          PLIST=$(find .buildozer/ios/platform/kivy-ios -maxdepth 1 -name "*-Info.plist" | head -1)
+          ./ios/patch_info_plist.sh "$PLIST"
+
+      - name: Build and archive iOS IPA (release pass)
+        if: matrix.target == 'iOS'
+        env:
+          PYTHONHOME: ""
+          PYTHONPATH: ""
+        run: |
+          buildozer ios release
+
+      - name: Search for a package and copy to workspace
+        if: matrix.target == 'iOS'
+        run: |
+          IPA_PATH=$(find build -name "*.ipa" -type f | head -1)
+          cp "$IPA_PATH" "$GITHUB_WORKSPACE/tlum_${{ matrix.target }}${{ matrix.asset_extension }}"
+
+      - name: Upload IPA to TestFlight / App Store Connect
+        if: matrix.target == 'iOS'
+        env:
+          APP_STORE_CONNECT_KEY_ID: ${{ secrets.APPLE_API_KEY }}
+          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APPLE_API_ISSUE }}
+          APP_STORE_CONNECT_API_KEY: ${{ secrets.APPLE_API_P8 }}
+        run: |
+          mkdir -p ~/.appstoreconnect/private_keys
+          echo -n "$APP_STORE_CONNECT_API_KEY" | base64 --decode -o ~/.appstoreconnect/private_keys/AuthKey_${APP_STORE_CONNECT_KEY_ID}.p8
+          xcrun altool --upload-app -f "$GITHUB_WORKSPACE/tlum_${{ matrix.target }}${{ matrix.asset_extension }}" -t ios \
+            --apiKey "$APP_STORE_CONNECT_KEY_ID" --apiIssuer "$APP_STORE_CONNECT_ISSUER_ID"
+
+      - name: Remove iOS signing keychain
+        if: always() && matrix.target == 'iOS'
+        run: security delete-keychain "$KEYCHAIN_PATH" || true
 
 # macOS [TBD]
 

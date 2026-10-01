@@ -75,6 +75,27 @@ osx.python_version = 3.11
 osx.kivy_version = 2.3.0
 
 #
+# iOS specific (built via kivy-ios toolchain, driven by `buildozer ios release`)
+#
+
+# (bool) Allow code signing. Must be True to produce an App Store-ready IPA.
+ios.codesign.allowed = True
+
+# (str) Codesigning identity (Keychain common name) used for debug/release builds.
+# Populated in CI from the imported distribution certificate; left blank for local/manual builds.
+#ios.codesign.debug = "iPhone Developer: Your Name (TEAMID)"
+#ios.codesign.release = "Apple Distribution: Your Name (TEAMID)"
+
+# (str) Apple Developer Team ID, used for automatic provisioning during xcodebuild.
+#ios.codesign.development_team.debug = TEAMID
+#ios.codesign.development_team.release = TEAMID
+
+# NOTE: buildozer's iOS target does not expose a microphone usage description key
+# (app uses AVAudioSession/AVAudioRecorder for pronunciation practice), so
+# NSMicrophoneUsageDescription and the supported orientations are injected
+# separately after project generation (see ios/patch_info_plist.sh).
+
+#
 # Android specific
 #
 
