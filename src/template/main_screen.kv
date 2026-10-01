@@ -127,7 +127,7 @@
     category_name: ""
     canvas.before:
         Color:
-            rgba: app.theme_color('md3_primary', app.theme_version)
+            rgb: app.theme_color('md3_primary', app.theme_version)[:3]
             a: 0.1 if root.row_index % 2 == 0 else 0
         Rectangle:
             pos: self.pos
