@@ -30,6 +30,10 @@ set_bool() {
 # Required because src/controller/recorder_controller_ios.py uses AVAudioSession/AVAudioRecorder.
 set_string NSMicrophoneUsageDescription "Tlum uses the microphone to record your pronunciation for practice."
 
+# ITMS-90683: a bundled library references a camera-access API even though the app itself
+# doesn't use the camera; Apple requires the purpose string regardless.
+set_string NSCameraUsageDescription "Tlum is a cross-platform language learning application that uses natural language processing to pinpoint pronunciation gaps and machine learning to boost vocabulary proficiency. The camera is not used by the app."
+
 # Matches buildozer.spec `orientation = landscape`.
 /usr/libexec/PlistBuddy -c "Delete :UISupportedInterfaceOrientations" "$PLIST" 2>/dev/null || true
 /usr/libexec/PlistBuddy -c "Add :UISupportedInterfaceOrientations array" "$PLIST"
