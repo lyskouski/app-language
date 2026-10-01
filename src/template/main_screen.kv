@@ -186,7 +186,7 @@
     text: ""
     source: ""
     cursor: "hand"
-    color: app.theme.md3_primary
+    color: app.theme_color('md3_on_surface', app.theme_version)
     width: self.texture_size[0] + dp(20)
     size_hint_x: None
     background_normal: ""
@@ -197,7 +197,7 @@
     background_color: (0, 0, 0, 0) if app.theme_version >= 0 else (0, 0, 0, 0)
     canvas.after:
         Color:
-            rgba: app.theme.md3_secondary
+            rgba: app.theme_color('md3_on_surface_variant', app.theme_version)
         Triangle:
             points: (self.right - dp(5), self.y + dp(6), self.right - dp(2), self.center_y, self.right - dp(5), self.top - dp(6))
         Line:
