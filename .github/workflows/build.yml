@@ -23,45 +23,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [Windows, Linux, LinuxSnap, LinuxAppImage, Android, AndroidDebug, iOS]
+        target: [iOS]
         include:
-          - os: windows-latest
-            target: Windows
-            build_path: windows/dist
-            asset_extension: .zip
-            asset_content_type: application/zip
           - os: macos-14
             target: iOS
             build_path: build
             asset_extension: .ipa
             asset_content_type: application/octet-stream
-          # Error: version `GLIBC_2.38' not found
-          # Build Linux app in the oldest Ubuntu for better compatibility
-          - os: ubuntu-22.04
-            target: Linux
-            build_path: linux/dist/tlum
-            asset_extension: .tar.gz
-            asset_content_type: application/gzip
-          - os: ubuntu-22.04
-            target: LinuxSnap
-            build_path: ./
-            asset_extension: .snap
-            asset_content_type: application/gzip
-          - os: ubuntu-22.04
-            target: LinuxAppImage
-            build_path: linux-appimage
-            asset_extension: .AppImage
-            asset_content_type: application/gzip
-          - os: ubuntu-latest
-            target: Android
-            build_path: build
-            asset_extension: .aab
-            asset_content_type: application/gzip
-          - os: ubuntu-latest
-            target: AndroidDebug
-            build_path: build
-            asset_extension: .apk
-            asset_content_type: application/gzip
 
     steps:
       - uses: actions/checkout@v4
