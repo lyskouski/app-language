@@ -3,7 +3,7 @@
 
 from kivy.app import App
 from kivy.clock import Clock
-from kivy.properties import ListProperty, StringProperty
+from kivy.properties import ListProperty, OptionProperty, StringProperty
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.screenmanager import Screen
 
@@ -22,7 +22,9 @@ class MainScreen(Screen):
 class RootWidget(BoxLayout):
     data = ListProperty([])
     filtered_data = ListProperty([])
-    path = StringProperty('root')  # Changed from JSON path to navigation state
+    path = StringProperty('root')
+    navigation_level = OptionProperty('main', options=('main', 'categories', 'games'))
+    selected_category_id = StringProperty('')
 
     def __init__(self, **kwargs):
         super(RootWidget, self).__init__(**kwargs)
@@ -58,67 +60,45 @@ class RootWidget(BoxLayout):
                 break
         if cut_index is not None:
             self.path = path
+            self.navigation_level = breadcrumbs[cut_index].get('level', 'main')
             self.ids.breadcrumb_view.data = breadcrumbs[:cut_index]
         else:
-            # If no matching breadcrumb found, go to root
             self.path = 'root'
+            self.navigation_level = 'main'
             self.ids.breadcrumb_view.data = []
 
-        self.load_data(path)
+        self.selected_category_id = ''
+        self.load_data()
         self.populate_rv()
 
-    def load_data(self, path = None):
+    def load_data(self):
         """Load data from SQLite database."""
         self.data = []
         self._filter_text = ''  # Reset filter when loading new data
-        if not path:
-            path = self.path
 
         app = App.get_running_app()
 
-        # Root level: show language pairs
-        if path == 'root':
+        if self.navigation_level == 'main':
             self.data = self._config_repo.get_all_language_pairs()
-
-        # Level 2: Language pair selected → show dictionaries/categories
-        elif path.startswith('assets/data/'):
-            # This is a language pair path like "assets/data/PL/EN/source.json"
+        elif self.navigation_level == 'categories':
             if app.locale_from and app.locale_to:
                 dictionaries = self._config_repo.get_dictionaries_for_language_pair(app.locale_from, app.locale_to)
                 self.data = dictionaries
             else:
                 print("ERROR: locale_from or locale_to not set!")
                 self.data = []
+        elif self.navigation_level == 'games' and self.selected_category_id:
+            games = self._config_repo.get_games_for_category(int(self.selected_category_id))
 
-        # Level 3: Dictionary/category selected → show game modes
-        elif path.startswith('category_'):
-            # Extract category ID from path like "category_5"
-            try:
-                category_id = int(path.split('_')[1])
-                games = self._config_repo.get_games_for_category(category_id)
+            for game in games:
+                game['locale_from'] = app.locale_from
+                game['locale_to'] = app.locale_to
 
-                # Add locale info to each game
-                for game in games:
-                    game['locale_from'] = app.locale_from
-                    game['locale_to'] = app.locale_to
-
-                # Only reset and reinitialize if custom selection is NOT active
-                # If user made custom selection via Manage, preserve it
-                if not app._custom_selection_active:
-                    # Load default vocabulary for this category
-                    # This provides the initial 25 items that will be pre-selected in Manage
-                    if games and len(games) > 0:
-                        vocabulary_source = games[0].get('source', '')
-                        if vocabulary_source:
-                            app.init_store(vocabulary_source)
-                # Custom selection is active - keep it as-is, don't reinitialize
-                self.data = games
-            except (IndexError, ValueError) as e:
-                print(f"ERROR: Invalid category path: {path} - {e}")
-                self.data = []
-
-        else:
-            self.data = []
+            if not app._custom_selection_active and games:
+                vocabulary_source = games[0].get('source', '')
+                if vocabulary_source:
+                    app.init_store(vocabulary_source)
+            self.data = games
 
         # Initialize filtered data when data is loaded
         self._update_filtered_data()
@@ -169,12 +149,18 @@ class RootWidget(BoxLayout):
                 self._go_to_loading_then(info.route_path)
                 return
 
-            # Otherwise, navigate to next level
-            if not self.ids.breadcrumb_view.data:
-                self.ids.breadcrumb_view.data = []
-                self.path = 'root'
-            self.ids.breadcrumb_view.data.append({'text': info.text, 'source': self.path})
+            next_level = {'main': 'categories', 'categories': 'games'}.get(self.navigation_level)
+            if not next_level:
+                return
+
+            self.ids.breadcrumb_view.data.append({
+                'text': info.text,
+                'source': self.path,
+                'level': self.navigation_level,
+            })
             self.path = info.source
+            self.navigation_level = next_level
+            self.selected_category_id = info.category_id if next_level == 'games' else ''
             self.load_data()
             self.populate_rv()
         except Exception as e:
@@ -264,8 +250,10 @@ class RootWidget(BoxLayout):
 
             # Root list may have changed, force root view refresh.
             self.path = 'root'
+            self.navigation_level = 'main'
+            self.selected_category_id = ''
             self.ids.breadcrumb_view.data = []
-            self.load_data('root')
+            self.load_data()
             self.populate_rv()
         except Exception as e:
             print(f"ERROR in delete_language_pair: {e}")
