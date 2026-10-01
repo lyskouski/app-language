@@ -8,6 +8,7 @@ pinpoint pronunciation gaps, and machine learning to boost vocabulary proficienc
 
 | Type                     | Alpha Version         | Pre-Release                   | Release                       |
 | ------------------------ | ----------------------| ----------------------------- | ----------------------------- |
+| ![Apple](./docs/design-flow/icons/apple.png) iOS (Apple Store)        | [tlum_iOS.ipa](https://github.com/lyskouski/app-language/releases/latest) | [TestFlight: Tlum](https://testflight.apple.com/join/SbZND3au) | In Review |
 | ![Android](./docs/design-flow/icons/android.png) Android (Google Play)    | [tlum_Android.aab](https://github.com/lyskouski/app-language/releases/latest) | [Google Play](https://play.google.com/store/apps/details?id=com.tercad.tlum) | [![Google Play](./docs/design-flow/badges/google.png)](https://play.google.com/store/apps/details?id=com.tercad.tlum) |
 | ![Linux](./docs/design-flow/icons/linux.png) Linux (Snap Store)       | [tlum_LinuxSnap.snap](https://github.com/lyskouski/app-language/releases/latest) | Blocked [#24](https://github.com/lyskouski/app-language/issues/24) | Blocked [#24](https://github.com/lyskouski/app-language/issues/24) |
 | ![Linux](./docs/design-flow/icons/linux.png) Linux (Flathub)          | [tlum_LinuxFlatpak.flatpak](https://github.com/lyskouski/app-language/releases/latest)  | Blocked [#39](https://github.com/lyskouski/app-language/issues/39) | Blocked [#39](https://github.com/lyskouski/app-language/issues/39) |
