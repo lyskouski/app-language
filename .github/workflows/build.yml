@@ -108,10 +108,20 @@ jobs:
 
       # buildozer's `xcodebuild -exportArchive` call smashes "-archivePath" and its value
       # into a single shell-quoted string, but invokes xcodebuild without a shell, so
-      # xcodebuild rejects it as an invalid option. See ios/patch_buildozer_export_archive.py.
-      - name: Patch upstream buildozer iOS export-archive quoting bug
+      # xcodebuild rejects it as an invalid option. It also points `-exportOptionsPlist` at
+      # the app's Info.plist instead of a real export options plist, which crashes
+      # xcodebuild (SIGSEGV). See ios/patch_buildozer_export_archive.py.
+      - name: Patch upstream buildozer iOS export-archive bugs
         if: matrix.target == 'iOS'
-        run: python3 ios/patch_buildozer_export_archive.py
+        env:
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          python3 ios/patch_buildozer_export_archive.py
+
+          EXPORT_OPTIONS_PLIST="$RUNNER_TEMP/ExportOptions.plist"
+          python3 ios/generate_export_options.py "$EXPORT_OPTIONS_PLIST" com.tercad.tlum \
+            "$APPLE_TEAM_ID" "$APPLE_PROVISIONING_PROFILE_NAME"
+          echo "BUILDOZER_IOS_EXPORT_OPTIONS_PLIST=$EXPORT_OPTIONS_PLIST" >> $GITHUB_ENV
 
       # buildozer tries to compile the phonegap/ios-deploy companion CLI (used only by
       # `buildozer ios deploy/run`, never by `release`) via xcodebuild, and that clone is
