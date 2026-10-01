@@ -60,6 +60,12 @@ class KivyAudioPlaybackBackend(IAudioPlaybackBackend):
             self._current_sound.stop()
         except Exception:
             pass
+        try:
+            # stop() only pauses playback; unload() releases the underlying
+            # audio device (ffpyplayer MediaPlayer) to avoid exhausting SDL channels.
+            self._current_sound.unload()
+        except Exception:
+            pass
         finally:
             self._current_sound = None
 
