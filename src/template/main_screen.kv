@@ -76,7 +76,7 @@
             # Show "Manage Dictionaries" button when viewing games (not root, not dictionaries)
             text: app._("dictionaries_manage_title", app.locale) if root.navigation_level == 'games' else ""
             opacity: 1.0 if root.navigation_level == 'games' else 0
-            disabled: False if root.navigation_level != 'games' else True
+            disabled: False if root.navigation_level == 'games' else True
             size_hint_x: 0.25 if root.navigation_level == 'games' else 0.01
             on_release:
                 app.next_screen('dictionary_management_screen')
@@ -85,7 +85,7 @@
             markup: True
             text: "[font=assets/fonts/materialdesignicons-webfont.ttf]{}[/font] {}".format(chr(0xF0415), app._("category_add_title", app.locale)) if root.navigation_level == 'categories' else ""
             opacity: 1.0 if root.navigation_level == 'categories' else 0
-            disabled: False if root.navigation_level != 'categories' else True
+            disabled: False if root.navigation_level == 'categories' else True
             size_hint_x: 0.25 if root.navigation_level == 'categories' else 0.01
             on_release:
                 root.add_category()
