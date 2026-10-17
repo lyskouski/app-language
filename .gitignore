@@ -17,3 +17,4 @@ key.keystore
 .coverage
 tlum.db-shm
 tlum.db-wal
+/screenshots/

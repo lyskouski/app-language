@@ -16,3 +16,5 @@ librosa==0.10.2.post1
 ruff
 pytest
 coverage
+# Store screenshots across devices and locales: tools/capture_screenshots.py
+kivy-screenshot-generator
