@@ -61,7 +61,7 @@ The App requests only the permissions it needs to work:
 
 - **Microphone**: to record your voice for pronunciation practice (see above).
 - **Internet**: to generate pronunciation audio (see above).
-- **Storage** (older Android versions only): to save and open the import/export files you choose.
+- **Storage**: to save and open the import/export files you choose.
 
 The App does not use your camera, location, contacts or any other personal data on your device.
 
