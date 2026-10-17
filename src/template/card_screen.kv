@@ -8,7 +8,7 @@
 <CardWidget@Button>:
     text: root.text_init if self.state == 'down' else root.text_flip
     size_hint: None, None
-    size: max(dp(150), min(self.parent.width * 0.24, self.parent.height * 0.24)) if self.parent else dp(150), max(dp(150), min(self.parent.width * 0.24, self.parent.height * 0.24)) if self.parent else dp(150)
+    size: (self.parent.card_side, self.parent.card_side) if self.parent else (dp(150), dp(150))
     color: app.theme_color('md3_on_surface', app.theme_version)
     background_color: app.theme_color('md3_surface_container', app.theme_version)
     canvas.after:

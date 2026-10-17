@@ -14,10 +14,12 @@ from kivy.uix.scrollview import ScrollView
 from kivy.clock import Clock
 from kivy.properties import NumericProperty
 
+from component.wrapped_row import WrappedRow
+
 class MultilineLabel(Label):
     pass
 
-class StripedRow(BoxLayout):
+class StripedRow(WrappedRow):
     row_index = NumericProperty(-1)
 
 class RecorderWidget(BoxLayout):
@@ -56,11 +58,10 @@ class RecorderWidget(BoxLayout):
         list_layout.bind(minimum_height=list_layout.setter('height'))
 
         for row_index, (file_name, sentence) in enumerate(self.audio_files.items()):
+            # Grows with the sentence when it wraps on narrow (portrait) screens
             row = StripedRow(
                 row_index=row_index,
-                orientation='horizontal',
-                size_hint_y=None,
-                height=app.theme.md3_button_height + 8,
+                min_height=app.theme.md3_button_height + 8,
                 spacing=8,
             )
             row.add_widget(MultilineLabel(text=sentence))

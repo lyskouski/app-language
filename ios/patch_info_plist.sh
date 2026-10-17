@@ -34,16 +34,29 @@ set_string NSMicrophoneUsageDescription "Tlum uses the microphone to record your
 # doesn't use the camera; Apple requires the purpose string regardless.
 set_string NSCameraUsageDescription "Tlum is a cross-platform language learning application that uses natural language processing to pinpoint pronunciation gaps and machine learning to boost vocabulary proficiency. The camera is not used by the app."
 
-# Matches buildozer.spec `orientation = landscape`.
-/usr/libexec/PlistBuddy -c "Delete :UISupportedInterfaceOrientations" "$PLIST" 2>/dev/null || true
-/usr/libexec/PlistBuddy -c "Add :UISupportedInterfaceOrientations array" "$PLIST"
-/usr/libexec/PlistBuddy -c "Add :UISupportedInterfaceOrientations:0 string UIInterfaceOrientationLandscapeLeft" "$PLIST"
-/usr/libexec/PlistBuddy -c "Add :UISupportedInterfaceOrientations:1 string UIInterfaceOrientationLandscapeRight" "$PLIST"
+# Matches buildozer.spec `orientation = portrait, landscape, landscape-reverse`
+# (iPad additionally allows upside-down portrait, as Apple recommends for tablets).
+set_orientations() {
+  key="$1"; shift
+  /usr/libexec/PlistBuddy -c "Delete :$key" "$PLIST" 2>/dev/null || true
+  /usr/libexec/PlistBuddy -c "Add :$key array" "$PLIST"
+  index=0
+  for orientation in "$@"; do
+    /usr/libexec/PlistBuddy -c "Add :$key:$index string $orientation" "$PLIST"
+    index=$((index + 1))
+  done
+}
 
-/usr/libexec/PlistBuddy -c "Delete :UISupportedInterfaceOrientations~ipad" "$PLIST" 2>/dev/null || true
-/usr/libexec/PlistBuddy -c "Add :UISupportedInterfaceOrientations~ipad array" "$PLIST"
-/usr/libexec/PlistBuddy -c "Add :UISupportedInterfaceOrientations~ipad:0 string UIInterfaceOrientationLandscapeLeft" "$PLIST"
-/usr/libexec/PlistBuddy -c "Add :UISupportedInterfaceOrientations~ipad:1 string UIInterfaceOrientationLandscapeRight" "$PLIST"
+set_orientations UISupportedInterfaceOrientations \
+  UIInterfaceOrientationPortrait \
+  UIInterfaceOrientationLandscapeLeft \
+  UIInterfaceOrientationLandscapeRight
+
+set_orientations "UISupportedInterfaceOrientations~ipad" \
+  UIInterfaceOrientationPortrait \
+  UIInterfaceOrientationPortraitUpsideDown \
+  UIInterfaceOrientationLandscapeLeft \
+  UIInterfaceOrientationLandscapeRight
 
 # Matches buildozer.spec `fullscreen = 1`.
 set_bool UIRequiresFullScreen true

@@ -117,6 +117,9 @@ class MainApp(App):
     """
     kv_directory = StringProperty('template')
     is_mobile = BooleanProperty(False)
+    # True while the window is taller than wide (phone held upright, narrow desktop window).
+    # KV rules bind to it to switch between landscape and portrait layouts without rebuilding screens.
+    is_portrait = BooleanProperty(False)
     store = ListProperty([])
     locale = StringProperty('')
     locale_from = StringProperty('')
@@ -178,6 +181,18 @@ class MainApp(App):
     def font_for_text(self, text):
         """Resolve the registered font able to render every character in `text`."""
         return font_for_text(text)
+
+    def icon_label(self, icon: int, text: str, compact: bool = False):
+        """Button caption markup with a Material Design icon.
+
+        `compact` drops the text and keeps only the icon (narrow portrait layouts).
+        KV callers pass `app.is_portrait` so the caption re-evaluates on rotation.
+        """
+        glyph = "[font=assets/fonts/materialdesignicons-webfont.ttf]{}[/font]".format(chr(icon))
+        return glyph if compact or not text else "{} {}".format(glyph, text)
+
+    def _update_orientation(self, *_):
+        self.is_portrait = Window.height > Window.width
 
     def toggle_theme_mode(self, dark_enabled: bool):
         """Switch between light and dark theme and persist choice in database."""
@@ -247,6 +262,10 @@ class MainApp(App):
 
         # Use themed clear color so transition gaps never expose default black.
         Window.clearcolor = self.theme.md3_background
+
+        # Track device rotation / window resizing before KV rules are evaluated.
+        self._update_orientation()
+        Window.bind(size=self._update_orientation)
 
         # Load shared Material 3 styling rules first so all subsequent widgets inherit them.
         theme_path = kivy.resources.resource_find('template/theme.kv')

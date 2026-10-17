@@ -64,9 +64,10 @@
         font_size: sp(16)
 
     Button:
-        text: "Select / Wybierz"
+        markup: True
+        text: app.icon_label(0xF012C, "", True) if app.is_portrait else "Select / Wybierz"
         size_hint_x: None
-        width: dp(140)
+        width: dp(64) if app.is_portrait else dp(140)
         background_color: app.theme.md3_primary
         color: app.theme.md3_on_primary
         on_release:

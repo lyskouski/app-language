@@ -2,10 +2,9 @@
 # Use of this source code is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
 
 from component.harmonica_widget import HarmonicaWidget
+from component.wrapped_row import WrappedLabel, WrappedRow
 from kivy.app import App
-from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
-from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
 from kivy.uix.widget import Widget
 
@@ -19,15 +18,15 @@ class PhoneticsWidget(HarmonicaWidget):
     def add_row(self, layout, origin, trans):
         app = App.get_running_app()
         # Use MediaService from container
-        row = BoxLayout(orientation='horizontal', size_hint_y=None, height=app.theme.md3_button_height + 8, spacing=8)
+        row = WrappedRow(min_height=app.theme.md3_button_height + 8, spacing=8)
 
         listen_button = Button(text=self._localization_service.translate('button_listen', app.locale), on_press=self.play_audio)
         listen_button.origin_value = origin
 
         if self.origin and self.secondary:
-            row.add_widget(Label(text=origin))
+            row.add_widget(WrappedLabel(text=origin))
             row.add_widget(listen_button)
-            row.add_widget(Label(text=trans))
+            row.add_widget(WrappedLabel(text=trans))
 
         elif self.origin and not self.secondary:
             row.add_widget(listen_button)

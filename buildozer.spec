@@ -56,7 +56,8 @@ icon.filename = android/logo.png
 
 # (list) Supported orientations
 # Valid options are: landscape, portrait, portrait-reverse or landscape-reverse
-orientation = landscape
+# UI adapts to both via `app.is_portrait` (see src/main.py); keep in sync with ios/patch_info_plist.sh.
+orientation = portrait, landscape, landscape-reverse
 
 # (list) List of service to declare
 #services = NAME:ENTRYPOINT_TO_PY,NAME2:ENTRYPOINT2_TO_PY

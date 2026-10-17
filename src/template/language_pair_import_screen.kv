@@ -35,7 +35,9 @@
             Label:
                 text: app._('lang_pair_file_path', app.locale)
                 size_hint_x: None
-                width: dp(80)
+                # In portrait the caption moves into the input hint to leave room for the path
+                width: 0 if app.is_portrait else dp(80)
+                opacity: 0 if app.is_portrait else 1
                 halign: 'right'
                 valign: 'middle'
                 text_size: self.size
@@ -43,7 +45,7 @@
                 text: root.file_path
                 multiline: False
                 on_text: root.file_path = self.text
-                hint_text: '/path/to/language_pair.json'
+                hint_text: app._('lang_pair_file_path', app.locale) if app.is_portrait else '/path/to/language_pair.json'
             Button:
                 text: app._('lang_pair_browse_btn', app.locale)
                 size_hint_x: None
@@ -53,7 +55,7 @@
         # Merge option
         BoxLayout:
             size_hint_y: None
-            height: dp(40)
+            height: dp(56) if app.is_portrait else dp(40)
             spacing: dp(8)
             CheckBox:
                 active: root.merge_import

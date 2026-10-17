@@ -3,13 +3,13 @@
 
 from kivy.app import App
 from kivy.properties import BooleanProperty
-from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.gridlayout import GridLayout
-from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
 from kivy.uix.image import Image
 from kivy.uix.widget import Widget
+
+from component.wrapped_row import WrappedLabel, WrappedRow
 
 class HarmonicaWidget(ScrollView):
     origin = BooleanProperty(False)
@@ -57,25 +57,20 @@ class HarmonicaWidget(ScrollView):
 
     def add_row(self, layout, origin, trans):
         app = App.get_running_app()
-        row = BoxLayout(
-            orientation='horizontal',
-            size_hint_y=None,
-            height=app.theme.md3_button_height + 8,
-            spacing=8,
-        )
+        row = WrappedRow(min_height=app.theme.md3_button_height + 8, spacing=8)
 
         if self.origin and self.secondary:
-            row.add_widget(Label(text=origin))
-            row.add_widget(Label(text=trans))
+            row.add_widget(WrappedLabel(text=origin))
+            row.add_widget(WrappedLabel(text=trans))
 
         elif self.origin and not self.secondary:
-            row.add_widget(Label(text=origin))
+            row.add_widget(WrappedLabel(text=origin))
             text_input = TextInput(text='', multiline=False)
             text_input.bind(on_text_validate=lambda instance: self.validate(instance, origin, False))
             row.add_widget(text_input)
 
         elif not self.origin and self.secondary:
-            row.add_widget(Label(text=trans))
+            row.add_widget(WrappedLabel(text=trans))
             text_input = TextInput(text='', multiline=False)
             text_input.bind(on_text_validate=lambda instance: self.validate(instance, trans, True))
             row.add_widget(text_input)
@@ -109,10 +104,10 @@ class HarmonicaWidget(ScrollView):
         if (answer == text):
             icon = Image(source='assets/images/success.png', size_hint=(None, None), size=(30, 30))
             parent.add_widget(icon)
-            parent.add_widget(Label(text=answer))
+            parent.add_widget(WrappedLabel(text=answer))
             app._vocabulary_service.mark_item_correct(item)
         else:
             icon = Image(source='assets/images/error.png', size_hint=(None, None), size=(30, 30))
             parent.add_widget(icon)
-            parent.add_widget(Label(text=f'[s]{text}[/s] {answer}', markup=True))
+            parent.add_widget(WrappedLabel(text=f'[s]{text}[/s] {answer}', markup=True))
             app._vocabulary_service.mark_item_incorrect(item)
