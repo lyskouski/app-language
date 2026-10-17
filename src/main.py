@@ -89,6 +89,7 @@ import component.harmonica_widget
 import component.phonetics_widget
 import component.recorder_widget
 import component.card_layout_widget
+import component.searchable_spinner
 
 from kivy.app import App
 from kivy.clock import Clock

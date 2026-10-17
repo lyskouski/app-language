@@ -44,7 +44,7 @@
                         halign: 'left'
                         valign: 'middle'
                     # Language selection dropdown
-                    Spinner:
+                    SearchableSpinner:
                         id: from_language
                         text: root.from_language_text if root.from_language_text else app._('language_pair_select_language', app.locale)
                         values: root.language_options
@@ -65,7 +65,7 @@
                         halign: 'left'
                         valign: 'middle'
                     # Language selection dropdown
-                    Spinner:
+                    SearchableSpinner:
                         id: to_language
                         text: root.to_language_text if root.to_language_text else app._('language_pair_select_language', app.locale)
                         values: root.language_options
