@@ -2,6 +2,7 @@
 # Use of this source code is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
 
 from kivy.app import App
+from kivy.clock import Clock
 from kivy.factory import Factory
 from kivy.uix.spinner import Spinner
 from kivy.uix.textinput import TextInput
@@ -61,8 +62,18 @@ class SearchableSpinner(Spinner):
             self._dropdown.select(matches[0])
         return True
 
+    def _focus_search(self, *largs):
+        if self.is_open:
+            self._get_search_input().focus = True
+
     def on_is_open(self, instance, value):
+        search = self._get_search_input()
         if value:
             # Every opening starts with the full list
-            self._get_search_input().text = ''
+            search.text = ''
+        else:
+            search.focus = False
         super(SearchableSpinner, self).on_is_open(instance, value)
+        if value:
+            # Deferred until the dropdown is attached to the window and the opening touch is finished
+            Clock.schedule_once(self._focus_search)
