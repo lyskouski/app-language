@@ -141,3 +141,78 @@
 <ActionPrevious>:
     app_icon: "assets/images/logo_44.png"
     color: app.theme_color('md3_on_primary', app.theme_version)
+
+<BottomBar@BoxLayout>:
+    # MD3 bottom app bar container
+    orientation: "horizontal"
+    size_hint_y: None
+    height: dp(80)
+    padding: [dp(8), dp(12), dp(8), dp(12)]
+    spacing: dp(8)
+    canvas.before:
+        Color:
+            rgba: app.theme_color('md3_surface_container', app.theme_version)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+<BottomBarItem@ButtonBehavior+BoxLayout>:
+    # MD3 bottom bar action: icon above a label, shown in both orientations
+    orientation: "vertical"
+    icon: 0
+    text: ""
+    spacing: dp(4)
+    # MD3 disabled content opacity
+    opacity: 0.38 if self.disabled else 1
+    canvas.before:
+        Color:
+            rgba: app.theme_color('md3_on_surface', app.theme_version)[:3] + [0.12 if self.state == 'down' else 0]
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [dp(16)]
+    Label:
+        markup: True
+        text: app.icon_label(int(root.icon), "", True) if root.icon else ""
+        font_size: sp(24)
+        color: app.theme_color('md3_on_surface_variant', app.theme_version)
+    Label:
+        text: root.text
+        font_size: sp(12)
+        size_hint_y: None
+        height: self.texture_size[1]
+        text_size: self.width, None
+        halign: "center"
+        shorten: True
+        color: app.theme_color('md3_on_surface_variant', app.theme_version)
+
+<FabButton@Button>:
+    # MD3 FAB: square "+" in portrait, extended with label in landscape
+    markup: True
+    size_hint: None, None
+    height: dp(56)
+    width: dp(56) if app.is_portrait else self.texture_size[0] + dp(40)
+    font_size: sp(28) if app.is_portrait else sp(16)
+    background_color: 0, 0, 0, 0
+    color: app.theme_color('md3_on_primary', app.theme_version)
+    canvas.before:
+        # Elevation shadow
+        Color:
+            rgba: 0, 0, 0, 0.2
+        RoundedRectangle:
+            pos: self.x, self.y - dp(2)
+            size: self.size
+            radius: [dp(16)]
+        Color:
+            rgba: app.theme_color('md3_primary', app.theme_version)
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [dp(16)]
+        # Pressed state layer
+        Color:
+            rgba: app.theme_color('md3_on_primary', app.theme_version)[:3] + [0.12 if self.state == 'down' else 0]
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [dp(16)]
