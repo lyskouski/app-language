@@ -291,6 +291,15 @@ class RootWidget(BoxLayout):
             import traceback
             traceback.print_exc()
 
+    def primary_action(self):
+        """Run the bottom bar FAB action for the current navigation level."""
+        if self.navigation_level == 'main':
+            self.add_language_pair()
+        elif self.navigation_level == 'categories':
+            self.add_category()
+        elif self.navigation_level == 'games':
+            self._get_app().next_screen('dictionary_management_screen')
+
     def open_export(self, info):
         """Open the export screen for a specific language pair."""
         try:

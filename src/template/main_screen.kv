@@ -20,20 +20,26 @@
             height: self.minimum_height
             size_hint_y: None
             default_size: None, dp(24)
-    Widget:
-        size_hint_y: dp(0.04)
     BoxLayout:
         size_hint_y: None
-        height: dp(50)
-        padding: [dp(12), dp(5), dp(12), dp(8)]
-        spacing: dp(0)
-        TextInput:
-            id: filter_input
-            multiline: False
-            hint_text: app._('search', app.locale)
-            padding: [dp(10), dp(8)]
-            background_color: app.theme_color('md3_surface_container', app.theme_version)
-            on_text: root.on_filter_text(self.text)
+        height: dp(64)
+        padding: [dp(16), dp(8), dp(16), dp(8)]
+        # MD3 search bar: full-rounded surface container behind a transparent field
+        BoxLayout:
+            padding: [dp(12), 0]
+            canvas.before:
+                Color:
+                    rgba: app.theme_color('md3_surface_container', app.theme_version)
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [self.height / 2]
+            TextInput:
+                id: filter_input
+                multiline: False
+                hint_text: app._('search', app.locale)
+                background_color: 0, 0, 0, 0
+                on_text: root.on_filter_text(self.text)
     RecycleView:
         id: recycle_view
         viewclass: "RootItemWidget"
@@ -44,65 +50,101 @@
             size_hint_y: None
             height: self.minimum_height
             orientation: "vertical"
-    Widget:
-        size_hint_y: dp(0.04)
+    # MD3 bottom app bar: Import | primary action (FAB) | Settings
     BoxLayout:
         orientation: "horizontal"
-        height: app.theme.md3_button_height + dp(8)
         size_hint_y: None
+        height: dp(80)
+        padding: [dp(8), dp(12), dp(8), dp(12)]
         spacing: dp(8)
-        padding: [dp(8), 0, dp(8), 0]
-        Widget:
-            size_hint_x: 0.02
-        Button:
-            # Show "Add Language Pair" button when at root level
-            markup: True
-            text: app.icon_label(0xF0415, app._("language_pair_add_title", app.locale), app.is_portrait) if root.navigation_level == 'main' else ""
+        canvas.before:
+            Color:
+                rgba: app.theme_color('md3_surface_container', app.theme_version)
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        BottomBarItem:
+            icon: 0xF02FA
+            text: app._("lang_pair_import_btn", app.locale)
             opacity: 1.0 if root.navigation_level == 'main' else 0
-            disabled: False if root.navigation_level == 'main' else True
-            size_hint_x: 0.22 if root.navigation_level == 'main' else 0.01
-            on_release:
-                root.add_language_pair()
-        Button:
-            # Show "Import" button when at root level
-            markup: True
-            text: app.icon_label(0xF0490, app._("lang_pair_import_btn", app.locale), app.is_portrait) if root.navigation_level == 'main' else ""
-            opacity: 1.0 if root.navigation_level == 'main' else 0
-            disabled: False if root.navigation_level == 'main' else True
-            size_hint_x: 0.18 if root.navigation_level == 'main' else 0.01
+            disabled: root.navigation_level != 'main'
             on_release:
                 root.open_import()
-        Button:
-            # Show "Manage Dictionaries" button when viewing games (not root, not dictionaries)
-            text: app._("dictionaries_manage_title", app.locale) if root.navigation_level == 'games' else ""
-            opacity: 1.0 if root.navigation_level == 'games' else 0
-            disabled: False if root.navigation_level == 'games' else True
-            size_hint_x: 0.25 if root.navigation_level == 'games' else 0.01
-            on_release:
-                app.next_screen('dictionary_management_screen')
-        Button:
-            # Show "Add Category" button when viewing dictionaries (after language pair selected)
-            markup: True
-            text: app.icon_label(0xF0415, app._("category_add_title", app.locale), False) if root.navigation_level == 'categories' else ""
-            opacity: 1.0 if root.navigation_level == 'categories' else 0
-            disabled: False if root.navigation_level == 'categories' else True
-            size_hint_x: 0.25 if root.navigation_level == 'categories' else 0.01
-            on_release:
-                root.add_category()
-        Widget:
-            size_hint_x: 0.02
-        Button:
-            markup: True
-            text: app.icon_label(0xF0493, app._("button_settings", app.locale), app.is_portrait)
+        AnchorLayout:
+            size_hint_x: None
+            width: fab.width + dp(16)
+            FabButton:
+                id: fab
+                # Contextual primary action: add pair (root), add category (pair), manage dictionaries (category)
+                text: app.icon_label(0xF05DA if root.navigation_level == 'games' else 0xF0415, app._({'main': 'language_pair_add_title', 'categories': 'category_add_title', 'games': 'dictionaries_manage_title'}[root.navigation_level], app.locale), app.is_portrait)
+                on_release:
+                    root.primary_action()
+        BottomBarItem:
+            icon: 0xF0493
+            text: app._("button_settings", app.locale)
             opacity: 1.0 if root.navigation_level == 'main' else 0
-            disabled: False if root.navigation_level == 'main' else True
-            size_hint_x: 0.18 if root.navigation_level == 'main' else 0.01
+            disabled: root.navigation_level != 'main'
             on_release:
                 app.next_screen('language_screen')
-        Widget:
-            size_hint_x: 0.02
-    Widget:
-        size_hint_y: dp(0.08)
+
+<BottomBarItem@ButtonBehavior+BoxLayout>:
+    # MD3 bottom bar action: icon above a label, shown in both orientations
+    orientation: "vertical"
+    icon: 0
+    text: ""
+    spacing: dp(4)
+    canvas.before:
+        Color:
+            rgba: app.theme_color('md3_on_surface', app.theme_version)[:3] + [0.12 if self.state == 'down' else 0]
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [dp(16)]
+    Label:
+        markup: True
+        text: app.icon_label(int(root.icon), "", True) if root.icon else ""
+        font_size: sp(24)
+        color: app.theme_color('md3_on_surface_variant', app.theme_version)
+    Label:
+        text: root.text
+        font_size: sp(12)
+        size_hint_y: None
+        height: self.texture_size[1]
+        text_size: self.width, None
+        halign: "center"
+        shorten: True
+        color: app.theme_color('md3_on_surface_variant', app.theme_version)
+
+<FabButton@Button>:
+    # MD3 FAB: square "+" in portrait, extended with label in landscape
+    markup: True
+    size_hint: None, None
+    height: dp(56)
+    width: dp(56) if app.is_portrait else self.texture_size[0] + dp(40)
+    font_size: sp(28) if app.is_portrait else sp(16)
+    background_color: 0, 0, 0, 0
+    color: app.theme_color('md3_on_primary', app.theme_version)
+    canvas.before:
+        # Elevation shadow
+        Color:
+            rgba: 0, 0, 0, 0.2
+        RoundedRectangle:
+            pos: self.x, self.y - dp(2)
+            size: self.size
+            radius: [dp(16)]
+        Color:
+            rgba: app.theme_color('md3_primary', app.theme_version)
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [dp(16)]
+        # Pressed state layer
+        Color:
+            rgba: app.theme_color('md3_on_primary', app.theme_version)[:3] + [0.12 if self.state == 'down' else 0]
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [dp(16)]
 
 <RootItemWidget@BoxLayout>:
     orientation: "horizontal"
