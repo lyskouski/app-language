@@ -50,8 +50,9 @@ def _open_file_chooser(screen, dir_mode: bool):
     box.add_widget(chooser)
 
     btn_row = BoxLayout(size_hint_y=None, height=44, spacing=8)
-    btn_cancel = Button(text="Cancel")
-    btn_select = Button(text="Select")
+    app = App.get_running_app()
+    btn_cancel = Button(text=app._("button_cancel", app.locale))
+    btn_select = Button(text=app._("button_select", app.locale))
     btn_row.add_widget(btn_cancel)
     btn_row.add_widget(btn_select)
     box.add_widget(btn_row)

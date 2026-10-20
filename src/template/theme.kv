@@ -77,6 +77,20 @@
     background_color: app.theme_color('md3_secondary', app.theme_version) if self.state == 'normal' else app.theme_color('md3_primary', app.theme_version)
     color: app.theme_color('md3_on_secondary', app.theme_version) if self.state == 'normal' else app.theme_color('md3_on_primary', app.theme_version)
 
+<Popup>:
+    # Solid themed sheet instead of Kivy's dark default image
+    background: ""
+    background_color: app.theme_color('md3_surface_container', app.theme_version)
+    title_color: app.theme_color('md3_on_surface', app.theme_version)
+    title_font: app.font_for_text(self.title)
+    separator_color: app.theme_color('md3_primary', app.theme_version)
+
+<TreeViewNode>:
+    # File chooser rows
+    color_selected: app.theme_color('md3_primary', app.theme_version)[:3] + [0.24]
+    odd_color: 0, 0, 0, 0
+    even_color: app.theme_color('md3_primary', app.theme_version)[:3] + [0.06]
+
 <Accordion>:
     canvas.before:
         Color:
@@ -151,7 +165,7 @@
     spacing: dp(8)
     canvas.before:
         Color:
-            rgba: app.theme_color('md3_surface_container', app.theme_version)
+            rgba: app.theme_color('md3_primary', app.theme_version)
         Rectangle:
             pos: self.pos
             size: self.size
@@ -166,7 +180,7 @@
     opacity: 0.38 if self.disabled else 1
     canvas.before:
         Color:
-            rgba: app.theme_color('md3_on_surface', app.theme_version)[:3] + [0.12 if self.state == 'down' else 0]
+            rgba: app.theme_color('md3_on_primary', app.theme_version)[:3] + [0.12 if self.state == 'down' else 0]
         RoundedRectangle:
             pos: self.pos
             size: self.size
@@ -175,7 +189,7 @@
         markup: True
         text: app.icon_label(int(root.icon), "", True) if root.icon else ""
         font_size: sp(24)
-        color: app.theme_color('md3_on_surface_variant', app.theme_version)
+        color: app.theme_color('md3_on_primary', app.theme_version)
     Label:
         text: root.text
         font_size: sp(12)
@@ -184,7 +198,7 @@
         text_size: self.width, None
         halign: "center"
         shorten: True
-        color: app.theme_color('md3_on_surface_variant', app.theme_version)
+        color: app.theme_color('md3_on_primary', app.theme_version)
 
 <FabButton@Button>:
     # MD3 FAB: square "+" in portrait, extended with label in landscape
@@ -194,7 +208,7 @@
     width: dp(56) if app.is_portrait else self.texture_size[0] + dp(40)
     font_size: sp(28) if app.is_portrait else sp(16)
     background_color: 0, 0, 0, 0
-    color: app.theme_color('md3_on_primary', app.theme_version)
+    color: app.theme_color('md3_on_secondary', app.theme_version)
     canvas.before:
         # Elevation shadow
         Color:
@@ -204,14 +218,14 @@
             size: self.size
             radius: [dp(16)]
         Color:
-            rgba: app.theme_color('md3_primary', app.theme_version)
+            rgba: app.theme_color('md3_secondary', app.theme_version)
         RoundedRectangle:
             pos: self.pos
             size: self.size
             radius: [dp(16)]
         # Pressed state layer
         Color:
-            rgba: app.theme_color('md3_on_primary', app.theme_version)[:3] + [0.12 if self.state == 'down' else 0]
+            rgba: app.theme_color('md3_on_secondary', app.theme_version)[:3] + [0.12 if self.state == 'down' else 0]
         RoundedRectangle:
             pos: self.pos
             size: self.size
