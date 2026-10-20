@@ -74,6 +74,12 @@ class RootWidget(BoxLayout):
         self.load_data()
         self.populate_rv()
 
+    def go_back(self):
+        """Navigate one level up: games → categories → main."""
+        breadcrumbs = self.ids.breadcrumb_view.data
+        if breadcrumbs:
+            self.load_breadcrumb(breadcrumbs[-1].get('source'))
+
     def load_data(self):
         """Load data from SQLite database."""
         self.data = []

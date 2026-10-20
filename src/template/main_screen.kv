@@ -51,15 +51,14 @@
             size_hint_y: None
             height: self.minimum_height
             orientation: "vertical"
-    # MD3 bottom app bar: Import | primary action (FAB) | Settings
+    # MD3 bottom app bar: Import / Back | primary action (FAB) | Settings
     BottomBar:
         BottomBarItem:
-            icon: 0xF02FA
-            text: app._("lang_pair_import_btn", app.locale)
-            opacity: 1.0 if root.navigation_level == 'main' else 0
-            disabled: root.navigation_level != 'main'
+            # Import at root level, Back (one level up) inside a pair or category
+            icon: 0xF02FA if root.navigation_level == 'main' else 0xF004D
+            text: app._("lang_pair_import_btn" if root.navigation_level == 'main' else "button_back", app.locale)
             on_release:
-                root.open_import()
+                root.open_import() if root.navigation_level == 'main' else root.go_back()
         AnchorLayout:
             size_hint_x: None
             width: fab.width + dp(16)
