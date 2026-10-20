@@ -38,7 +38,8 @@
                 id: filter_input
                 multiline: False
                 hint_text: app._('search', app.locale)
-                background_color: 0, 0, 0, 0
+                # Bound to theme_version so the theme rule does not repaint it on mode switch
+                background_color: (0, 0, 0, 0) if app.theme_version >= 0 else (0, 0, 0, 0)
                 on_text: root.on_filter_text(self.text)
     RecycleView:
         id: recycle_view
