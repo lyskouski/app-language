@@ -72,7 +72,7 @@ from component.articulation_screen import ArticulationScreen
 from component.store_update_screen import StoreUpdateScreen
 from component.structure_screen import StructureScreen
 from component.structure_update_screen import StructureUpdateScreen
-from component.language_screen import LanguageScreen
+from component.settings_screen import SettingsScreen
 from component.vocabulary_add_screen import VocabularyAddScreen
 from component.category_add_screen import CategoryAddScreen
 from component.language_pair_add_screen import LanguagePairAddScreen
@@ -285,7 +285,7 @@ class MainApp(App):
             (StoreUpdateScreen, 'store_update_screen'),
             (LoadingScreen, 'loading_screen'),
             (CardScreen, 'card_screen'),
-            (LanguageScreen, 'language_screen'),
+            (SettingsScreen, 'settings_screen'),
             (VocabularyAddScreen, 'vocabulary_add_screen'),
             (CategoryAddScreen, 'category_add_screen'),
             (LanguagePairAddScreen, 'language_pair_add_screen'),
@@ -294,7 +294,7 @@ class MainApp(App):
         ]
         for cls, name in screens:
             self._load_screen(sm, cls, name)
-        sm.current = 'language_screen' if not self.locale else 'main_screen'
+        sm.current = 'settings_screen' if not self.locale else 'main_screen'
         return sm
 
     def next_screen(self, screen_name, widget = None):

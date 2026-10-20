@@ -7,16 +7,16 @@ from kivy.properties import ListProperty, StringProperty
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.screenmanager import Screen
 
-class LanguageScreen(Screen):
+class SettingsScreen(Screen):
     pass
 
-class LanguageWidget(BoxLayout):
+class SettingsWidget(BoxLayout):
     data = ListProperty([])
     language_options = ListProperty([])
     language_text = StringProperty('')
 
     def __init__(self, **kwargs):
-        super(LanguageWidget, self).__init__(**kwargs)
+        super(SettingsWidget, self).__init__(**kwargs)
         # Defer initialization until app is fully ready
         Clock.schedule_once(lambda dt: self._init_widget(), 0.1)
 
