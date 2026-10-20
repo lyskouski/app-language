@@ -3,7 +3,7 @@
 
 from kivy.app import App
 from kivy.clock import Clock
-from kivy.properties import ListProperty
+from kivy.properties import ListProperty, StringProperty
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.screenmanager import Screen
 
@@ -12,6 +12,8 @@ class LanguageScreen(Screen):
 
 class LanguageWidget(BoxLayout):
     data = ListProperty([])
+    language_options = ListProperty([])
+    language_text = StringProperty('')
 
     def __init__(self, **kwargs):
         super(LanguageWidget, self).__init__(**kwargs)
@@ -49,29 +51,42 @@ class LanguageWidget(BoxLayout):
         self.data = self._config_repo.get_all_languages()
 
     def populate_languages(self):
-        """Populate the RecycleView with language data."""
+        """Fill the language selector, showing the current interface language."""
         try:
-            if not hasattr(self, 'ids') or 'language_view' not in self.ids:
-                print("ERROR: language_view not found in ids, retrying...")
+            if not hasattr(self, 'ids') or 'language_selector' not in self.ids:
+                print("ERROR: language_selector not found in ids, retrying...")
                 Clock.schedule_once(lambda dt: self.populate_languages(), 0.2)
                 return
 
-            data_for_rv = [{
-                'text': item.get('text', ''),
-                'logo': item.get('logo', ''),
-                'locale': item.get('locale', '')
-            } for item in self.data]
-            self.ids.language_view.data = data_for_rv
+            app = self._get_app()
+            self.language_options = [item.get('text', '') for item in self.data]
+            self.language_text = next(
+                (item.get('text', '') for item in self.data if item.get('locale') == app.locale),
+                ''
+            )
         except Exception as e:
             print(f"ERROR in populate_languages: {e}")
             import traceback
             traceback.print_exc()
 
-    def select_language(self, locale):
-        """Select language using settings service."""
+    def select_language(self, name):
+        """Select language by its display name using settings service."""
+        locale = next((item.get('locale', '') for item in self.data if item.get('text') == name), '')
         app = self._get_app()
+        if not locale or locale == app.locale:
+            return
+        is_first_choice = not app.locale
+        self.language_text = name
         # Use settings service to update locale
         self._settings_service.update_interface_locale(locale)
         # Update app property for backward compatibility
         app.locale = locale
-        app.next_screen('main_screen')
+        # First launch: continue to the main screen as soon as a language is chosen
+        if is_first_choice:
+            app.next_screen('main_screen')
+
+    def go_back(self):
+        """Return to the main screen once an interface language is chosen."""
+        app = self._get_app()
+        if app.locale:
+            app.next_screen('main_screen')

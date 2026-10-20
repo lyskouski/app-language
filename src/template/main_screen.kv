@@ -89,15 +89,6 @@
             size_hint_x: 0.25 if root.navigation_level == 'categories' else 0.01
             on_release:
                 root.add_category()
-        ToggleButton:
-            markup: True
-            text: app.icon_label(0xF05A8 if app.theme_mode == 'dark' else 0xF0594, app._('theme_light_mode', app.locale) if app.theme_mode == 'dark' else app._('theme_dark_mode', app.locale), app.is_portrait)
-            state: 'down' if app.theme_mode == 'dark' else 'normal'
-            opacity: 1.0 if root.navigation_level == 'main' else 0
-            disabled: False if root.navigation_level == 'main' else True
-            size_hint_x: 0.18 if root.navigation_level == 'main' else 0.01
-            on_state:
-                app.toggle_theme_mode(self.state == 'down')
         Widget:
             size_hint_x: 0.02
         Button:

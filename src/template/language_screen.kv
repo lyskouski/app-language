@@ -13,62 +13,54 @@
     spacing: dp(20)
 
     Label:
-        text: "Select Language"
+        text: app._("button_settings", app.locale)
         font_size: sp(24)
         size_hint_y: None
         height: dp(60)
         text_size: self.width, None
         halign: "center"
 
-    RecycleView:
-        id: language_view
-        viewclass: "LanguageItemWidget"
-        size_hint_y: 1
-        RecycleBoxLayout:
-            default_size: None, dp(80)
-            default_size_hint: 1, None
+    # Interface language
+    BoxLayout:
+        orientation: 'vertical'
+        size_hint_y: None
+        height: dp(90)
+        spacing: dp(5)
+        Label:
+            text: app._("language_pair_select_language", app.locale)
             size_hint_y: None
-            height: self.minimum_height
-            orientation: "vertical"
-            spacing: dp(10)
+            height: dp(30)
+            font_size: sp(16)
+            text_size: self.size
+            halign: 'left'
+            valign: 'middle'
+        SearchableSpinner:
+            id: language_selector
+            text: root.language_text if root.language_text else app._('language_pair_select_language', app.locale)
+            values: root.language_options
+            on_text: root.select_language(self.text)
 
-<LanguageItemWidget@BoxLayout>:
-    orientation: "horizontal"
-    size_hint_y: None
-    height: dp(80)
-    padding: dp(10)
-    spacing: dp(15)
-    text: ""
-    logo: ""
-    locale: ""
-    canvas.before:
-        Color:
-            rgba: app.theme.md3_surface_container
-        RoundedRectangle:
-            pos: self.pos
-            size: self.size
-            radius: [dp(10)]
-
-    Image:
-        source: root.logo
-        size_hint_x: None
-        width: dp(60)
-        allow_stretch: True
-        keep_ratio: True
-
-    Label:
-        text: root.text
-        text_size: self.width, None
-        halign: "left"
-        valign: "middle"
-        font_size: sp(16)
-
-    Button:
+    # Light / dark theme
+    ToggleButton:
         markup: True
-        text: app.icon_label(0xF012C, "", True) if app.is_portrait else "Select / Wybierz"
-        size_hint_x: None
-        width: dp(64) if app.is_portrait else dp(140)
-        background_color: app.theme.md3_primary
-        color: app.theme.md3_on_primary
-        on_release:
-            app.root.get_screen('language_screen').ids.language_widget.select_language(root.locale)
+        size_hint_y: None
+        height: app.theme.md3_button_height
+        text: app.icon_label(0xF05A8 if app.theme_mode == 'dark' else 0xF0594, app._('theme_light_mode', app.locale) if app.theme_mode == 'dark' else app._('theme_dark_mode', app.locale))
+        state: 'down' if app.theme_mode == 'dark' else 'normal'
+        on_state:
+            app.toggle_theme_mode(self.state == 'down')
+
+    Widget:
+        size_hint_y: 1
+
+    BoxLayout:
+        orientation: "horizontal"
+        size_hint_y: None
+        height: app.theme.md3_button_height + dp(8)
+        Button:
+            markup: True
+            text: app.icon_label(0xF004D, app._("button_back", app.locale))
+            disabled: not app.locale
+            opacity: 1.0 if app.locale else 0
+            on_release:
+                root.go_back()
