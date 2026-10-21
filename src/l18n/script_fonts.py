@@ -14,7 +14,7 @@ by it.
 Script fonts carry no Latin letters, so a mixed string still needs one font
 per run of characters (the way Flutter falls back per glyph through
 `fontFamilyFallback`). `install_script_fallback` splits such text into
-`[font=...]` markup runs before Kivy lays it out.
+`[font=...]` markup runs before Kivy lays it out (TextInput lines included).
 """
 
 # (first codepoint, last codepoint, registered font name), ordered by script.
@@ -39,6 +39,7 @@ _SCRIPT_RANGES = (
 )
 
 _DEFAULT_FONT = 'DejaVu Sans'
+_SCRIPT_FONTS = {font_name for _start, _end, font_name in _SCRIPT_RANGES}
 
 
 def font_for_text(text):
@@ -82,6 +83,13 @@ def needs_fallback(text):
     return len({font_name for font_name, chunk in script_runs(text) if chunk.strip()}) > 1
 
 
+def font_lacks_text(font_name, text):
+    """True when the registered `font_name` (ours) cannot render some run of `text` on its own."""
+    if font_name != _DEFAULT_FONT and font_name not in _SCRIPT_FONTS:
+        return False
+    return any(run_font != font_name for run_font, chunk in script_runs(text) if chunk.strip())
+
+
 def split_markup_items(items):
     """Wrap text items of split Kivy markup into per-script `[font=...]` runs.
 
@@ -108,6 +116,7 @@ def install_script_fallback():
     """Patch Kivy labels to render mixed-script text with a font per script run."""
     from kivy.core.text import Label as CoreLabel
     from kivy.core.text.markup import MarkupLabel as CoreMarkupLabel
+    from kivy.uix import textinput
     from kivy.uix.label import Label
 
     markup_items = CoreMarkupLabel.markup.fget
@@ -125,6 +134,32 @@ def install_script_fallback():
         def markup(self):
             text = self.label.replace('&', '&amp;').replace('[', '&bl;').replace(']', '&br;')
             return split_markup_items([text]) if text else []
+
+    class TextInputLabel(CoreLabel):
+        """TextInput line label: measures and renders text a font run at a time."""
+
+        def __new__(cls, *args, **kwargs):
+            if font_lacks_text(kwargs.get('font_name'), kwargs.get('text', '')):
+                return ScriptFallbackLabel(*args, **kwargs)
+            return super().__new__(cls)
+
+        def get_extents(self, text):
+            if not font_lacks_text(self.options['font_name'], text):
+                return super().get_extents(text)
+            width = height = 0
+            for font_name, chunk in script_runs(text):
+                run_width, run_height = self._run_label(font_name).get_extents(chunk)
+                width += run_width
+                height = max(height, run_height)
+            return width, height
+
+        def _run_label(self, font_name):
+            run_labels = self.__dict__.setdefault('_run_labels', {})
+            if font_name not in run_labels:
+                run_labels[font_name] = CoreLabel(font_name=font_name, font_size=self.options['font_size'])
+            return run_labels[font_name]
+
+    textinput.Label = TextInputLabel
 
     def use_core_label(widget, text):
         cls = ScriptFallbackLabel if needs_fallback(text) else CoreLabel

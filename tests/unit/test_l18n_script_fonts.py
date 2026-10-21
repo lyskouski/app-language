@@ -3,7 +3,7 @@
 
 import unittest
 
-from l18n.script_fonts import font_for_text, needs_fallback, script_runs, split_markup_items
+from l18n.script_fonts import font_for_text, font_lacks_text, needs_fallback, script_runs, split_markup_items
 
 
 class ScriptFontsTestCase(unittest.TestCase):
@@ -29,6 +29,14 @@ class ScriptFontsTestCase(unittest.TestCase):
         self.assertFalse(needs_fallback('ქართული ენა'))
         self.assertTrue(needs_fallback('KA-PL (ქართული - Polski)'))
         self.assertTrue(needs_fallback('HI-PL (हिन्दी - Polski)'))
+
+    def test_font_lacks_text(self):
+        """Test that substrings are checked against the input font, ignoring foreign fonts"""
+        self.assertTrue(font_lacks_text('Noto Sans Arabic', 'Deutsch'))
+        self.assertTrue(font_lacks_text('DejaVu Sans', 'العربية'))
+        self.assertFalse(font_lacks_text('Noto Sans Arabic', 'العربية '))
+        self.assertFalse(font_lacks_text('DejaVu Sans', 'Deutsch'))
+        self.assertFalse(font_lacks_text('icons.ttf', 'Deutsch'))
 
     def test_split_markup_items(self):
         """Test that text runs are wrapped while explicit font regions stay untouched"""
