@@ -1,4 +1,5 @@
 #:kivy 2.1.0
+#:import WORLD_LANGUAGES l18n.world_languages.WORLD_LANGUAGES
 
 # Copyright 2025 The terCAD team. All rights reserved.
 # Use of this source code is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
@@ -35,14 +36,23 @@
                     size_hint_y: None
                     height: app.theme.md3_textinput_height + dp(37)
                     spacing: dp(5)
-                    Label:
-                        text: app._("vocab_origin_label", app.locale)
+                    BoxLayout:
                         size_hint_y: None
                         height: dp(32)
-                        font_size: sp(16)
-                        text_size: self.size
-                        halign: 'left'
-                        valign: 'middle'
+                        Label:
+                            text: app._("vocab_origin_label", app.locale)
+                            font_size: sp(16)
+                            text_size: self.size
+                            halign: 'left'
+                            valign: 'middle'
+                            shorten: True
+                        # Language of the field: abbreviation and native name
+                        Label:
+                            text: app.locale_from + " · " + WORLD_LANGUAGES.get(app.locale_from, app.locale_from) if app.locale_from else ""
+                            font_size: sp(14)
+                            size_hint_x: None
+                            width: self.texture_size[0]
+                            color: app.theme_color('md3_primary', app.theme_version)
                     TextInput:
                         id: origin_input
                         text: root.origin_text
@@ -58,14 +68,23 @@
                     size_hint_y: None
                     height: app.theme.md3_textinput_height + dp(37)
                     spacing: dp(5)
-                    Label:
-                        text: app._("vocab_translation_label", app.locale)
+                    BoxLayout:
                         size_hint_y: None
                         height: dp(32)
-                        font_size: sp(16)
-                        text_size: self.size
-                        halign: 'left'
-                        valign: 'middle'
+                        Label:
+                            text: app._("vocab_translation_label", app.locale)
+                            font_size: sp(16)
+                            text_size: self.size
+                            halign: 'left'
+                            valign: 'middle'
+                            shorten: True
+                        # Language of the field: abbreviation and native name
+                        Label:
+                            text: app.locale_to + " · " + WORLD_LANGUAGES.get(app.locale_to, app.locale_to) if app.locale_to else ""
+                            font_size: sp(14)
+                            size_hint_x: None
+                            width: self.texture_size[0]
+                            color: app.theme_color('md3_primary', app.theme_version)
                     TextInput:
                         id: translation_input
                         text: root.translation_text
