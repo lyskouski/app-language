@@ -42,7 +42,7 @@ labels_zh_cn = {
     "item_new": "[新项目]",
     "game_speaking": "口语",
     "game_phonetics": "语音",
-    "game_harmonica_acoustic": "声学口琴",
+    "game_harmonica_acoustic": "原声口琴",
     "game_harmonica": "口琴",
     "game_cards": "卡片",
     "game_articulation": "发音练习",
