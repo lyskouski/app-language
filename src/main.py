@@ -62,6 +62,9 @@ for _script_font in (
         _FONTS_DIR / f'NotoSans{_script_font}-Regular.ttf',
     )
 
+from l18n.script_fonts import install_script_fallback
+install_script_fallback()
+
 from component.card_screen import CardScreen
 from component.loading_screen import LoadingScreen
 from component.main_screen import MainScreen
