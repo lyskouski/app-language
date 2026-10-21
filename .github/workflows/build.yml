@@ -181,6 +181,7 @@ jobs:
       # project + Info.plist. It may fail at the archive/export step before the plist is
       # patched below, so the failure is tolerated here and the build is retried after.
       - name: Build iOS recipes and Xcode project (first pass)
+        id: ios_first_pass
         if: matrix.target == 'iOS'
         continue-on-error: true
         env:
@@ -204,6 +205,11 @@ jobs:
           # "{{ cookiecutter.project_name }}-Info.plist"/project.pbxproj files that also
           # match a generic `-name "*-Info.plist"` search, so scope the search to it only.
           APP_PROJECT_DIR=".buildozer/ios/platform/kivy-ios/tlum-ios"
+          if [ ! -d "$APP_PROJECT_DIR" ]; then
+            echo "::error::Xcode project was not generated at $APP_PROJECT_DIR (first pass: ${{ steps.ios_first_pass.outcome }}); see the first pass log for the root cause"
+            ls -la .buildozer/ios/platform/kivy-ios 2>/dev/null || true
+            exit 1
+          fi
           PLIST=$(find "$APP_PROJECT_DIR" -maxdepth 1 -name "*-Info.plist" | head -1)
           ./ios/patch_info_plist.sh "$PLIST"
 
