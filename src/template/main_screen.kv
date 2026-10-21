@@ -53,17 +53,21 @@
             orientation: "vertical"
     # MD3 bottom app bar: Import / Back | primary action (FAB) | Settings
     BottomBar:
+        id: bottom_bar
         BottomBarItem:
             # Import at root level, Back (one level up) inside a pair or category
             icon: 0xF02FA if root.navigation_level == 'main' else 0xF004D
             text: app._("lang_pair_import_btn" if root.navigation_level == 'main' else "button_back", app.locale)
             on_release:
                 root.open_import() if root.navigation_level == 'main' else root.go_back()
-        AnchorLayout:
+        Widget:
             size_hint_x: None
             width: fab.width + dp(16)
             FabButton:
                 id: fab
+                # Overflows the bar top by a quarter of its height
+                center_x: self.parent.center_x
+                top: bottom_bar.top + self.height / 4
                 # Contextual primary action: add pair (root), add category (pair), manage dictionaries (category)
                 text: app.icon_label(0xF05DA if root.navigation_level == 'games' else 0xF0415, app._({'main': 'language_pair_add_title', 'categories': 'category_add_title', 'games': 'dictionaries_manage_title'}[root.navigation_level], app.locale), app.is_portrait)
                 on_release:

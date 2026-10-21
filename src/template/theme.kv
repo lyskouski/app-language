@@ -160,8 +160,8 @@
     # MD3 bottom app bar container
     orientation: "horizontal"
     size_hint_y: None
-    height: dp(80)
-    padding: [dp(8), dp(12), dp(8), dp(12)]
+    height: dp(46)
+    padding: [dp(8), dp(4), dp(8), dp(4)]
     spacing: dp(8)
     canvas.before:
         Color:
@@ -171,11 +171,9 @@
             size: self.size
 
 <BottomBarItem@ButtonBehavior+BoxLayout>:
-    # MD3 bottom bar action: icon above a label, shown in both orientations
-    orientation: "vertical"
+    # MD3 bottom bar action: icon left of a label, shown in both orientations
     icon: 0
     text: ""
-    spacing: dp(4)
     # MD3 disabled content opacity
     opacity: 0.38 if self.disabled else 1
     canvas.before:
@@ -184,19 +182,14 @@
         RoundedRectangle:
             pos: self.pos
             size: self.size
-            radius: [dp(16)]
+            radius: [self.height / 2]
     Label:
         markup: True
-        text: app.icon_label(int(root.icon), "", True) if root.icon else ""
-        font_size: sp(24)
-        color: app.theme_color('md3_on_primary', app.theme_version)
-    Label:
-        text: root.text
-        font_size: sp(12)
-        size_hint_y: None
-        height: self.texture_size[1]
-        text_size: self.width, None
+        text: ("[size=20sp]" + app.icon_label(int(root.icon), "", True) + "[/size] " if root.icon else "") + root.text
+        font_size: sp(14)
+        text_size: self.size
         halign: "center"
+        valign: "middle"
         shorten: True
         color: app.theme_color('md3_on_primary', app.theme_version)
 
