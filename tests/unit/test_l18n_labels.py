@@ -44,6 +44,21 @@ class LabelsTestCase(unittest.TestCase):
         self.assertIn("DE", labels)
         self.assertIn("FR", labels)
 
+    def test_available_locales_include_worldwide_languages(self):
+        """Ensure every supported interface locale is registered for the application UI."""
+        expected = {
+            "EN", "BE", "PL", "PT-PT", "PT-BR", "FR", "DE", "UK", "ZH-CN", "ZH-TW", "HI", "UZ", "FA",
+            "AR", "AZ", "JA", "ES", "IT", "TR", "KO", "NL", "CS", "RO", "KA", "RU", "ID",
+        }
+        self.assertEqual(expected, set(labels))
+
+    def test_no_empty_translations(self):
+        """Ensure no label is left blank in any locale."""
+        for lang, lang_labels in labels.items():
+            for key, value in lang_labels.items():
+                with self.subTest(language=lang, key=key):
+                    self.assertTrue(value.strip(), f"Empty label '{key}' in {lang}")
+
     def test_ordering(self):
         """Test that all labels are ordered in DESC order of keys"""
         # Get all available languages

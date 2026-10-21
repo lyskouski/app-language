@@ -32,29 +32,70 @@ from kivy.uix.screenmanager import NoTransition  # noqa: E402
 from l18n.labels import labels  # noqa: E402
 
 TARGET_LOCALE = 'PL'
-SOURCE_LOCALES = ['BE', 'DE', 'EN', 'FR', 'RU', 'UK']
+SOURCE_LOCALES = [
+    'AR', 'AZ', 'BE', 'CS', 'DE', 'EN', 'ES', 'FA', 'FR', 'HI', 'ID', 'IT', 'JA',
+    'KA', 'KO', 'NL', 'PT-BR', 'PT-PT', 'RO', 'RU', 'TR', 'UK', 'UZ', 'ZH-CN', 'ZH-TW',
+]
 # Interface languages without their own pair (Polish) study from English
 FALLBACK_SOURCE_LOCALE = 'EN'
 
 # General, Literature, Common
 CATEGORIES = {
+    'AR': ['عام', 'أدب', 'يومي'],
+    'AZ': ['Ümumi', 'Ədəbiyyat', 'Gündəlik'],
     'BE': ['Агульнае', 'Літаратура', 'Паўсядзённае'],
+    'CS': ['Obecné', 'Literatura', 'Každodenní'],
     'DE': ['Allgemein', 'Literatur', 'Alltägliches'],
     'EN': ['General', 'Literature', 'Common'],
+    'ES': ['General', 'Literatura', 'Cotidiano'],
+    'FA': ['عمومی', 'ادبیات', 'روزمره'],
     'FR': ['Général', 'Littérature', 'Courant'],
+    'HI': ['सामान्य', 'साहित्य', 'दैनिक'],
+    'ID': ['Umum', 'Sastra', 'Sehari-hari'],
+    'IT': ['Generale', 'Letteratura', 'Quotidiano'],
+    'JA': ['一般', '文学', '日常'],
+    'KA': ['ზოგადი', 'ლიტერატურა', 'ყოველდღიური'],
+    'KO': ['일반', '문학', '일상'],
+    'NL': ['Algemeen', 'Literatuur', 'Dagelijks'],
     'PL': ['Ogólne', 'Literatura', 'Codzienne'],
+    'PT-BR': ['Geral', 'Literatura', 'Cotidiano'],
+    'PT-PT': ['Geral', 'Literatura', 'Quotidiano'],
+    'RO': ['General', 'Literatură', 'Cotidian'],
     'RU': ['Общее', 'Литература', 'Повседневное'],
+    'TR': ['Genel', 'Edebiyat', 'Günlük'],
     'UK': ['Загальне', 'Література', 'Повсякденне'],
+    'UZ': ['Umumiy', 'Adabiyot', 'Kundalik'],
+    'ZH-CN': ['通用', '文学', '日常'],
+    'ZH-TW': ['通用', '文學', '日常'],
 }
 
 WORDS = {
     'PL': ['woda', 'chleb', 'dom', 'słońce', 'książka', 'przyjaciel', 'jabłko', 'kot', 'pies', 'miasto'],
+    'AR': ['ماء', 'خبز', 'بيت', 'شمس', 'كتاب', 'صديق', 'تفاحة', 'قطة', 'كلب', 'مدينة'],
+    'AZ': ['su', 'çörək', 'ev', 'günəş', 'kitab', 'dost', 'alma', 'pişik', 'it', 'şəhər'],
     'BE': ['вада', 'хлеб', 'дом', 'сонца', 'кніга', 'сябар', 'яблык', 'кот', 'сабака', 'горад'],
+    'CS': ['voda', 'chléb', 'dům', 'slunce', 'kniha', 'přítel', 'jablko', 'kočka', 'pes', 'město'],
     'DE': ['Wasser', 'Brot', 'Haus', 'Sonne', 'Buch', 'Freund', 'Apfel', 'Katze', 'Hund', 'Stadt'],
     'EN': ['water', 'bread', 'house', 'sun', 'book', 'friend', 'apple', 'cat', 'dog', 'city'],
+    'ES': ['agua', 'pan', 'casa', 'sol', 'libro', 'amigo', 'manzana', 'gato', 'perro', 'ciudad'],
+    'FA': ['آب', 'نان', 'خانه', 'خورشید', 'کتاب', 'دوست', 'سیب', 'گربه', 'سگ', 'شهر'],
     'FR': ['eau', 'pain', 'maison', 'soleil', 'livre', 'ami', 'pomme', 'chat', 'chien', 'ville'],
+    'HI': ['पानी', 'रोटी', 'घर', 'सूरज', 'किताब', 'दोस्त', 'सेब', 'बिल्ली', 'कुत्ता', 'शहर'],
+    'ID': ['air', 'roti', 'rumah', 'matahari', 'buku', 'teman', 'apel', 'kucing', 'anjing', 'kota'],
+    'IT': ['acqua', 'pane', 'casa', 'sole', 'libro', 'amico', 'mela', 'gatto', 'cane', 'città'],
+    'JA': ['水', 'パン', '家', '太陽', '本', '友達', 'りんご', '猫', '犬', '都市'],
+    'KA': ['წყალი', 'პური', 'სახლი', 'მზე', 'წიგნი', 'მეგობარი', 'ვაშლი', 'კატა', 'ძაღლი', 'ქალაქი'],
+    'KO': ['물', '빵', '집', '태양', '책', '친구', '사과', '고양이', '개', '도시'],
+    'NL': ['water', 'brood', 'huis', 'zon', 'boek', 'vriend', 'appel', 'kat', 'hond', 'stad'],
+    'PT-BR': ['água', 'pão', 'casa', 'sol', 'livro', 'amigo', 'maçã', 'gato', 'cachorro', 'cidade'],
+    'PT-PT': ['água', 'pão', 'casa', 'sol', 'livro', 'amigo', 'maçã', 'gato', 'cão', 'cidade'],
+    'RO': ['apă', 'pâine', 'casă', 'soare', 'carte', 'prieten', 'măr', 'pisică', 'câine', 'oraș'],
     'RU': ['вода', 'хлеб', 'дом', 'солнце', 'книга', 'друг', 'яблоко', 'кот', 'собака', 'город'],
+    'TR': ['su', 'ekmek', 'ev', 'güneş', 'kitap', 'arkadaş', 'elma', 'kedi', 'köpek', 'şehir'],
     'UK': ['вода', 'хліб', 'дім', 'сонце', 'книга', 'друг', 'яблуко', 'кіт', 'собака', 'місто'],
+    'UZ': ['suv', 'non', 'uy', 'quyosh', 'kitob', 'doʻst', 'olma', 'mushuk', 'it', 'shahar'],
+    'ZH-CN': ['水', '面包', '房子', '太阳', '书', '朋友', '苹果', '猫', '狗', '城市'],
+    'ZH-TW': ['水', '麵包', '房子', '太陽', '書', '朋友', '蘋果', '貓', '狗', '城市'],
 }
 
 SELECT_ICON = chr(0xF012C)

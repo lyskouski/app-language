@@ -75,6 +75,7 @@ WORLD_LANGUAGES = {
     "TR": "Türkçe",
     "UK": "Українська",
     "UR": "اردو",
+    "UZ": "Oʻzbekcha",
     "VI": "Tiếng Việt",
     "ZH": "中文",
 }

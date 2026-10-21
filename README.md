@@ -22,7 +22,7 @@ pinpoint pronunciation gaps, and machine learning to boost vocabulary proficienc
 - Add new words to categories
 - Import/export a language pair with all categories and words
 - Light/dark interface mode
-- Interface language (BE, EN, PL, RU, UK, FR, DE)
+- Interface language (EN, BE, PL, PT-PT, PT-BR, FR, DE, UK, ZH-CN, ZH-TW, HI, UZ, FA, AR, AZ, JA, ES, IT, TR, KO, NL, CS, RO, KA, RU, ID)
 - **Practices** (games):
     - Cards: a word and its translation on the back of the card
     - Harmonica: a writing experience (write either an original text or a translation)
