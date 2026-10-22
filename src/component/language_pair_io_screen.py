@@ -26,6 +26,17 @@ def _get_download_dir() -> str:
     return os.path.join(os.path.expanduser("~"), "Downloads")
 
 
+def _get_app_files_dir() -> str:
+    # App-specific external folder (/sdcard/Android/data/<package>/files) is readable without permissions
+    if platform == "android":
+        jnius = importlib.import_module("jnius")
+        activity = jnius.autoclass("org.kivy.android.PythonActivity").mActivity
+        files_dir = activity.getExternalFilesDir(None)
+        if files_dir is not None:
+            return files_dir.getAbsolutePath()
+    return App.get_running_app().user_data_dir
+
+
 def _get_service() -> LanguagePairIOService:
     app = App.get_running_app()
     return LanguagePairIOService(
@@ -34,11 +45,16 @@ def _get_service() -> LanguagePairIOService:
     )
 
 
-def _open_file_chooser(screen, dir_mode: bool):
-    download_dir = _get_download_dir()
-    start_dir = os.path.dirname(screen.file_path) if screen.file_path else download_dir
+def _target_path(screen) -> str:
+    return screen.app_file_path if screen.use_app_folder else screen.file_path
+
+
+def _open_file_chooser(screen, dir_mode: bool, path_attr: str = "file_path", base_dir: str = ""):
+    base_dir = base_dir or _get_download_dir()
+    current = getattr(screen, path_attr)
+    start_dir = os.path.dirname(current) if current else base_dir
     if not os.path.isdir(start_dir):
-        start_dir = download_dir if os.path.isdir(download_dir) else os.path.expanduser("~")
+        start_dir = base_dir if os.path.isdir(base_dir) else os.path.expanduser("~")
 
     chooser = FileChooserListView(
         path=start_dir,
@@ -68,13 +84,13 @@ def _open_file_chooser(screen, dir_mode: bool):
         if selection:
             chosen = selection[0]
             if dir_mode:
-                default_name = os.path.basename(screen.file_path) or "language_pair.json"
-                screen.file_path = os.path.join(
+                default_name = os.path.basename(current) or "language_pair.json"
+                setattr(screen, path_attr, os.path.join(
                     chosen if os.path.isdir(chosen) else os.path.dirname(chosen),
                     default_name,
-                )
+                ))
             else:
-                screen.file_path = chosen
+                setattr(screen, path_attr, chosen)
         popup.dismiss()
 
     btn_cancel.bind(on_release=lambda _: popup.dismiss())
@@ -87,18 +103,24 @@ class LanguagePairExportScreen(Screen):
     locale_to = StringProperty("")
     pair_name = StringProperty("")
     file_path = StringProperty("")
+    app_file_path = StringProperty("")
+    use_app_folder = BooleanProperty(False)
     status_text = StringProperty("")
     is_busy = BooleanProperty(False)
 
     def on_enter(self):
-        download_dir = _get_download_dir()
+        pair_tag = f"{self.locale_from}-{self.locale_to}" if (self.locale_from and self.locale_to) else "language_pair"
         if not self.file_path:
-            pair_tag = f"{self.locale_from}-{self.locale_to}" if (self.locale_from and self.locale_to) else "language_pair"
-            self.file_path = os.path.join(download_dir, f"{pair_tag}.json")
+            self.file_path = os.path.join(_get_download_dir(), f"{pair_tag}.json")
+        if not self.app_file_path:
+            self.app_file_path = os.path.join(_get_app_files_dir(), f"{pair_tag}.json")
         self.status_text = ""
 
     def open_file_chooser(self):
         _open_file_chooser(self, dir_mode=True)
+
+    def open_app_file_chooser(self):
+        _open_file_chooser(self, dir_mode=True, path_attr="app_file_path", base_dir=_get_app_files_dir())
 
     def do_export(self):
         if self.is_busy:
@@ -109,8 +131,9 @@ class LanguagePairExportScreen(Screen):
 
     def _run_export(self):
         try:
-            count = _get_service().export_language_pair(self.locale_from, self.locale_to, self.file_path)
-            self.status_text = f"Exported {count} words to:\n{self.file_path}"
+            target = _target_path(self)
+            count = _get_service().export_language_pair(self.locale_from, self.locale_to, target)
+            self.status_text = f"Exported {count} words to:\n{target}"
         except Exception as exc:
             self.status_text = f"Export failed: {exc}"
         finally:
@@ -122,6 +145,8 @@ class LanguagePairExportScreen(Screen):
 
 class LanguagePairImportScreen(Screen):
     file_path = StringProperty("")
+    app_file_path = StringProperty("")
+    use_app_folder = BooleanProperty(False)
     status_text = StringProperty("")
     is_busy = BooleanProperty(False)
     merge_import = BooleanProperty(False)
@@ -129,10 +154,15 @@ class LanguagePairImportScreen(Screen):
     def on_enter(self):
         if not self.file_path:
             self.file_path = os.path.join(_get_download_dir(), "language_pair.json")
+        if not self.app_file_path:
+            self.app_file_path = os.path.join(_get_app_files_dir(), "language_pair.json")
         self.status_text = ""
 
     def open_file_chooser(self):
         _open_file_chooser(self, dir_mode=False)
+
+    def open_app_file_chooser(self):
+        _open_file_chooser(self, dir_mode=False, path_attr="app_file_path", base_dir=_get_app_files_dir())
 
     def do_import(self):
         if self.is_busy:
@@ -143,7 +173,7 @@ class LanguagePairImportScreen(Screen):
 
     def _run_import(self):
         try:
-            result = _get_service().import_language_pair(self.file_path, merge=self.merge_import)
+            result = _get_service().import_language_pair(_target_path(self), merge=self.merge_import)
             self.status_text = (
                 f"Imported {result['vocabulary_imported']} words, "
                 f"{result['categories_imported']} categories "

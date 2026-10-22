@@ -30,30 +30,77 @@
             padding: [dp(12), 0]
             spacing: dp(10)
 
-            # File path row
+            # Downloads path row
             BoxLayout:
+                orientation: 'vertical'
                 size_hint_y: None
-                height: app.theme.md3_textinput_height
-                spacing: dp(8)
+                height: self.minimum_height
+                spacing: dp(4)
+                disabled: root.use_app_folder
                 Label:
                     text: app._('lang_pair_file_path', app.locale)
+                    size_hint_y: None
+                    height: self.texture_size[1]
+                    halign: 'left'
+                    text_size: self.width, None
+                BoxLayout:
+                    size_hint_y: None
+                    height: app.theme.md3_textinput_height
+                    spacing: dp(8)
+                    TextInput:
+                        text: root.file_path
+                        multiline: False
+                        on_text: root.file_path = self.text
+                        hint_text: '/path/to/language_pair.json'
+                    Button:
+                        text: app._('lang_pair_browse_btn', app.locale)
+                        size_hint_x: None
+                        width: dp(88)
+                        on_release: root.open_file_chooser()
+
+            # App folder path row (/sdcard/Android/data/<package>/files)
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint_y: None
+                height: self.minimum_height
+                spacing: dp(4)
+                disabled: not root.use_app_folder
+                Label:
+                    text: app._('lang_pair_app_folder', app.locale)
+                    size_hint_y: None
+                    height: self.texture_size[1]
+                    halign: 'left'
+                    text_size: self.width, None
+                BoxLayout:
+                    size_hint_y: None
+                    height: app.theme.md3_textinput_height
+                    spacing: dp(8)
+                    TextInput:
+                        text: root.app_file_path
+                        multiline: False
+                        on_text: root.app_file_path = self.text
+                        hint_text: '/path/to/language_pair.json'
+                    Button:
+                        text: app._('lang_pair_browse_btn', app.locale)
+                        size_hint_x: None
+                        width: dp(88)
+                        on_release: root.open_app_file_chooser()
+
+            # Path source option
+            BoxLayout:
+                size_hint_y: None
+                height: dp(56) if app.is_portrait else dp(40)
+                spacing: dp(8)
+                CheckBox:
+                    active: root.use_app_folder
                     size_hint_x: None
-                    # In portrait the caption moves into the input hint to leave room for the path
-                    width: 0 if app.is_portrait else dp(80)
-                    opacity: 0 if app.is_portrait else 1
-                    halign: 'right'
+                    width: dp(40)
+                    on_active: root.use_app_folder = self.active
+                Label:
+                    text: app._('lang_pair_use_app_folder', app.locale)
+                    halign: 'left'
                     valign: 'middle'
                     text_size: self.size
-                TextInput:
-                    text: root.file_path
-                    multiline: False
-                    on_text: root.file_path = self.text
-                    hint_text: app._('lang_pair_file_path', app.locale) if app.is_portrait else '/path/to/language_pair.json'
-                Button:
-                    text: app._('lang_pair_browse_btn', app.locale)
-                    size_hint_x: None
-                    width: dp(88)
-                    on_release: root.open_file_chooser()
 
             # Status label
             Label:
