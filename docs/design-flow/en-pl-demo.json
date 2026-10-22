@@ -1,0 +1,749 @@
+{
+  "version": "1.0",
+  "locale_from": "EN",
+  "locale_to": "PL",
+  "name": "EN-PL (English - Polish)",
+  "logo_path": "assets/images/language/pl.png",
+  "categories": [
+    {
+      "name": "Travel",
+      "vocabulary_source": "travel",
+      "icon_path": "",
+      "display_order": 0
+    },
+    {
+      "name": "Food",
+      "vocabulary_source": "food",
+      "icon_path": "",
+      "display_order": 1
+    },
+    {
+      "name": "Everyday Conversation",
+      "vocabulary_source": "everyday_conversation",
+      "icon_path": "",
+      "display_order": 2
+    }
+  ],
+  "vocabulary": [
+    {
+      "origin": "airport",
+      "translation": "lotnisko",
+      "sound_path": null,
+      "image_path": null,
+      "category": "travel",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "plane",
+      "translation": "samolot",
+      "sound_path": null,
+      "image_path": null,
+      "category": "travel",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "train",
+      "translation": "pociąg",
+      "sound_path": null,
+      "image_path": null,
+      "category": "travel",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "bus",
+      "translation": "autobus",
+      "sound_path": null,
+      "image_path": null,
+      "category": "travel",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "ticket",
+      "translation": "bilet",
+      "sound_path": null,
+      "image_path": null,
+      "category": "travel",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "passport",
+      "translation": "paszport",
+      "sound_path": null,
+      "image_path": null,
+      "category": "travel",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "luggage",
+      "translation": "bagaż",
+      "sound_path": null,
+      "image_path": null,
+      "category": "travel",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "suitcase",
+      "translation": "walizka",
+      "sound_path": null,
+      "image_path": null,
+      "category": "travel",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "hotel",
+      "translation": "hotel",
+      "sound_path": null,
+      "image_path": null,
+      "category": "travel",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "room",
+      "translation": "pokój",
+      "sound_path": null,
+      "image_path": null,
+      "category": "travel",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "reservation",
+      "translation": "rezerwacja",
+      "sound_path": null,
+      "image_path": null,
+      "category": "travel",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "map",
+      "translation": "mapa",
+      "sound_path": null,
+      "image_path": null,
+      "category": "travel",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "station",
+      "translation": "dworzec",
+      "sound_path": null,
+      "image_path": null,
+      "category": "travel",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "platform",
+      "translation": "peron",
+      "sound_path": null,
+      "image_path": null,
+      "category": "travel",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "departure",
+      "translation": "odjazd",
+      "sound_path": null,
+      "image_path": null,
+      "category": "travel",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "arrival",
+      "translation": "przyjazd",
+      "sound_path": null,
+      "image_path": null,
+      "category": "travel",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "border",
+      "translation": "granica",
+      "sound_path": null,
+      "image_path": null,
+      "category": "travel",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "beach",
+      "translation": "plaża",
+      "sound_path": null,
+      "image_path": null,
+      "category": "travel",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "mountains",
+      "translation": "góry",
+      "sound_path": null,
+      "image_path": null,
+      "category": "travel",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "sightseeing",
+      "translation": "zwiedzanie",
+      "sound_path": null,
+      "image_path": null,
+      "category": "travel",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "tourist",
+      "translation": "turysta",
+      "sound_path": null,
+      "image_path": null,
+      "category": "travel",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "guide",
+      "translation": "przewodnik",
+      "sound_path": null,
+      "image_path": null,
+      "category": "travel",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "taxi",
+      "translation": "taksówka",
+      "sound_path": null,
+      "image_path": null,
+      "category": "travel",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "car rental",
+      "translation": "wypożyczalnia samochodów",
+      "sound_path": null,
+      "image_path": null,
+      "category": "travel",
+      "difficulty_level": 2
+    },
+    {
+      "origin": "left",
+      "translation": "lewo",
+      "sound_path": null,
+      "image_path": null,
+      "category": "travel",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "right",
+      "translation": "prawo",
+      "sound_path": null,
+      "image_path": null,
+      "category": "travel",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "straight ahead",
+      "translation": "prosto",
+      "sound_path": null,
+      "image_path": null,
+      "category": "travel",
+      "difficulty_level": 2
+    },
+    {
+      "origin": "Where is the train station?",
+      "translation": "Gdzie jest dworzec kolejowy?",
+      "sound_path": null,
+      "image_path": null,
+      "category": "travel",
+      "difficulty_level": 3
+    },
+    {
+      "origin": "I would like to book a room.",
+      "translation": "Chciałbym zarezerwować pokój.",
+      "sound_path": null,
+      "image_path": null,
+      "category": "travel",
+      "difficulty_level": 3
+    },
+    {
+      "origin": "How much is a ticket to Kraków?",
+      "translation": "Ile kosztuje bilet do Krakowa?",
+      "sound_path": null,
+      "image_path": null,
+      "category": "travel",
+      "difficulty_level": 3
+    },
+    {
+      "origin": "bread",
+      "translation": "chleb",
+      "sound_path": null,
+      "image_path": null,
+      "category": "food",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "butter",
+      "translation": "masło",
+      "sound_path": null,
+      "image_path": null,
+      "category": "food",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "cheese",
+      "translation": "ser",
+      "sound_path": null,
+      "image_path": null,
+      "category": "food",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "milk",
+      "translation": "mleko",
+      "sound_path": null,
+      "image_path": null,
+      "category": "food",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "egg",
+      "translation": "jajko",
+      "sound_path": null,
+      "image_path": null,
+      "category": "food",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "meat",
+      "translation": "mięso",
+      "sound_path": null,
+      "image_path": null,
+      "category": "food",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "chicken",
+      "translation": "kurczak",
+      "sound_path": null,
+      "image_path": null,
+      "category": "food",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "fish",
+      "translation": "ryba",
+      "sound_path": null,
+      "image_path": null,
+      "category": "food",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "soup",
+      "translation": "zupa",
+      "sound_path": null,
+      "image_path": null,
+      "category": "food",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "potatoes",
+      "translation": "ziemniaki",
+      "sound_path": null,
+      "image_path": null,
+      "category": "food",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "rice",
+      "translation": "ryż",
+      "sound_path": null,
+      "image_path": null,
+      "category": "food",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "vegetables",
+      "translation": "warzywa",
+      "sound_path": null,
+      "image_path": null,
+      "category": "food",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "fruit",
+      "translation": "owoce",
+      "sound_path": null,
+      "image_path": null,
+      "category": "food",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "apple",
+      "translation": "jabłko",
+      "sound_path": null,
+      "image_path": null,
+      "category": "food",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "tomato",
+      "translation": "pomidor",
+      "sound_path": null,
+      "image_path": null,
+      "category": "food",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "cucumber",
+      "translation": "ogórek",
+      "sound_path": null,
+      "image_path": null,
+      "category": "food",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "onion",
+      "translation": "cebula",
+      "sound_path": null,
+      "image_path": null,
+      "category": "food",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "salt",
+      "translation": "sól",
+      "sound_path": null,
+      "image_path": null,
+      "category": "food",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "pepper",
+      "translation": "pieprz",
+      "sound_path": null,
+      "image_path": null,
+      "category": "food",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "sugar",
+      "translation": "cukier",
+      "sound_path": null,
+      "image_path": null,
+      "category": "food",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "water",
+      "translation": "woda",
+      "sound_path": null,
+      "image_path": null,
+      "category": "food",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "coffee",
+      "translation": "kawa",
+      "sound_path": null,
+      "image_path": null,
+      "category": "food",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "tea",
+      "translation": "herbata",
+      "sound_path": null,
+      "image_path": null,
+      "category": "food",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "juice",
+      "translation": "sok",
+      "sound_path": null,
+      "image_path": null,
+      "category": "food",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "beer",
+      "translation": "piwo",
+      "sound_path": null,
+      "image_path": null,
+      "category": "food",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "breakfast",
+      "translation": "śniadanie",
+      "sound_path": null,
+      "image_path": null,
+      "category": "food",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "dinner",
+      "translation": "obiad",
+      "sound_path": null,
+      "image_path": null,
+      "category": "food",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "dumplings",
+      "translation": "pierogi",
+      "sound_path": null,
+      "image_path": null,
+      "category": "food",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "The bill, please.",
+      "translation": "Poproszę rachunek.",
+      "sound_path": null,
+      "image_path": null,
+      "category": "food",
+      "difficulty_level": 3
+    },
+    {
+      "origin": "I would like a cup of coffee.",
+      "translation": "Poproszę filiżankę kawy.",
+      "sound_path": null,
+      "image_path": null,
+      "category": "food",
+      "difficulty_level": 3
+    },
+    {
+      "origin": "hello",
+      "translation": "cześć",
+      "sound_path": null,
+      "image_path": null,
+      "category": "everyday_conversation",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "good morning",
+      "translation": "dzień dobry",
+      "sound_path": null,
+      "image_path": null,
+      "category": "everyday_conversation",
+      "difficulty_level": 2
+    },
+    {
+      "origin": "good evening",
+      "translation": "dobry wieczór",
+      "sound_path": null,
+      "image_path": null,
+      "category": "everyday_conversation",
+      "difficulty_level": 2
+    },
+    {
+      "origin": "goodbye",
+      "translation": "do widzenia",
+      "sound_path": null,
+      "image_path": null,
+      "category": "everyday_conversation",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "see you",
+      "translation": "na razie",
+      "sound_path": null,
+      "image_path": null,
+      "category": "everyday_conversation",
+      "difficulty_level": 2
+    },
+    {
+      "origin": "please",
+      "translation": "proszę",
+      "sound_path": null,
+      "image_path": null,
+      "category": "everyday_conversation",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "thank you",
+      "translation": "dziękuję",
+      "sound_path": null,
+      "image_path": null,
+      "category": "everyday_conversation",
+      "difficulty_level": 2
+    },
+    {
+      "origin": "sorry",
+      "translation": "przepraszam",
+      "sound_path": null,
+      "image_path": null,
+      "category": "everyday_conversation",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "yes",
+      "translation": "tak",
+      "sound_path": null,
+      "image_path": null,
+      "category": "everyday_conversation",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "no",
+      "translation": "nie",
+      "sound_path": null,
+      "image_path": null,
+      "category": "everyday_conversation",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "maybe",
+      "translation": "może",
+      "sound_path": null,
+      "image_path": null,
+      "category": "everyday_conversation",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "of course",
+      "translation": "oczywiście",
+      "sound_path": null,
+      "image_path": null,
+      "category": "everyday_conversation",
+      "difficulty_level": 2
+    },
+    {
+      "origin": "today",
+      "translation": "dzisiaj",
+      "sound_path": null,
+      "image_path": null,
+      "category": "everyday_conversation",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "tomorrow",
+      "translation": "jutro",
+      "sound_path": null,
+      "image_path": null,
+      "category": "everyday_conversation",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "yesterday",
+      "translation": "wczoraj",
+      "sound_path": null,
+      "image_path": null,
+      "category": "everyday_conversation",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "friend",
+      "translation": "przyjaciel",
+      "sound_path": null,
+      "image_path": null,
+      "category": "everyday_conversation",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "name",
+      "translation": "imię",
+      "sound_path": null,
+      "image_path": null,
+      "category": "everyday_conversation",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "family",
+      "translation": "rodzina",
+      "sound_path": null,
+      "image_path": null,
+      "category": "everyday_conversation",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "work",
+      "translation": "praca",
+      "sound_path": null,
+      "image_path": null,
+      "category": "everyday_conversation",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "home",
+      "translation": "dom",
+      "sound_path": null,
+      "image_path": null,
+      "category": "everyday_conversation",
+      "difficulty_level": 1
+    },
+    {
+      "origin": "How are you?",
+      "translation": "Jak się masz?",
+      "sound_path": null,
+      "image_path": null,
+      "category": "everyday_conversation",
+      "difficulty_level": 2
+    },
+    {
+      "origin": "I'm fine, thanks.",
+      "translation": "Dobrze, dziękuję.",
+      "sound_path": null,
+      "image_path": null,
+      "category": "everyday_conversation",
+      "difficulty_level": 3
+    },
+    {
+      "origin": "What is your name?",
+      "translation": "Jak masz na imię?",
+      "sound_path": null,
+      "image_path": null,
+      "category": "everyday_conversation",
+      "difficulty_level": 3
+    },
+    {
+      "origin": "My name is Anna.",
+      "translation": "Mam na imię Anna.",
+      "sound_path": null,
+      "image_path": null,
+      "category": "everyday_conversation",
+      "difficulty_level": 3
+    },
+    {
+      "origin": "Nice to meet you.",
+      "translation": "Miło mi cię poznać.",
+      "sound_path": null,
+      "image_path": null,
+      "category": "everyday_conversation",
+      "difficulty_level": 3
+    },
+    {
+      "origin": "Where are you from?",
+      "translation": "Skąd jesteś?",
+      "sound_path": null,
+      "image_path": null,
+      "category": "everyday_conversation",
+      "difficulty_level": 3
+    },
+    {
+      "origin": "I don't understand.",
+      "translation": "Nie rozumiem.",
+      "sound_path": null,
+      "image_path": null,
+      "category": "everyday_conversation",
+      "difficulty_level": 3
+    },
+    {
+      "origin": "Can you repeat, please?",
+      "translation": "Czy możesz powtórzyć?",
+      "sound_path": null,
+      "image_path": null,
+      "category": "everyday_conversation",
+      "difficulty_level": 3
+    },
+    {
+      "origin": "Do you speak English?",
+      "translation": "Czy mówisz po angielsku?",
+      "sound_path": null,
+      "image_path": null,
+      "category": "everyday_conversation",
+      "difficulty_level": 3
+    },
+    {
+      "origin": "What time is it?",
+      "translation": "Która jest godzina?",
+      "sound_path": null,
+      "image_path": null,
+      "category": "everyday_conversation",
+      "difficulty_level": 3
+    }
+  ]
+}
