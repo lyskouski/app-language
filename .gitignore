@@ -18,3 +18,4 @@ key.keystore
 tlum.db-shm
 tlum.db-wal
 /screenshots/
+*.mp4
