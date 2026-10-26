@@ -26,6 +26,13 @@ parts:
       - libsndfile1
       - xclip
       - xsel
+    prime:
+      - -usr/lib/*/libGL*
+      - -usr/lib/*/libEGL*
+      - -usr/lib/*/libgbm*
+      - -usr/lib/*/libglapi*
+      - -usr/lib/*/libdrm*
+      - -usr/lib/*/dri
     override-build: |
       python3 -m pip install --ignore-installed --upgrade pip
       python3 -m pip install --ignore-installed --prefix=$SNAPCRAFT_PART_INSTALL -r requirements.txt
@@ -41,7 +48,6 @@ apps:
       XDG_RUNTIME_DIR: /tmp
       SDL_AUDIODRIVER: pulse
       PULSE_SERVER: unix:/run/user/1000/pulse/native
-      LD_LIBRARY_PATH: $SNAP/usr/lib:$SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET:$LD_LIBRARY_PATH
       KIVY_WINDOW: sdl2
       KIVY_GL_BACKEND: gl
       TLUM_DATA_DIR: $SNAP_USER_COMMON
