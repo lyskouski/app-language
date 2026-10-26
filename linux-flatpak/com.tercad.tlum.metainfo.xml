@@ -2,9 +2,7 @@
 <component type="desktop-application">
   <id>com.tercad.tlum</id>
   <name>Tlum</name>
-  <developer id="com.tercad">
-    <name>terCAD</name>
-  </developer>
+  <developer id="io.github.lyskouski"><name>lyskouski</name></developer>
   <summary>Platform-agnostic language learning app</summary>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>CC-BY-NC-ND-4.0</project_license>
