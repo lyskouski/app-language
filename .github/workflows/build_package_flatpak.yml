@@ -49,6 +49,7 @@ jobs:
           name: flatpak-configs
           path: |
             linux-flatpak/com.tercad.tlum.yml
+            linux-flatpak/com.tercad.tlum.metainfo.xml
             linux-flatpak/python3-modules.json
             linux-flatpak/flathub.json
 

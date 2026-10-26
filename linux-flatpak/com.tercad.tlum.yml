@@ -71,9 +71,11 @@ modules:
       - install -Dm755 linux-flatpak/tlum.sh /app/bin/tlum
       - install -Dm644 com.tercad.tlum.svg /app/share/icons/hicolor/scalable/apps/com.tercad.tlum.svg
       - install -Dm644 com.tercad.tlum.desktop /app/share/applications/com.tercad.tlum.desktop
-      - install -Dm644 linux-flatpak/com.tercad.tlum.metainfo.xml /app/share/metainfo/com.tercad.tlum.metainfo.xml
+      - install -Dm644 com.tercad.tlum.metainfo.xml /app/share/metainfo/com.tercad.tlum.metainfo.xml
     sources:
       - type: git
         url: https://github.com/lyskouski/app-language.git
         tag: v{VERSION}
         commit: '{COMMIT}'
+      - type: file
+        path: com.tercad.tlum.metainfo.xml

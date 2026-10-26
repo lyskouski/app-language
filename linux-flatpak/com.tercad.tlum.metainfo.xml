@@ -78,6 +78,7 @@
           <li>{CHANGE}</li>
         </ul>
       </description>
+      <url type="details">https://github.com/lyskouski/app-language/releases/tag/v{VERSION}</url>
     </release>
   </releases>
   <content_rating type="oars-1.1">
