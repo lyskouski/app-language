@@ -31,17 +31,14 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Patch Manifest
-        run: |
-          ASSET_URL="https://github.com/lyskouski/app-language/releases/download/v${{ inputs.version }}/tlum_Linux.tar.gz"
-          curl -vLJO -H 'Accept: application/octet-stream' $ASSET_URL
-          sh patch.sh -i ${{ inputs.sha }} -v "${{ inputs.version }}" -s $(sha256sum tlum_Linux.tar.gz | gawk '{ print $1 }')
+        run: sh patch.sh -i ${{ inputs.sha }} -v "${{ inputs.version }}"
         working-directory: linux-flatpak
 
       - name: Build Linux Flatpak
         run: |
           sudo apt-get install -y flatpak flatpak-builder
           sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-          sudo flatpak install flathub org.gnome.Platform//45 org.gnome.Sdk//45 -y
+          sudo flatpak install flathub org.freedesktop.Platform//25.08 org.freedesktop.Sdk//25.08 -y
           sudo flatpak-builder --install build-dir com.tercad.tlum.yml
           sudo flatpak build-bundle /var/lib/flatpak/repo tlum_LinuxFlatpak.flatpak com.tercad.tlum
         working-directory: linux-flatpak
@@ -51,8 +48,9 @@ jobs:
         with:
           name: flatpak-configs
           path: |
-            linux-flatpak/com.tercad.tlum.metainfo.xml
             linux-flatpak/com.tercad.tlum.yml
+            linux-flatpak/python3-modules.json
+            linux-flatpak/flathub.json
 
       - name: Add Flatpak Artifact to Build
         if: inputs.is_build

@@ -2,7 +2,7 @@
 Type=Application
 Name=Tlum
 Comment=Open-source platform-agnostic language learning application
-Categories=Finance;Utility;
+Categories=Education;Languages;
 Icon=com.tercad.tlum
 Exec=tlum
 StartupWMClass=tlum
