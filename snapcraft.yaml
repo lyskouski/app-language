@@ -2,9 +2,9 @@ name: tlum
 summary: (WIP) Open source code cross-platform language learning application
 version: 0.0.1+1
 description: |
-  [DEMO] [Work in Progress: https://github.com/lyskouski/app-language] Open source code cross-platform language
-  learning application leverages the power of natural language processing to pinpoint pronunciation gaps, computer
-  vision to enhance articulation, and machine learning to boost vocabulary proficiency.
+  Open source code cross-platform language learning application leverages
+  the power of natural language processing to pinpoint pronunciation gaps
+  and machine learning to boost vocabulary proficiency.
 base: core22
 confinement: strict
 
@@ -44,6 +44,7 @@ apps:
       LD_LIBRARY_PATH: $SNAP/usr/lib:$SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET:$LD_LIBRARY_PATH
       KIVY_WINDOW: sdl2
       KIVY_GL_BACKEND: gl
+      TLUM_DATA_DIR: $SNAP_USER_COMMON
     plugs:
       - home
       - desktop

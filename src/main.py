@@ -133,6 +133,15 @@ class MainApp(App):
     theme_version = NumericProperty(0)
     title = 'Tlum'
 
+    @property
+    def user_data_dir(self):
+        # Sandboxed packages (Snap, Flatpak) have no write access to hidden folders in home
+        data_dir = os.environ.get('TLUM_DATA_DIR', '').strip()
+        if data_dir:
+            os.makedirs(data_dir, exist_ok=True)
+            return data_dir
+        return super().user_data_dir
+
     def __init__(self, **kwargs):
         super(MainApp, self).__init__(**kwargs)
 

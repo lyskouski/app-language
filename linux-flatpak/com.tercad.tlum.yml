@@ -42,9 +42,13 @@ modules:
       - cp -r Tlum /app/Tlum
       - chmod +x /app/Tlum/tlum
       - mkdir -p /app/bin
-      - ln -s /app/Tlum/tlum /app/bin/tlum
-      - export XDG_DATA_HOME="/var/lib/flatpak/exports/share:$XDG_DATA_HOME"
-      - export XDG_DATA_DIRS="/var/lib/flatpak/exports/share:$XDG_DATA_DIRS"
+      - |
+        cat > /app/bin/tlum <<'EOF'
+        #!/bin/sh
+        export TLUM_DATA_DIR="${XDG_DATA_HOME}"
+        exec /app/Tlum/tlum "$@"
+        EOF
+      - chmod +x /app/bin/tlum
       - install -Dm644 /app/Tlum/com.tercad.tlum.svg /app/share/icons/hicolor/scalable/apps/com.tercad.tlum.svg
       - install -Dm644 /app/Tlum/com.tercad.tlum.desktop /app/share/applications/com.tercad.tlum.desktop
       - install -Dm644 com.tercad.tlum.metainfo.xml /app/share/appdata/com.tercad.tlum.metainfo.xml
