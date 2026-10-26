@@ -9,6 +9,23 @@ base: core22
 confinement: strict
 
 parts:
+  portaudio:
+    # libportaudio2 19.6.0 of Ubuntu 22.04 aborts on start: BuildDeviceList: Assertion `devIdx < numDeviceNames' failed.
+    plugin: autotools
+    source: https://files.portaudio.com/archives/pa_stable_v190700_20210406.tgz
+    source-checksum: sha256/47efbf42c77c19a05d22e627d42873e991ec0c1357219c0d74ce6a2948cb2def
+    autotools-configure-parameters:
+      - --prefix=/usr
+      - --without-jack
+      - --without-oss
+    build-packages:
+      - libasound2-dev
+    prime:
+      - -usr/include
+      - -usr/lib/pkgconfig
+      - -usr/lib/*.a
+      - -usr/lib/*.la
+
   tlum:
     plugin: python
     source: .
@@ -20,7 +37,6 @@ parts:
       - libpulse-mainloop-glib0
       - libasound2
       - libasound2-plugins
-      - libportaudio2
       - libsdl2-2.0-0
       - libsdl2-mixer-2.0-0
       - libsndfile1
@@ -39,6 +55,11 @@ parts:
       snapcraftctl build
       cp -r src $SNAPCRAFT_PART_INSTALL/
       cp -r assets $SNAPCRAFT_PART_INSTALL/
+    # update-alternatives is not run for staged packages: ffmpeg fails with "libblas.so.3: cannot open shared object file".
+    override-prime: |
+      craftctl default
+      ln -sf blas/libblas.so.3 usr/lib/$CRAFT_ARCH_TRIPLET/libblas.so.3
+      ln -sf lapack/liblapack.so.3 usr/lib/$CRAFT_ARCH_TRIPLET/liblapack.so.3
 
 apps:
   tlum:
