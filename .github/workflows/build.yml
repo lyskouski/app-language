@@ -23,7 +23,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [Windows, Linux, LinuxSnap, LinuxAppImage, Android, AndroidDebug, iOS]
+        target: [Windows, Linux, LinuxSnap, LinuxAppImage, LinuxFlatpak, Android, AndroidDebug, iOS]
         include:
           - os: windows-latest
             target: Windows
@@ -52,6 +52,12 @@ jobs:
             build_path: linux-appimage
             asset_extension: .AppImage
             asset_content_type: application/gzip
+          # Error: undefined symbol: g_once_init_enter_pointer
+          - os: ubuntu-22.04
+            target: LinuxFlatpak
+            build_path: linux-flatpak
+            asset_extension: .flatpak
+            asset_content_type: application/zip
           - os: ubuntu-latest
             target: Android
             build_path: build
@@ -403,6 +409,36 @@ jobs:
 #        run: |
 #          sudo --preserve-env=SNAPCRAFT_STORE_CREDENTIALS snapcraft upload tlum_${{ matrix.target }}.snap --release=latest/stable
 
+# Linux: Flatpak
+      - name: Patch Flatpak Manifest
+        if: matrix.target == 'LinuxFlatpak'
+        run: sh patch.sh -i ${{ github.sha }} -v "${{ needs.release.outputs.version }}"
+        working-directory: ${{ matrix.build_path }}
+
+      - name: Build Linux Flatpak
+        if: matrix.target == 'LinuxFlatpak'
+        run: |
+          # flatpak-builder 1.2 of Ubuntu 22.04 calls appstream-compose, which is dropped from SDK 25.08
+          sudo add-apt-repository -y ppa:flatpak/stable
+          sudo apt-get update
+          sudo apt-get install -y flatpak flatpak-builder
+          sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+          sudo flatpak install flathub org.freedesktop.Platform//25.08 org.freedesktop.Sdk//25.08 -y
+          sudo flatpak-builder --install build-dir com.tercad.tlum.yml
+          sudo flatpak build-bundle /var/lib/flatpak/repo "$GITHUB_WORKSPACE/tlum_${{ matrix.target }}.flatpak" com.tercad.tlum
+        working-directory: ${{ matrix.build_path }}
+
+      - name: Store Configs for github.com/flathub
+        if: matrix.target == 'LinuxFlatpak'
+        uses: actions/upload-artifact@v4
+        with:
+          name: flatpak-configs
+          path: |
+            linux-flatpak/com.tercad.tlum.yml
+            linux-flatpak/com.tercad.tlum.metainfo.xml
+            linux-flatpak/python3-modules.json
+            linux-flatpak/flathub.json
+
 # Android
       - name: Install dependencies
         if: startsWith(matrix.target, 'Android')
@@ -470,19 +506,3 @@ jobs:
           asset_path: ./tlum_${{ matrix.target }}${{ matrix.asset_extension }}
           asset_name: tlum_${{ matrix.target }}${{ matrix.asset_extension }}
           asset_content_type: ${{ matrix.asset_content_type }}
-
-# Linux: Flatpak
-  build-flatpak:
-    uses: ./.github/workflows/build_package_flatpak.yml
-    permissions:
-      contents: write
-    if: success()
-    needs:
-      - release
-      - build
-    secrets: inherit
-    with:
-      version: ${{ needs.release.outputs.version }}
-      sha: ${{ github.sha }}
-      upload_url: ${{ needs.release.outputs.upload_url }}
-      is_release: true
