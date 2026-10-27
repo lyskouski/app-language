@@ -60,6 +60,15 @@ parts:
       craftctl default
       ln -sf blas/libblas.so.3 usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/libblas.so.3
       ln -sf lapack/liblapack.so.3 usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/liblapack.so.3
+      # core22 has no /usr/share/alsa and host /etc/alsa/conf.d links to missing files: PortAudio finds no devices.
+      # Standalone ALSA config routes the default device to PulseAudio.
+      mkdir -p etc
+      cat > etc/asound.conf <<'EOF'
+      pcm.!default { type pulse fallback "sysdefault" hint { show on description "Default ALSA Output (PulseAudio)" } }
+      ctl.!default { type pulse fallback "sysdefault" }
+      pcm.pulse { type pulse }
+      ctl.pulse { type pulse }
+      EOF
 
 apps:
   tlum:
@@ -67,6 +76,8 @@ apps:
     environment:
       KIVY_AUDIO: ffpyplayer
       SDL_AUDIODRIVER: pulse
+      ALSA_CONFIG_PATH: $SNAP/etc/asound.conf
+      ALSA_PLUGIN_DIR: $SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/alsa-lib
       KIVY_WINDOW: sdl2
       KIVY_GL_BACKEND: gl
       TLUM_DATA_DIR: $SNAP_USER_COMMON
