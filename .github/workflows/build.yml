@@ -422,11 +422,12 @@ jobs:
           sudo add-apt-repository -y ppa:flatpak/stable
           sudo apt-get update
           sudo apt-get install -y flatpak flatpak-builder
-          sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-          sudo flatpak install flathub org.freedesktop.Platform//25.08 org.freedesktop.Sdk//25.08 -y
-          # bwrap: Can't find source path .flatpak-builder/rofiles/.../files: Permission denied
-          sudo flatpak-builder --install --disable-rofiles-fuse build-dir com.tercad.tlum.yml
-          sudo flatpak build-bundle /var/lib/flatpak/repo "$GITHUB_WORKSPACE/tlum_${{ matrix.target }}.flatpak" com.tercad.tlum
+          # bwrap: Can't find source path .../build-dir/files: Permission denied
+          # Newer bwrap sandboxes root in a user namespace without access to the runner's workspace: build as the runner user
+          flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+          flatpak install --user flathub org.freedesktop.Platform//25.08 org.freedesktop.Sdk//25.08 -y
+          flatpak-builder --user --disable-rofiles-fuse --force-clean --repo=repo build-dir com.tercad.tlum.yml
+          flatpak build-bundle repo "$GITHUB_WORKSPACE/tlum_${{ matrix.target }}.flatpak" com.tercad.tlum
         working-directory: ${{ matrix.build_path }}
 
       - name: Store Configs for github.com/flathub
