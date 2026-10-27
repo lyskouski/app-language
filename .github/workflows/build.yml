@@ -424,7 +424,8 @@ jobs:
           sudo apt-get install -y flatpak flatpak-builder
           sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
           sudo flatpak install flathub org.freedesktop.Platform//25.08 org.freedesktop.Sdk//25.08 -y
-          sudo flatpak-builder --install build-dir com.tercad.tlum.yml
+          # bwrap: Can't find source path .flatpak-builder/rofiles/.../files: Permission denied
+          sudo flatpak-builder --install --disable-rofiles-fuse build-dir com.tercad.tlum.yml
           sudo flatpak build-bundle /var/lib/flatpak/repo "$GITHUB_WORKSPACE/tlum_${{ matrix.target }}.flatpak" com.tercad.tlum
         working-directory: ${{ matrix.build_path }}
 
