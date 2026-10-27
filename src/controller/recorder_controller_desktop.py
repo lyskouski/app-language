@@ -72,7 +72,7 @@ class RecorderControllerDesktop(IRecorderController):
                         break
                     data, __ = stream.read(1024)
                     buffer.append(data)
-        except (OSError, RuntimeError) as e:
+        except (OSError, RuntimeError, sd.PortAudioError) as e:
             self._set_status(status_label, f"[!] Recording error: {e}")
             return None
 
