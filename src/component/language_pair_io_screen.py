@@ -14,14 +14,14 @@ from kivy.uix.screenmanager import Screen
 from kivy.utils import platform
 
 from application.services.language_pair_io_service import LanguagePairIOService
+from infrastructure.ui import portal_file_chooser
 
 
 def _get_download_dir() -> str:
     if platform == "android":
         storage = importlib.import_module("android.storage")
-
         return os.path.join(storage.primary_external_storage_path(), "Download")
-    if platform == "ios":
+    if platform == "ios" or portal_file_chooser.is_available():
         return App.get_running_app().user_data_dir
     return os.path.join(os.path.expanduser("~"), "Downloads")
 
@@ -49,7 +49,23 @@ def _target_path(screen) -> str:
     return screen.app_file_path if screen.use_app_folder else screen.file_path
 
 
+def _open_portal_chooser(screen, save_mode: bool):
+    def on_result(path):
+        if path:
+            Clock.schedule_once(lambda dt: setattr(screen, "file_path", path), 0)
+
+    if save_mode:
+        default_name = os.path.basename(screen.file_path) or "language_pair.json"
+        portal_file_chooser.save_file("Save file", default_name, on_result)
+    else:
+        portal_file_chooser.open_file("Choose file", on_result)
+
+
 def _open_file_chooser(screen, dir_mode: bool, path_attr: str = "file_path", base_dir: str = ""):
+    if path_attr == "file_path" and portal_file_chooser.is_available():
+        _open_portal_chooser(screen, save_mode=dir_mode)
+        return
+
     base_dir = base_dir or _get_download_dir()
     current = getattr(screen, path_attr)
     start_dir = os.path.dirname(current) if current else base_dir
