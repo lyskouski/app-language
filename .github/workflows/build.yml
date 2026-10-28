@@ -401,13 +401,12 @@ jobs:
           done
           cp tlum_${{ needs.release.outputs.version }}+${{ needs.release.outputs.build_number }}_amd64.snap "$GITHUB_WORKSPACE/tlum_${{ matrix.target }}.snap"
 
-## TODO: Resolve failure on start: "Emergency stop (memory image dumped to disk)"
-#      - name: Publish Snap
-#        if: matrix.target == 'LinuxSnap'
-#        env:
-#          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_CREDENTIALS }}
-#        run: |
-#          sudo --preserve-env=SNAPCRAFT_STORE_CREDENTIALS snapcraft upload tlum_${{ matrix.target }}.snap --release=latest/stable
+      - name: Publish Snap
+        if: matrix.target == 'LinuxSnap'
+        env:
+          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_CREDENTIALS }}
+        run: |
+          sudo --preserve-env=SNAPCRAFT_STORE_CREDENTIALS snapcraft upload tlum_${{ matrix.target }}.snap --release=latest/stable
 
 # Linux: Flatpak
       - name: Patch Flatpak Manifest
