@@ -425,7 +425,7 @@ jobs:
           # bwrap: Can't find source path .../build-dir/files: Permission denied
           # Newer bwrap sandboxes root in a user namespace without access to the runner's workspace: build as the runner user
           flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-          flatpak install --user flathub org.freedesktop.Platform//25.08 org.freedesktop.Sdk//25.08 -y
+          flatpak install --user flathub org.freedesktop.Platform//26.08 org.freedesktop.Sdk//26.08 -y
           flatpak-builder --user --disable-rofiles-fuse --force-clean --repo=repo build-dir com.tercad.tlum.yml
           flatpak build-bundle repo "$GITHUB_WORKSPACE/tlum_${{ matrix.target }}.flatpak" com.tercad.tlum
         working-directory: ${{ matrix.build_path }}
@@ -437,9 +437,7 @@ jobs:
           name: flatpak-configs
           path: |
             linux-flatpak/com.tercad.tlum.yml
-            linux-flatpak/com.tercad.tlum.metainfo.xml
             linux-flatpak/python3-modules.json
-            linux-flatpak/flathub.json
 
 # Android
       - name: Install dependencies

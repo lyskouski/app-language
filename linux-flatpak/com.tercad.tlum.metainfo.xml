@@ -72,13 +72,13 @@
   </screenshots>
   <launchable type="desktop-id">com.tercad.tlum.desktop</launchable>
   <releases>
-    <release version="{VERSION}" date="{DATE}">
+    <release version="0.6.7" date="2026-10-28">
       <description translatable="no">
         <ul>
-          <li>{CHANGE}</li>
+          <li>First Flatpak distribution</li>
         </ul>
       </description>
-      <url type="details">https://github.com/lyskouski/app-language/releases/tag/v{VERSION}</url>
+      <url type="details">https://github.com/lyskouski/app-language/releases/tag/v0.6.7</url>
     </release>
   </releases>
   <content_rating type="oars-1.1">
