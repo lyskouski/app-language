@@ -10,7 +10,7 @@ import sys
 import urllib.request
 from pathlib import Path
 
-PYTHON_TAG = 'cp313'
+PYTHON_TAG = 'cp314'
 ARCHES = ['x86_64', 'aarch64']
 SDIST_PACKAGES = {'kivy', 'pillow', 'cffi', 'msgpack', 'audioop-lts'}
 # Build-time only, installed before the sdist packages (pip does not order them with --no-build-isolation).
@@ -96,12 +96,6 @@ def main():
     module = {
         'name': 'python3-modules',
         'buildsystem': 'simple',
-        'build-options': {
-            'env': {
-                # Pinned build packages from /app take precedence over the SDK ones (Kivy requires Cython <= 3.0.11).
-                'PYTHONPATH': f'/app/lib/python3.{PYTHON_TAG[3:]}/site-packages',
-            },
-        },
         'build-commands': [
             f'{PIP_INSTALL} {" ".join(build)}',
             f'{PIP_INSTALL} {" ".join(runtime)}',
