@@ -29,6 +29,12 @@ pinpoint pronunciation gaps, and machine learning to boost vocabulary proficienc
     - Acoustic Harmonica: a writing experience based on sounds
     - Articulation: a pronunciation training tool
 
+## Screenshots
+
+<img title="Tlum: Main Screen" src="./docs/design-flow/screenshots/1_main.png" width="240" /> . <img title="Tlum: Category" src="./docs/design-flow/screenshots/3_category.png" width="240" /> . <img title="Tlum: Cards" src="./docs/design-flow/screenshots/4_cards.png" width="240" />
+
+<img title="Tlum: Harmonica" src="./docs/design-flow/screenshots/5_harmonica.png" width="240" /> . <img title="Tlum: Acoustic Harmonica" src="./docs/design-flow/screenshots/6_harmonica_acoustic.png" width="240" /> . <img title="Tlum: Articulation" src="./docs/design-flow/screenshots/7_articulation.png" width="240" />
+
 ## Support (Sponsorship)
 
 As an open-source project, subscribing will not unlock any additional features in the app. However, it would serve as
