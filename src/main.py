@@ -19,6 +19,7 @@
 import os
 import kivy
 import kivy.resources
+import kivy.utils
 import sys
 from pathlib import Path
 from kivy.config import Config
@@ -140,6 +141,9 @@ class MainApp(App):
         if data_dir:
             os.makedirs(data_dir, exist_ok=True)
             return data_dir
+        # Kivy creates only the last folder of $XDG_CONFIG_HOME/<name>: a fresh profile may have no ~/.config
+        if kivy.utils.platform == 'linux':
+            os.makedirs(os.path.expanduser(os.environ.get('XDG_CONFIG_HOME') or '~/.config'), exist_ok=True)
         return super().user_data_dir
 
     def __init__(self, **kwargs):

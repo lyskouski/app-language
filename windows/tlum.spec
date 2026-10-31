@@ -32,6 +32,7 @@ a = Analysis(
         ("..\\src\\l18n\\*.py","l18n"),
         ("..\\src\\model\\*.py","model"),
         ("..\\src\\template\\*.kv","template"),
+        ("..\\src\\infrastructure\\persistence\\*.sql","infrastructure\\persistence"),
     ],
     hiddenimports=['kivy.core.audio.audio_gstplayer'],
     hookspath=[],
