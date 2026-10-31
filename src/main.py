@@ -262,6 +262,29 @@ class MainApp(App):
             Builder.load_file(path)
         screen_manager.add_widget(screen_class(name=screen_name))
 
+    def on_start(self):
+        if platform == 'linux':
+            self._store_x11_window_name()
+
+    def _store_x11_window_name(self):
+        """Re-store the X11 title (WM_NAME) as a Latin-1 STRING.
+
+        SDL2 stores WM_NAME as UTF8_STRING, which xdotool (e.g. the appimage.github.io test)
+        cannot match by name, so the window is reported as missing. _NET_WM_NAME keeps UTF-8.
+        """
+        try:
+            import ctypes
+            info = Window.get_window_info()
+            if type(info).__name__ != 'WindowInfoX11':
+                return
+            x11 = ctypes.CDLL('libX11.so.6')
+            x11.XStoreName.argtypes = [ctypes.c_void_p, ctypes.c_ulong, ctypes.c_char_p]
+            x11.XFlush.argtypes = [ctypes.c_void_p]
+            x11.XStoreName(info.display, info.window, self.title.encode('latin-1', 'replace'))
+            x11.XFlush(info.display)
+        except Exception as e:
+            print(f"Warning: Failed to store X11 window name: {e}")
+
     def build(self):
         cleanup_temporary_recordings(self.get_home_dir())
 
