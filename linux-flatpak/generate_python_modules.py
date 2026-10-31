@@ -96,6 +96,8 @@ def main():
     module = {
         'name': 'python3-modules',
         'buildsystem': 'simple',
+        # Kivy 2.3.0 assigns GL function pointers with mismatched const qualifiers, an error since GCC 14
+        'build-options': {'cflags': '-Wno-error=incompatible-pointer-types'},
         'build-commands': [
             f'{PIP_INSTALL} {" ".join(build)}',
             f'{PIP_INSTALL} {" ".join(runtime)}',

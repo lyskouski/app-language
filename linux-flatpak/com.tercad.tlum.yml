@@ -3,6 +3,8 @@ runtime: org.freedesktop.Platform
 runtime-version: "26.08"
 sdk: org.freedesktop.Sdk
 command: tlum
+build-options:
+  libdir: lib
 finish-args:
   - --socket=wayland
   - --socket=fallback-x11
@@ -20,6 +22,8 @@ cleanup:
 modules:
   - name: portaudio
     buildsystem: autotools
+    build-options:
+      libdir: /app/lib
     config-opts:
       - --without-jack
     sources:
@@ -30,6 +34,8 @@ modules:
   - shared-modules/SDL2/SDL2_image.json
 
   - shared-modules/SDL2/SDL2_ttf.json
+
+  - shared-modules/SDL2/SDL2_mixer.json
 
   - python3-modules.json
 

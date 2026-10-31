@@ -1,4 +1,6 @@
 kivy[full]==2.3.0
+# ffpyplayer 4.5.4 (dependency of kivy[full]) is published without wheels: building it requires SDL2 headers
+ffpyplayer==4.5.3
 sounddevice==0.4.7
 soundfile==0.12.1
 pyinstaller==6.10.0
