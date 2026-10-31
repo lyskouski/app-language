@@ -50,8 +50,9 @@ jobs:
           - os: ubuntu-22.04
             target: LinuxAppImage
             build_path: linux-appimage
+            asset_name: Tlum-${{ needs.release.outputs.version }}-x86_64
             asset_extension: .AppImage
-            asset_content_type: application/gzip
+            asset_content_type: application/vnd.appimage
           # Error: undefined symbol: g_once_init_enter_pointer
           - os: ubuntu-22.04
             target: LinuxFlatpak
@@ -371,8 +372,12 @@ jobs:
           sudo apt-get install -y libfuse2
           wget -O appimage-builder-x86_64.AppImage https://github.com/AppImageCrafters/appimage-builder/releases/download/v1.1.0/appimage-builder-1.1.0-x86_64.AppImage
           chmod +x appimage-builder-x86_64.AppImage
-          ./appimage-builder-x86_64.AppImage --recipe AppImageBuilder.yml
-          cp Tlum-${{ needs.release.outputs.version }}-x86_64.AppImage "$GITHUB_WORKSPACE/tlum_${{ matrix.target }}.AppImage"
+          # appimage-builder packs xz SquashFS with the deprecated AppImageKit runtime, which
+          # appimage.github.io cannot mount (only zlib, zstd): build the AppDir only, pack with appimagetool
+          ./appimage-builder-x86_64.AppImage --recipe AppImageBuilder.yml --skip-appimage
+          wget -O appimagetool-x86_64.AppImage https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage
+          chmod +x appimagetool-x86_64.AppImage
+          ARCH=x86_64 ./appimagetool-x86_64.AppImage --comp zstd AppDir "$GITHUB_WORKSPACE/${{ matrix.asset_name }}.AppImage"
         working-directory: ${{ matrix.build_path }}
 
 # Linux: Snap
@@ -504,6 +509,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.release.outputs.upload_url }}
-          asset_path: ./tlum_${{ matrix.target }}${{ matrix.asset_extension }}
-          asset_name: tlum_${{ matrix.target }}${{ matrix.asset_extension }}
+          asset_path: ./${{ matrix.asset_name || format('tlum_{0}', matrix.target) }}${{ matrix.asset_extension }}
+          asset_name: ${{ matrix.asset_name || format('tlum_{0}', matrix.target) }}${{ matrix.asset_extension }}
           asset_content_type: ${{ matrix.asset_content_type }}
