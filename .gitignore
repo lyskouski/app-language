@@ -19,3 +19,4 @@ tlum.db-shm
 tlum.db-wal
 /screenshots/
 *.mp4
+/linux-flatpak/shared-modules/

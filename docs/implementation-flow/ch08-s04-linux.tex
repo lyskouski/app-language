@@ -2,3 +2,42 @@
 % Use of this content is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
 
 [TBD] https://medium.com/@vlyskouski/kivy-python-linux-distribution-linux-snap-flatpak-appimage-cfd085bad0cb
+
+\subsection*{Flathub: shared modules}
+
+Flathub reviewers ask to replace common dependencies (SDL2\_image, SDL2\_ttf, etc.) with the modules
+maintained in \url{https://github.com/flathub/shared-modules}. The manifest references them by path:
+
+\begin{lstlisting}
+modules:
+  - shared-modules/SDL2/SDL2_image.json
+  - shared-modules/SDL2/SDL2_ttf.json
+\end{lstlisting}
+
+The path is resolved from a git submodule, added in the root of the Flathub repository (next to the manifest):
+
+\begin{lstlisting}
+$ git submodule add https://github.com/flathub/shared-modules.git
+$ git commit -m "Add shared-modules"
+\end{lstlisting}
+
+\begin{itemize}
+  \item it clones \texttt{flathub/shared-modules} into the \texttt{shared-modules/} folder at the latest commit of \texttt{master};
+  \item it creates (or extends) \texttt{.gitmodules} with the path and URL of the submodule;
+  \item it stages a pointer to a single commit, the files themselves are not copied into the repository history.
+\end{itemize}
+
+Flathub builder fetches the submodule at that exact commit. The pointer is pinned, so newer versions of
+the shared modules are not picked up until it is moved explicitly:
+
+\begin{lstlisting}
+$ git submodule update --remote shared-modules
+$ git commit -am "Update shared-modules"
+\end{lstlisting}
+
+A fresh clone of the Flathub repository requires \texttt{git clone --recursive}
+(or \texttt{git submodule update --init} after a plain clone) to get the content of the folder.
+
+The project's CI does not use the submodule: \texttt{.github/workflows/build.yml} clones
+\texttt{flathub/shared-modules} into \texttt{linux-flatpak/} right before \texttt{flatpak-builder}
+to mirror the same layout (the folder is ignored by \texttt{.gitignore}).
