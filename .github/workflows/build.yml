@@ -369,12 +369,20 @@ jobs:
       - name: Build Linux AppImage
         if: matrix.target == 'LinuxAppImage'
         run: |
-          sudo apt-get install -y libfuse2
+          sudo apt-get install -y libfuse2 librsvg2-bin
           wget -O appimage-builder-x86_64.AppImage https://github.com/AppImageCrafters/appimage-builder/releases/download/v1.1.0/appimage-builder-1.1.0-x86_64.AppImage
           chmod +x appimage-builder-x86_64.AppImage
           # appimage-builder packs xz SquashFS with the deprecated AppImageKit runtime, which
           # appimage.github.io cannot mount (only zlib, zstd): build the AppDir only, pack with appimagetool
           ./appimage-builder-x86_64.AppImage --recipe AppImageBuilder.yml --skip-appimage
+          # appimagetool: .DirIcon must be a PNG, desktop Icon must have no extension
+          sed -i 's/^Icon=.*/Icon=com.tercad.tlum/' AppDir/com.tercad.tlum.desktop
+          mkdir -p AppDir/usr/share/icons/hicolor/scalable/apps AppDir/usr/share/icons/hicolor/256x256/apps
+          cp -f AppDir/com.tercad.tlum.svg AppDir/usr/share/icons/hicolor/scalable/apps/
+          rsvg-convert -w 256 -h 256 AppDir/com.tercad.tlum.svg -o AppDir/usr/share/icons/hicolor/256x256/apps/com.tercad.tlum.png
+          rm -f AppDir/.DirIcon AppDir/com.tercad.tlum.svg
+          cp AppDir/usr/share/icons/hicolor/256x256/apps/com.tercad.tlum.png AppDir/com.tercad.tlum.png
+          cp AppDir/com.tercad.tlum.png AppDir/.DirIcon
           wget -O appimagetool-x86_64.AppImage https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage
           chmod +x appimagetool-x86_64.AppImage
           ARCH=x86_64 ./appimagetool-x86_64.AppImage --comp zstd AppDir "$GITHUB_WORKSPACE/${{ matrix.asset_name }}.AppImage"
