@@ -25,15 +25,15 @@ class TestSQLiteConfigRepository:
 
     def test_add_language_pair_rejects_duplicate(self, repository):
         """Test adding the same language pair twice is rejected."""
-        repository.add_language_pair("EN", "PL", "EN-PL")
+        repository.add_language_pair("DE", "FR", "DE-FR")
 
         with pytest.raises(ValueError, match="Language pair already exists"):
-            repository.add_language_pair("en", "pl", "EN-PL duplicate")
+            repository.add_language_pair("de", "fr", "DE-FR duplicate")
 
     def test_add_game_category_rejects_duplicate_name_for_same_pair(self, repository):
         """Test category name uniqueness is enforced per language pair."""
-        repository.add_language_pair("EN", "PL", "EN-PL")
-        repository.add_game_category("EN", "PL", "Verbs", "verbs")
+        repository.add_language_pair("DE", "FR", "DE-FR")
+        repository.add_game_category("DE", "FR", "Verbs", "verbs")
 
         with pytest.raises(ValueError, match="Category already exists"):
-            repository.add_game_category("EN", "PL", "  verbs  ", "verbs")
+            repository.add_game_category("DE", "FR", "  verbs  ", "verbs")

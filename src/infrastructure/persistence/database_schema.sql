@@ -122,3 +122,38 @@ INSERT OR REPLACE INTO languages (locale, name, logo_path, is_active, display_or
     ('FA', 'فارسی', 'assets/images/language/fa.png', 1, 24),
     ('AR', 'العربية', 'assets/images/language/ar.png', 1, 25),
     ('KA', 'ქართული', 'assets/images/language/ka.png', 1, 26);
+
+-- Seed demo content (fresh installations only, once)
+-- Existing installations with own language pairs are marked as seeded and skipped;
+-- a deleted demo pair is not recreated on the next start.
+INSERT OR IGNORE INTO db_metadata (key, value)
+    SELECT 'demo_seeded', 'skipped' WHERE EXISTS (SELECT 1 FROM language_pairs);
+
+INSERT INTO language_pairs (locale_from, locale_to, name, logo_path)
+    SELECT 'EN', 'PL', 'EN-PL (English - Polski)', ''
+    WHERE NOT EXISTS (SELECT 1 FROM db_metadata WHERE key = 'demo_seeded');
+
+INSERT INTO game_categories (language_pair_id, category_name, vocabulary_source, display_order, is_active)
+    SELECT id, 'Demo', 'Demo', 0, 1 FROM language_pairs
+    WHERE locale_from = 'EN' AND locale_to = 'PL'
+      AND NOT EXISTS (SELECT 1 FROM db_metadata WHERE key = 'demo_seeded');
+
+-- 10 long Polish words (origin: target language, translation: native language)
+INSERT INTO vocabulary_items (language_pair_id, origin, translation, category)
+    SELECT lp.id, w.origin, w.translation, 'Demo'
+    FROM language_pairs lp, (
+        SELECT 'rzeczywistość' AS origin, 'reality' AS translation
+        UNION ALL SELECT 'przedsiębiorstwo', 'enterprise'
+        UNION ALL SELECT 'odpowiedzialność', 'responsibility'
+        UNION ALL SELECT 'bezpieczeństwo', 'safety'
+        UNION ALL SELECT 'społeczeństwo', 'society'
+        UNION ALL SELECT 'zainteresowanie', 'interest'
+        UNION ALL SELECT 'przyzwyczajenie', 'habit'
+        UNION ALL SELECT 'wykształcenie', 'education'
+        UNION ALL SELECT 'niespodziewanie', 'unexpectedly'
+        UNION ALL SELECT 'nieprawdopodobny', 'improbable'
+    ) w
+    WHERE lp.locale_from = 'EN' AND lp.locale_to = 'PL'
+      AND NOT EXISTS (SELECT 1 FROM db_metadata WHERE key = 'demo_seeded');
+
+INSERT OR IGNORE INTO db_metadata (key, value) VALUES ('demo_seeded', 'done');
