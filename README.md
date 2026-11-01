@@ -6,6 +6,8 @@
 **Tlum** - open source code (whitebox) cross-platform language learning application leverages the power of natural language processing to
 pinpoint pronunciation gaps, and machine learning to boost vocabulary proficiency.
 
+[![Watch the video](./docs/design-flow/presentation_video.png)](https://youtu.be/CUIGxWp74DI)
+
 | Type                     | Alpha Version         | Pre-Release                   | Release                       |
 | ------------------------ | ----------------------| ----------------------------- | ----------------------------- |
 | ![Apple](./docs/design-flow/icons/apple.png) iOS (Apple Store)        | [tlum_iOS.ipa](https://github.com/lyskouski/app-language/releases/latest) | [TestFlight: Tlum](https://testflight.apple.com/join/SbZND3au) | [![iOS Apple Store](./docs/design-flow/badges/ios.png)](https://apps.apple.com/app/tlum/id6472675986) |
