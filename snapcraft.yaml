@@ -29,6 +29,10 @@ parts:
   tlum:
     plugin: python
     source: .
+    python-packages:
+      - pip<26.3
+      - setuptools
+      - wheel
     build-environment:
       - PIP_IGNORE_INSTALLED: "1"
     stage-packages:
@@ -50,7 +54,8 @@ parts:
       - -usr/lib/*/libdrm*
       - -usr/lib/*/dri
     override-build: |
-      python3 -m pip install --ignore-installed --upgrade pip
+      # pip 26.3 breaks the python plugin build ("python3 -m venv ...: Permission denied"): canonical/snapcraft#6549
+      python3 -m pip install --ignore-installed --upgrade "pip<26.3"
       python3 -m pip install --ignore-installed --prefix=$SNAPCRAFT_PART_INSTALL -r requirements.txt
       snapcraftctl build
       cp -r src $SNAPCRAFT_PART_INSTALL/
