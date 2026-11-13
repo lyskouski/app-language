@@ -38,6 +38,7 @@ soundfile==0.14.0
 soxr==1.1.0
 standard-aifc==3.13.0
 standard-chunk==3.13.0
+standard-imghdr==3.13.0
 standard-sunau==3.13.0
 threadpoolctl==3.7.0
 typing-extensions==4.16.0
