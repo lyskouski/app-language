@@ -465,6 +465,14 @@ jobs:
           pip install --upgrade git+https://github.com/kivy/python-for-android.git@develop
           pip install --upgrade git+https://github.com/kivy/buildozer.git@master
 
+      # ubuntu26 image defaults to JDK 25, which Gradle 8.x (p4a wrapper) cannot run on
+      - name: Set up JDK 17
+        if: startsWith(matrix.target, 'Android')
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
       - name: Apply Android Keychain
         if: startsWith(matrix.target, 'Android')
         env:
