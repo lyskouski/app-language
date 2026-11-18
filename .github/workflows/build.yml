@@ -210,7 +210,20 @@ jobs:
           # bundle; force it to install from source so no native extension is built.
           PIP_NO_BINARY: charset-normalizer
         run: |
-          buildozer ios release
+          set -o pipefail
+          LOG="$RUNNER_TEMP/ios_first_pass.log"
+          if ! buildozer ios release 2>&1 | tee "$LOG"; then
+            # The recipe traceback truncates xcodebuild/compiler output ("N more, please see
+            # e.stdout"); surface the actual errors from the full log in the job summary.
+            {
+              echo '### iOS first pass errors'
+              echo '```'
+              grep -nE '(error|fatal error):|\*\* BUILD FAILED|The following build commands failed' "$LOG" | head -60
+              echo '```'
+            } >> "$GITHUB_STEP_SUMMARY"
+            grep -E '(error|fatal error):' "$LOG" | sort -u | head -20 | sed 's/^/::error::/'
+            exit 1
+          fi
 
       - name: Patch generated Info.plist and force manual code signing
         if: matrix.target == 'iOS'
