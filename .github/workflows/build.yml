@@ -30,7 +30,8 @@ jobs:
             build_path: windows/dist
             asset_extension: .zip
             asset_content_type: application/zip
-          - os: macos-26
+          # Xcode 27 (iOS 27 SDK) ships only on the Xcode-based `xcode-27` image; macos-26 tops out at Xcode 26.x
+          - os: xcode-27
             target: iOS
             build_path: build
             asset_extension: .ipa
