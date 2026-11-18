@@ -123,6 +123,15 @@ jobs:
           fi
           echo "Building with iOS SDK $IOS_SDK_VERSION"
 
+      # Xcode 27 rejects deployment targets below iOS 15.0, while kivy-ios recipes (libffi,
+      # SDL2*) build vendored Xcode projects targeting 8.0-9.0. The shim raises the target.
+      - name: Raise iOS deployment target of kivy-ios Xcode projects
+        if: matrix.target == 'iOS'
+        run: |
+          chmod +x ios/shim/xcodebuild
+          echo "$GITHUB_WORKSPACE/ios/shim" >> "$GITHUB_PATH"
+          echo "IOS_DEPLOYMENT_TARGET=15.0" >> "$GITHUB_ENV"
+
       - name: Import Apple code-signing certificate and provisioning profile
         if: matrix.target == 'iOS'
         env:

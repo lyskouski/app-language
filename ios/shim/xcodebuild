@@ -1,0 +1,18 @@
+#!/bin/bash
+# xcodebuild shim, put first in PATH for the iOS build (see .github/workflows/build.yml).
+#
+# kivy-ios recipes (libffi, sdl2, sdl2_image, sdl2_mixer, sdl2_ttf) build vendored Xcode
+# projects with IPHONEOS_DEPLOYMENT_TARGET of 8.0-9.0. Since Xcode 27 the supported range
+# starts at 15.0 and anything lower is a hard error, so override the target on the command
+# line for project builds. Other invocations (-version, -showsdks, -exportArchive) pass as is.
+REAL_XCODEBUILD=/usr/bin/xcodebuild
+TARGET="${IOS_DEPLOYMENT_TARGET:-15.0}"
+
+for arg in "$@"; do
+    case "$arg" in
+        -project|-workspace)
+            exec "$REAL_XCODEBUILD" "$@" "IPHONEOS_DEPLOYMENT_TARGET=$TARGET"
+            ;;
+    esac
+done
+exec "$REAL_XCODEBUILD" "$@"
