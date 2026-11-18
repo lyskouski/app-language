@@ -109,6 +109,34 @@ from kivy.utils import platform
 from kivy.base import EventLoop
 EventLoop.ensure_window()
 
+
+def _defer_wayland_resize():
+    """Keep Kivy from redrawing inside SDL's Wayland event dispatch.
+
+    On desktop Kivy handles SDL_WINDOWEVENT_RESIZED in the SDL event filter, which runs
+    synchronously while SDL is processing the compositor's xdg_toplevel configure: it resizes
+    the window and renders/swaps a frame right there. With SDL3 (sdl2-compat in the
+    freedesktop 26.08 runtime) that re-entrant commit breaks the configure/ack ordering and
+    compositors such as niri kill the client on fullscreen ("xdg_wm_base: wrong configure
+    serial"). Queue the event instead, so Kivy's regular (delayed) resize path handles it.
+    """
+    try:
+        if type(Window.get_window_info()).__name__ != 'WindowInfoWayland':
+            return
+        kivy_event_filter = Window._event_filter
+
+        def event_filter(action, *largs):
+            if action == 'windowresized':
+                return 1  # keep the event in the SDL queue, handled by WindowSDL._mainloop
+            return kivy_event_filter(action, *largs)
+
+        Window._win.set_event_filter(event_filter)
+    except Exception as e:
+        print(f"Warning: Failed to defer Wayland resize handling: {e}")
+
+
+_defer_wayland_resize()
+
 class MainApp(App):
     """
     Main Application class following SOLID principles.
