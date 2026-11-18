@@ -67,19 +67,18 @@
     </screenshot>
     <screenshot>
       <image type="source">https://raw.githubusercontent.com/lyskouski/app-language/main/docs/design-flow/screenshots/game_articulation.png</image>
-      <caption>List of Games</caption>
+      <caption>Articulation</caption>
     </screenshot>
   </screenshots>
   <launchable type="desktop-id">com.tercad.tlum.desktop</launchable>
   <releases>
-    <release version="0.6.13" date="2026-11-13">
+    <release version="0.6.14" date="2026-11-18">
       <description translatable="no">
         <ul>
           <li>Flatpak distribution</li>
-          <li>appimage.github.io distribution</li>
         </ul>
       </description>
-      <url type="details">https://github.com/lyskouski/app-language/releases/tag/v0.6.9</url>
+      <url type="details">https://github.com/lyskouski/app-language/releases/tag/v0.6.14</url>
     </release>
   </releases>
   <content_rating type="oars-1.1">
