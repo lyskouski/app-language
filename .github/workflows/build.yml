@@ -123,6 +123,16 @@ jobs:
           fi
           echo "Building with iOS SDK $IOS_SDK_VERSION"
 
+      # Since Xcode 26 the Metal compiler is a separate download, and SDL2's Xcode project
+      # compiles .metal shaders ("cannot execute tool 'metal' due to missing Metal Toolchain").
+      - name: Install Metal Toolchain
+        if: matrix.target == 'iOS'
+        run: |
+          if ! xcrun --sdk iphoneos metal --version >/dev/null 2>&1; then
+            xcodebuild -downloadComponent MetalToolchain
+          fi
+          xcrun --sdk iphoneos metal --version
+
       # Xcode 27 rejects deployment targets below iOS 15.0, while kivy-ios recipes (libffi,
       # SDL2*) build vendored Xcode projects targeting 8.0-9.0. The shim raises the target.
       - name: Raise iOS deployment target of kivy-ios Xcode projects
