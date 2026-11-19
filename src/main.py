@@ -119,6 +119,14 @@ def _defer_wayland_resize():
     freedesktop 26.08 runtime) that re-entrant commit breaks the configure/ack ordering and
     compositors such as niri kill the client on fullscreen ("xdg_wm_base: wrong configure
     serial"). Queue the event instead, so Kivy's regular (delayed) resize path handles it.
+
+    Kivy also re-runs ``create_window`` whenever ``_size``/``system_size`` change, which calls
+    ``SDL_SetWindowFullscreen(self.fullscreen)`` (False) and ``SDL_SetWindowBordered``. So when
+    the compositor makes the window fullscreen, Kivy immediately sends ``unset_fullscreen``
+    while SDL still holds the un-acked fullscreen configure; SDL then acks the follow-up
+    configure first and the stale one after it, and the compositor kills the client. Size
+    changes therefore only resize the SDL window; fullscreen/borderless changes still go
+    through ``create_window``.
     """
     try:
         if type(Window.get_window_info()).__name__ != 'WindowInfoWayland':
@@ -131,6 +139,13 @@ def _defer_wayland_resize():
             return kivy_event_filter(action, *largs)
 
         Window._win.set_event_filter(event_filter)
+
+        Window.unbind(_size=Window.trigger_create_window,
+                      system_size=Window.trigger_create_window)
+        # Programmatic `Window.size = ...` must still reach SDL (no-op when SDL already has it)
+        trigger_resize = Clock.create_trigger(
+            lambda dt: Window._win.resize_window(*Window.system_size), -1)
+        Window.bind(_size=trigger_resize)
     except Exception as e:
         print(f"Warning: Failed to defer Wayland resize handling: {e}")
 
